@@ -1,8 +1,19 @@
-import React from 'react'
+import Home from './Component/Home'
+// 1. Import Routes instead of Router
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import RegisterOrganization from './Component/RegisterOrganization'
+import SuperAdminDashboard from './Component/SuperAdminDashboard'
 
 const App = () => {
   return (
-    <div>App</div>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/organization-register' element={<RegisterOrganization />} />
+        <Route path='/admin-dashboard' element={<SuperAdminDashboard/>} />
+
+      </Routes>
+    </BrowserRouter>
   )
 }
 
