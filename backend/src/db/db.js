@@ -8,7 +8,9 @@ connectdb().then(()=>{
         console.log("db connection successfull");
         
 }).catch((err)=>{
-        console.log("failed to connect with database !");
+        console.log("db connection failed !");
+        console.log(err);
+        
         
 })
 
