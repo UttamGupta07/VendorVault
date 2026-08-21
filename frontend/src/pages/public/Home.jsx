@@ -97,39 +97,6 @@ function DocCard() {
     </div>
   );
 }
-
-function NavBar() {
-  return (
-    <header className="w-full">
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-6">
-        <div
-          className="text-lg tracking-tight"
-          style={{ fontFamily: "'Newsreader', serif", color: COLORS.ink, fontWeight: 600 }}
-        >
-          VendorVault
-        </div>
-        <nav className="hidden md:flex items-center gap-8 text-sm" style={{ color: COLORS.inkSoft }}>
-          <a href="#features" className="hover:opacity-70">Product</a>
-          <a href="#how" className="hover:opacity-70">How it works</a>
-          <a href="#pricing" className="hover:opacity-70">Pricing</a>
-        </nav>
-        <div className="flex items-center gap-4">
-          <a href="#login" className="text-sm hidden sm:inline" style={{ color: COLORS.inkSoft }}>
-            Log in
-          </a>
-          <Link
-          className="text-sm px-4 py-2 rounded-sm text-white"
-            style={{ background: COLORS.brass }}
-            to="/organization-register"
-          >
-          Get started
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
-
 function Hero() {
   return (
     <section className="max-w-6xl mx-auto px-6 pt-8 pb-20 md:pt-16 md:pb-28 grid md:grid-cols-2 gap-14 items-center">
@@ -340,35 +307,18 @@ function CTABand() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="border-t" style={{ borderColor: COLORS.rule }}>
-      <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div
-          className="text-sm"
-          style={{ fontFamily: "'Newsreader', serif", color: COLORS.ink, fontWeight: 600 }}
-        >
-          VendorVault
-        </div>
-        <div className="text-xs" style={{ color: COLORS.inkSoft }}>
-          Every document, one filing system, zero missed expiries.
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 export default function Home() {
   return (
     <div style={{ background: COLORS.paper, minHeight: "100%" }}>
       <Fonts />
-      <NavBar />
+   
       <Hero />
       <StatStrip />
       <Features />
       <HowItWorks />
       <CTABand />
-      <Footer />
+      
     </div>
   );
 }

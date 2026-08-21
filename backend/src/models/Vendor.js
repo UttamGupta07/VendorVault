@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+ const mongoose = require("mongoose");
 
 const vendorSchema = new mongoose.Schema(
   {
@@ -15,7 +15,7 @@ const vendorSchema = new mongoose.Schema(
       trim: true,
     },
 
-    contactPerson: {
+    companyName: {
       type: String,
       required: true,
       trim: true,
@@ -30,6 +30,11 @@ const vendorSchema = new mongoose.Schema(
 
     phone: {
       type: String,
+      trim: true,
+    },
+
+    category: {
+      type: String,
       required: true,
       trim: true,
     },
@@ -38,29 +43,19 @@ const vendorSchema = new mongoose.Schema(
       street: String,
       city: String,
       state: String,
-      country: {
-        type: String,
-        default: "India",
-      },
+      country: String,
       pincode: String,
-    },
-
-    gstin: {
-      type: String,
-      trim: true,
-      uppercase: true,
-    },
-
-    pan: {
-      type: String,
-      trim: true,
-      uppercase: true,
     },
 
     status: {
       type: String,
-      enum: ["INVITED", "ACTIVE", "SUSPENDED"],
-      default: "INVITED",
+      enum: [
+        "pending",
+        "active",
+        "suspended",
+        "inactive",
+      ],
+      default: "pending",
     },
 
     complianceScore: {
@@ -70,21 +65,27 @@ const vendorSchema = new mongoose.Schema(
       max: 100,
     },
 
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
-
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
     },
   },
   {
     timestamps: true,
   }
 );
+
+vendorSchema.index({
+  organizationId: 1,
+  email: 1,
+});
 
 vendorSchema.index({
   organizationId: 1,

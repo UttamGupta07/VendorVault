@@ -97,31 +97,6 @@ const RegisterOrganization = () => {
 
   return (
     <div className="min-h-screen bg-[#EDEAE0] text-[#1C2B3A]">
-      <header className="border-b border-[#C9C2AE] bg-[#EDEAE0]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
-
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Vendor<span className="text-[#A8792C]">Vault</span>
-            </h1>
-
-            <p className="mt-1 text-xs tracking-[0.18em] uppercase text-[#54636F]">
-              Vendor Compliance Platform
-            </p>
-          </div>
-
-          <button
-            type="button"
-            className="text-sm font-medium text-[#54636F] transition hover:text-[#8B631F]"
-          >
-            Already have an account?{" "}
-            <span className="font-semibold text-[#8B631F]">
-              Sign in
-            </span>
-          </button>
-
-        </div>
-      </header>
       <main className="mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-16">
 
         <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
@@ -394,23 +369,6 @@ const RegisterOrganization = () => {
         </div>
 
       </main>
-
-      <footer className="border-t border-[#C9C2AE] px-6 py-6 lg:px-10">
-
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 text-xs text-[#54636F] sm:flex-row">
-
-          <p>
-            © {new Date().getFullYear()} VendorVault
-          </p>
-
-          <p>
-            Secure vendor compliance management
-          </p>
-
-        </div>
-
-      </footer>
-
     </div>
   );
 };
