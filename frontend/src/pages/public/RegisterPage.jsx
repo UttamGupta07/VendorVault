@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
 import {
   ShieldCheck,
   Building2,
@@ -8,7 +10,6 @@ import {
   Mail,
   Phone,
   Globe,
-  MapPin,
   Lock,
   Eye,
   EyeOff,
@@ -19,84 +20,153 @@ import {
   Loader2,
   Sparkles,
   Briefcase,
-  Users
-} from 'lucide-react';
+  Users,
+} from "lucide-react";
 
 const INDUSTRIES = [
-  'Logistics & Supply Chain',
-  'Manufacturing & Industrial',
-  'Information Technology & SaaS',
-  'Healthcare & Pharmaceuticals',
-  'Construction & Real Estate',
-  'Financial Services & Banking',
-  'Retail & E-commerce',
-  'Energy & Utilities',
-  'Other',
+  "Logistics & Supply Chain",
+  "Manufacturing & Industrial",
+  "Information Technology & SaaS",
+  "Healthcare & Pharmaceuticals",
+  "Construction & Real Estate",
+  "Financial Services & Banking",
+  "Retail & E-commerce",
+  "Energy & Utilities",
+  "Other",
 ];
 
+// IMPORTANT:
+// value = exact value expected by MongoDB enum
+// label = value shown to the user
 const COMPANY_SIZES = [
-  '1-10 employees',
-  '11-50 employees',
-  '51-200 employees',
-  '201-500 employees',
-  '500+ employees',
+  {
+    value: "1-10",
+    label: "1-10 employees",
+  },
+  {
+    value: "11-50",
+    label: "11-50 employees",
+  },
+  {
+    value: "51-200",
+    label: "51-200 employees",
+  },
+  {
+    value: "201-500",
+    label: "201-500 employees",
+  },
+  {
+    value: "501-1000",
+    label: "501-1000 employees",
+  },
+  {
+    value: "1000+",
+    label: "1000+ employees",
+  },
 ];
 
 export default function RegisterPage() {
   const navigate = useNavigate();
 
-  // Current Step: 1 = Organization Details, 2 = Admin Credentials
+  // =====================================================
+  // AUTH CONTEXT
+  // =====================================================
+
+  const { registerOrganization } = useAuth();
+
+  // =====================================================
+  // STEP
+  // =====================================================
+
+  // 1 = Organization Details
+  // 2 = Super Admin Details
   const [step, setStep] = useState(1);
 
-  // Form State matching backend req.body
+  // =====================================================
+  // FORM DATA
+  // =====================================================
+
   const [formData, setFormData] = useState({
-    organizationName: '',
-    officialEmail: '',
-    phone: '',
-    industry: '',
-    companySize: '',
-    country: 'India',
-    state: '',
-    city: '',
-    website: '',
-    adminName: '',
-    adminEmail: '',
-    password: '',
-    confirmPassword: '',
+    organizationName: "",
+    officialEmail: "",
+    phone: "",
+    industry: "",
+    companySize: "",
+    country: "India",
+    state: "",
+    city: "",
+    website: "",
+
+    adminName: "",
+    adminEmail: "",
+    password: "",
+    confirmPassword: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [useOfficialForAdmin, setUseOfficialForAdmin] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
+  // =====================================================
+  // UI STATES
+  // =====================================================
 
-  // Handle Input Changes
+  const [showPassword, setShowPassword] = useState(false);
+  const [useOfficialForAdmin, setUseOfficialForAdmin] =
+    useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
+  // =====================================================
+  // HANDLE INPUT CHANGE
+  // =====================================================
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    if (error) setError('');
+
+    if (error) {
+      setError("");
+    }
+
+    if (successMsg) {
+      setSuccessMsg("");
+    }
   };
 
-  // Sync Admin Email with Official Email if checkbox is selected
+  // =====================================================
+  // USE OFFICIAL EMAIL FOR ADMIN
+  // =====================================================
+
   const handleUseOfficialToggle = (e) => {
     const checked = e.target.checked;
+
     setUseOfficialForAdmin(checked);
+
     if (checked) {
       setFormData((prev) => ({
         ...prev,
         adminEmail: prev.officialEmail,
       }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        adminEmail: "",
+      }));
     }
   };
 
-  // Step 1 Validation
+  // =====================================================
+  // STEP 1 VALIDATION
+  // =====================================================
+
   const handleNextStep = (e) => {
     e.preventDefault();
-    setError('');
+
+    setError("");
+    setSuccessMsg("");
 
     const {
       organizationName,
@@ -119,238 +189,535 @@ export default function RegisterPage() {
       !state.trim() ||
       !city.trim()
     ) {
-      setError('Please fill in all required organization fields before proceeding.');
+      setError(
+        "Please fill in all required organization fields before proceeding."
+      );
+
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(officialEmail.trim())) {
+      setError("Please enter a valid official email.");
+      return;
+    }
+
+    // Basic phone validation
+    const phoneRegex = /^[0-9+\-\s()]{7,20}$/;
+
+    if (!phoneRegex.test(phone.trim())) {
+      setError("Please enter a valid phone number.");
       return;
     }
 
     setStep(2);
   };
 
-  // Step 2 Validation & Form Submission
+  // =====================================================
+  // BACK TO STEP 1
+  // =====================================================
+
+  const handleBack = () => {
+    if (loading) return;
+
+    setError("");
+    setSuccessMsg("");
+    setStep(1);
+  };
+
+  // =====================================================
+  // FINAL REGISTRATION
+  // =====================================================
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccessMsg('');
 
-    const { adminName, adminEmail, password, confirmPassword } = formData;
+    if (loading) return;
 
-    if (!adminName.trim() || !adminEmail.trim() || !password) {
-      setError('Please fill in all super admin details.');
+    setError("");
+    setSuccessMsg("");
+
+    const {
+      adminName,
+      adminEmail,
+      password,
+      confirmPassword,
+    } = formData;
+
+    // -----------------------------------------------------
+    // VALIDATE ADMIN DETAILS
+    // -----------------------------------------------------
+
+    if (
+      !adminName.trim() ||
+      !adminEmail.trim() ||
+      !password
+    ) {
+      setError(
+        "Please fill in all super admin details."
+      );
+
       return;
     }
+
+    // -----------------------------------------------------
+    // VALIDATE EMAIL
+    // -----------------------------------------------------
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(adminEmail.trim())) {
+      setError("Please enter a valid admin email.");
+      return;
+    }
+
+    // -----------------------------------------------------
+    // VALIDATE PASSWORD
+    // -----------------------------------------------------
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+      setError(
+        "Password must be at least 6 characters long."
+      );
+
       return;
     }
 
+    // -----------------------------------------------------
+    // CONFIRM PASSWORD
+    // -----------------------------------------------------
+
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError("Passwords do not match.");
       return;
     }
 
     setLoading(true);
 
     try {
-      // Payload matching backend controller
+      // ===================================================
+      // PAYLOAD
+      // ===================================================
+
+      /*
+       * IMPORTANT:
+       *
+       * companySize values here MUST exactly match
+       * the enum in the Organization schema:
+       *
+       * "1-10"
+       * "11-50"
+       * "51-200"
+       * "201-500"
+       * "501-1000"
+       * "1000+"
+       */
+
       const payload = {
-        organizationName: formData.organizationName.trim(),
-        officialEmail: formData.officialEmail.trim(),
-        phone: formData.phone.trim(),
-        industry: formData.industry,
-        companySize: formData.companySize,
-        country: formData.country.trim(),
-        state: formData.state.trim(),
-        city: formData.city.trim(),
-        website: formData.website.trim(),
-        adminName: formData.adminName.trim(),
-        adminEmail: formData.adminEmail.trim(),
-        password: formData.password,
+        organizationName:
+          formData.organizationName.trim(),
+
+        officialEmail:
+          formData.officialEmail
+            .trim()
+            .toLowerCase(),
+
+        phone:
+          formData.phone.trim(),
+
+        industry:
+          formData.industry,
+
+        companySize:
+          formData.companySize,
+
+        country:
+          formData.country.trim(),
+
+        state:
+          formData.state.trim(),
+
+        city:
+          formData.city.trim(),
+
+        website:
+          formData.website.trim(),
+
+        adminName:
+          formData.adminName.trim(),
+
+        adminEmail:
+          formData.adminEmail
+            .trim()
+            .toLowerCase(),
+
+        password:
+          formData.password,
       };
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      
-      const response = await axios.post(`${apiUrl}/auth/register`, payload, {
-        withCredentials: true, // For cookie storage
-      });
+      console.log(
+        "Registration payload:",
+        payload
+      );
 
-      if (response.data.success) {
-        setSuccessMsg('Organization registered successfully! Redirecting...');
-        
-        // Optional: Save user or token to localStorage if returned
-        if (response.data.user) {
-          localStorage.setItem('user', JSON.stringify(response.data.user));
-        }
+      // ===================================================
+      // REGISTER USING AUTH CONTEXT
+      // ===================================================
+
+      const response =
+        await registerOrganization(payload);
+
+      console.log(
+        "Registration response:",
+        response
+      );
+
+      // ===================================================
+      // SUCCESS
+      // ===================================================
+
+      if (response?.success) {
+        setSuccessMsg(
+          "Organization registered successfully! Redirecting..."
+        );
+
+        /*
+         * Backend already:
+         *
+         * 1. Created Organization
+         * 2. Created SUPER_ADMIN
+         * 3. Generated JWT
+         * 4. Set JWT in HTTP-only cookie
+         *
+         * AuthContext should update the authenticated user.
+         */
 
         setTimeout(() => {
-          navigate('/dashboard');
-        }, 1500);
+          navigate(
+            "/super-admin/dashboard",
+            {
+              replace: true,
+            }
+          );
+        }, 1000);
+      } else {
+        setError(
+          response?.message ||
+            "Registration failed. Please try again."
+        );
       }
     } catch (err) {
-      console.error('Registration failed:', err);
-      const message =
-        err.response?.data?.message ||
-        'Registration failed. Please check your inputs and try again.';
-      setError(message);
+      console.error(
+        "Registration failed:",
+        err
+      );
+
+      // -----------------------------------------------
+      // Extract backend error
+      // -----------------------------------------------
+
+      const backendData =
+        err.response?.data;
+
+      // If backend returns validation errors
+      if (
+        backendData?.errors &&
+        Array.isArray(backendData.errors)
+      ) {
+        const validationMessages =
+          backendData.errors
+            .map((item) => {
+              if (typeof item === "string") {
+                return item;
+              }
+
+              return item.message;
+            })
+            .filter(Boolean);
+
+        if (validationMessages.length > 0) {
+          setError(
+            validationMessages.join(" ")
+          );
+        } else {
+          setError(
+            backendData.message ||
+              "Registration failed."
+          );
+        }
+      } else {
+        setError(
+          backendData?.message ||
+            "Registration failed. Please check your inputs and try again."
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  // =====================================================
+  // UI
+  // =====================================================
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-12 transition-colors">
       <div className="w-full max-w-2xl">
-        
-        {/* Logo & Header */}
+
+        {/* =================================================
+            LOGO & HEADER
+        ================================================= */}
+
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2.5 group">
+
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2.5 group"
+          >
+
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">
               <ShieldCheck className="h-6 w-6" />
             </div>
+
             <div className="flex items-center gap-1.5">
+
               <span className="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">
-                Vendor<span className="text-indigo-600 dark:text-indigo-400">Vault</span>
+                Vendor
+                <span className="text-indigo-600 dark:text-indigo-400">
+                  Vault
+                </span>
               </span>
+
               <span className="inline-flex items-center gap-0.5 rounded-md bg-indigo-50 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-600/20 dark:bg-indigo-950/50 dark:text-indigo-300">
-                <Sparkles className="h-2.5 w-2.5" /> AI
+                <Sparkles className="h-2.5 w-2.5" />
+                AI
               </span>
+
             </div>
           </Link>
+
           <h1 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
             Register Your Organization
           </h1>
+
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Set up your organization and configure your Super Admin account
+            Set up your organization and configure your
+            Super Admin account
           </p>
+
         </div>
 
-        {/* Step Indicator */}
+        {/* =================================================
+            STEP INDICATOR
+        ================================================= */}
+
         <div className="mb-8 flex items-center justify-center gap-4">
+
+          {/* STEP 1 */}
+
           <div className="flex items-center gap-2">
+
             <div
               className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-colors ${
                 step >= 1
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                  ? "bg-indigo-600 text-white"
+                  : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
               }`}
             >
-              1
+              {step > 1 ? (
+                <CheckCircle2 className="h-4 w-4" />
+              ) : (
+                "1"
+              )}
             </div>
+
             <span
               className={`text-xs font-semibold ${
                 step === 1
-                  ? 'text-indigo-600 dark:text-indigo-400'
-                  : 'text-slate-500 dark:text-slate-400'
+                  ? "text-indigo-600 dark:text-indigo-400"
+                  : "text-slate-500 dark:text-slate-400"
               }`}
             >
               Organization Details
             </span>
+
           </div>
 
-          <div className="h-0.5 w-12 bg-slate-200 dark:bg-slate-800"></div>
+          <div
+            className={`h-0.5 w-12 transition-colors ${
+              step === 2
+                ? "bg-indigo-600"
+                : "bg-slate-200 dark:bg-slate-800"
+            }`}
+          />
+
+          {/* STEP 2 */}
 
           <div className="flex items-center gap-2">
+
             <div
               className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-colors ${
                 step === 2
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                  ? "bg-indigo-600 text-white"
+                  : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
               }`}
             >
               2
             </div>
+
             <span
               className={`text-xs font-semibold ${
                 step === 2
-                  ? 'text-indigo-600 dark:text-indigo-400'
-                  : 'text-slate-500 dark:text-slate-400'
+                  ? "text-indigo-600 dark:text-indigo-400"
+                  : "text-slate-500 dark:text-slate-400"
               }`}
             >
               Super Admin Account
             </span>
+
           </div>
+
         </div>
 
-        {/* Card Container */}
+        {/* =================================================
+            MAIN CARD
+        ================================================= */}
+
         <div className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900">
-          
-          {/* Error Alert */}
+
+          {/* ERROR MESSAGE */}
+
           {error && (
-            <div className="mb-6 flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300 animate-in fade-in duration-200">
-              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
+
+              <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+
               <span>{error}</span>
+
             </div>
           )}
 
-          {/* Success Alert */}
+          {/* SUCCESS MESSAGE */}
+
           {successMsg && (
-            <div className="mb-6 flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300 animate-in fade-in duration-200">
+            <div className="mb-6 flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
+
               <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+
               <span>{successMsg}</span>
+
             </div>
           )}
 
-          {/* =========================================================================
-              STEP 1: ORGANIZATION DETAILS
-              ========================================================================= */}
+          {/* =================================================
+              STEP 1
+          ================================================= */}
+
           {step === 1 && (
-            <form onSubmit={handleNextStep} className="space-y-4">
+            <form
+              onSubmit={handleNextStep}
+              className="space-y-4"
+            >
+
               <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-2">
+
                 <Building2 className="h-4 w-4 text-indigo-500" />
+
                 Company & Contact Information
+
               </h2>
 
-              {/* Organization Name */}
+              {/* ORGANIZATION NAME */}
+
               <div>
+
                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Organization Name <span className="text-rose-500">*</span>
+                  Organization Name{" "}
+                  <span className="text-rose-500">
+                    *
+                  </span>
                 </label>
+
                 <div className="relative">
+
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                     <Building2 className="h-4 w-4" />
                   </div>
+
                   <input
                     type="text"
                     name="organizationName"
-                    value={formData.organizationName}
+                    value={
+                      formData.organizationName
+                    }
                     onChange={handleChange}
                     placeholder="Acme Global Enterprises"
                     required
                     className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
+
                 </div>
+
               </div>
 
-              {/* Official Email & Phone */}
+              {/* EMAIL + PHONE */}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                {/* OFFICIAL EMAIL */}
+
                 <div>
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Official Email <span className="text-rose-500">*</span>
+                    Official Email{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <div className="relative">
+
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                       <Mail className="h-4 w-4" />
                     </div>
+
                     <input
                       type="email"
                       name="officialEmail"
-                      value={formData.officialEmail}
+                      value={
+                        formData.officialEmail
+                      }
                       onChange={handleChange}
                       placeholder="compliance@acme.com"
                       required
                       className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                     />
+
                   </div>
+
                 </div>
 
+                {/* PHONE */}
+
                 <div>
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Official Phone <span className="text-rose-500">*</span>
+                    Official Phone{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <div className="relative">
+
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                       <Phone className="h-4 w-4" />
                     </div>
+
                     <input
                       type="tel"
                       name="phone"
@@ -360,20 +727,34 @@ export default function RegisterPage() {
                       required
                       className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                     />
+
                   </div>
+
                 </div>
+
               </div>
 
-              {/* Industry & Company Size */}
+              {/* INDUSTRY + COMPANY SIZE */}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                {/* INDUSTRY */}
+
                 <div>
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Industry <span className="text-rose-500">*</span>
+                    Industry{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <div className="relative">
+
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                       <Briefcase className="h-4 w-4" />
                     </div>
+
                     <select
                       name="industry"
                       value={formData.industry}
@@ -381,48 +762,93 @@ export default function RegisterPage() {
                       required
                       className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                     >
-                      <option value="">Select Industry</option>
-                      {INDUSTRIES.map((ind) => (
-                        <option key={ind} value={ind}>
-                          {ind}
-                        </option>
-                      ))}
+
+                      <option value="">
+                        Select Industry
+                      </option>
+
+                      {INDUSTRIES.map(
+                        (industry) => (
+                          <option
+                            key={industry}
+                            value={industry}
+                          >
+                            {industry}
+                          </option>
+                        )
+                      )}
+
                     </select>
+
                   </div>
+
                 </div>
 
+                {/* COMPANY SIZE */}
+
                 <div>
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Company Size <span className="text-rose-500">*</span>
+                    Company Size{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <div className="relative">
+
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                       <Users className="h-4 w-4" />
                     </div>
+
                     <select
                       name="companySize"
-                      value={formData.companySize}
+                      value={
+                        formData.companySize
+                      }
                       onChange={handleChange}
                       required
                       className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                     >
-                      <option value="">Select Size</option>
-                      {COMPANY_SIZES.map((size) => (
-                        <option key={size} value={size}>
-                          {size}
-                        </option>
-                      ))}
+
+                      <option value="">
+                        Select Size
+                      </option>
+
+                      {COMPANY_SIZES.map(
+                        (size) => (
+                          <option
+                            key={size.value}
+                            value={size.value}
+                          >
+                            {size.label}
+                          </option>
+                        )
+                      )}
+
                     </select>
+
                   </div>
+
                 </div>
+
               </div>
 
-              {/* Country, State, City */}
+              {/* COUNTRY / STATE / CITY */}
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                {/* COUNTRY */}
+
                 <div>
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Country <span className="text-rose-500">*</span>
+                    Country{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <input
                     type="text"
                     name="country"
@@ -432,48 +858,74 @@ export default function RegisterPage() {
                     required
                     className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
+
                 </div>
 
+                {/* STATE */}
+
                 <div>
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    State <span className="text-rose-500">*</span>
+                    State{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <input
                     type="text"
                     name="state"
                     value={formData.state}
                     onChange={handleChange}
-                    placeholder="Maharashtra"
+                    placeholder="Uttar Pradesh"
                     required
                     className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
+
                 </div>
 
+                {/* CITY */}
+
                 <div>
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    City <span className="text-rose-500">*</span>
+                    City{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <input
                     type="text"
                     name="city"
                     value={formData.city}
                     onChange={handleChange}
-                    placeholder="Mumbai"
+                    placeholder="Lucknow"
                     required
                     className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
+
                 </div>
+
               </div>
 
-              {/* Website (Optional) */}
+              {/* WEBSITE */}
+
               <div>
+
                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Website <span className="text-slate-400 font-normal">(Optional)</span>
+                  Website{" "}
+                  <span className="text-slate-400 font-normal">
+                    (Optional)
+                  </span>
                 </label>
+
                 <div className="relative">
+
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                     <Globe className="h-4 w-4" />
                   </div>
+
                   <input
                     type="url"
                     name="website"
@@ -482,45 +934,74 @@ export default function RegisterPage() {
                     placeholder="https://acme.com"
                     className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
+
                 </div>
+
               </div>
 
-              {/* Next Step Button */}
+              {/* NEXT BUTTON */}
+
               <div className="pt-4">
+
                 <button
                   type="submit"
                   className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/25 hover:bg-indigo-500 transition-all"
                 >
-                  <span>Continue to Admin Setup</span>
+
+                  <span>
+                    Continue to Admin Setup
+                  </span>
+
                   <ArrowRight className="h-4 w-4" />
+
                 </button>
+
               </div>
+
             </form>
           )}
 
-          {/* =========================================================================
-              STEP 2: SUPER ADMIN ACCOUNT CREATION
-              ========================================================================= */}
+          {/* =================================================
+              STEP 2
+          ================================================= */}
+
           {step === 2 && (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4"
+            >
+
               <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-2">
+
                 <User className="h-4 w-4 text-indigo-500" />
+
                 Super Admin Account Credentials
+
               </h2>
 
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                This account will have primary administrative control over organization policies, users, and vendor approvals.
+                This account will have primary
+                administrative control over organization
+                policies, users, and vendor approvals.
               </p>
 
-              {/* Admin Full Name */}
+              {/* ADMIN NAME */}
+
               <div>
+
                 <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Admin Full Name <span className="text-rose-500">*</span>
+                  Admin Full Name{" "}
+                  <span className="text-rose-500">
+                    *
+                  </span>
                 </label>
+
                 <div className="relative">
+
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                     <User className="h-4 w-4" />
                   </div>
+
                   <input
                     type="text"
                     name="adminName"
@@ -530,29 +1011,49 @@ export default function RegisterPage() {
                     required
                     className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
+
                 </div>
+
               </div>
 
-              {/* Admin Email */}
+              {/* ADMIN EMAIL */}
+
               <div>
+
                 <div className="flex items-center justify-between mb-1">
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                    Admin Work Email <span className="text-rose-500">*</span>
+                    Admin Work Email{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <label className="flex items-center gap-1.5 text-[11px] text-indigo-600 dark:text-indigo-400 cursor-pointer">
+
                     <input
                       type="checkbox"
                       checked={useOfficialForAdmin}
-                      onChange={handleUseOfficialToggle}
+                      onChange={
+                        handleUseOfficialToggle
+                      }
                       className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
                     />
-                    <span>Same as official email</span>
+
+                    <span>
+                      Same as official email
+                    </span>
+
                   </label>
+
                 </div>
+
                 <div className="relative">
+
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                     <Mail className="h-4 w-4" />
                   </div>
+
                   <input
                     type="email"
                     name="adminEmail"
@@ -562,21 +1063,38 @@ export default function RegisterPage() {
                     required
                     className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
+
                 </div>
+
               </div>
 
-              {/* Password & Confirm Password */}
+              {/* PASSWORDS */}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                {/* PASSWORD */}
+
                 <div>
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Password <span className="text-rose-500">*</span>
+                    Password{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <div className="relative">
+
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                       <Lock className="h-4 w-4" />
                     </div>
+
                     <input
-                      type={showPassword ? 'text' : 'password'}
+                      type={
+                        showPassword
+                          ? "text"
+                          : "password"
+                      }
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
@@ -585,85 +1103,150 @@ export default function RegisterPage() {
                       minLength={6}
                       className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-10 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                     />
+
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() =>
+                        setShowPassword(
+                          (prev) => !prev
+                        )
+                      }
                       className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+
                     </button>
+
                   </div>
+
                 </div>
 
+                {/* CONFIRM PASSWORD */}
+
                 <div>
+
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Confirm Password <span className="text-rose-500">*</span>
+                    Confirm Password{" "}
+                    <span className="text-rose-500">
+                      *
+                    </span>
                   </label>
+
                   <div className="relative">
+
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                       <Lock className="h-4 w-4" />
                     </div>
+
                     <input
-                      type={showPassword ? 'text' : 'password'}
+                      type={
+                        showPassword
+                          ? "text"
+                          : "password"
+                      }
                       name="confirmPassword"
-                      value={formData.confirmPassword}
+                      value={
+                        formData.confirmPassword
+                      }
                       onChange={handleChange}
                       placeholder="••••••••"
                       required
                       className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                     />
+
                   </div>
+
                 </div>
+
               </div>
 
-              {/* Password strength note */}
+              {/* PASSWORD INFO */}
+
               <div className="rounded-lg bg-slate-50 dark:bg-slate-800/50 p-2.5 text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2">
+
                 <ShieldCheck className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                <span>Password will be securely encrypted with bcrypt (salt rounds: 10).</span>
+
+                <span>
+                  Password will be securely encrypted
+                  with bcrypt (salt rounds: 10).
+                </span>
+
               </div>
 
-              {/* Action Buttons: Back + Submit */}
+              {/* ACTION BUTTONS */}
+
               <div className="flex items-center gap-3 pt-4">
+
+                {/* BACK */}
+
                 <button
                   type="button"
-                  onClick={() => setStep(1)}
+                  onClick={handleBack}
                   disabled={loading}
-                  className="w-1/3 flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+                  className="w-1/3 flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
                 >
+
                   <ArrowLeft className="h-4 w-4" />
-                  <span>Back</span>
+
+                  <span>
+                    Back
+                  </span>
+
                 </button>
+
+                {/* SUBMIT */}
 
                 <button
                   type="submit"
                   disabled={loading}
                   className="w-2/3 flex items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/25 hover:bg-indigo-500 disabled:opacity-60 transition-all"
                 >
+
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Creating Organization...</span>
+
+                      <span>
+                        Creating Organization...
+                      </span>
                     </>
                   ) : (
                     <>
-                      <span>Complete Registration</span>
+                      <span>
+                        Complete Registration
+                      </span>
+
                       <CheckCircle2 className="h-4 w-4" />
                     </>
                   )}
+
                 </button>
+
               </div>
+
             </form>
           )}
 
-          {/* Footer Navigation */}
+          {/* =================================================
+              FOOTER
+          ================================================= */}
+
           <div className="mt-6 border-t border-slate-100 pt-4 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
-            Already have an organization account?{' '}
+
+            Already have an organization account?{" "}
+
             <Link
               to="/login"
               className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
             >
               Sign In
             </Link>
+
           </div>
 
         </div>
@@ -671,3 +1254,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+ 

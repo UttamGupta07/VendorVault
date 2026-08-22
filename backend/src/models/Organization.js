@@ -51,7 +51,7 @@ const organizationSchema = new mongoose.Schema(
       required: true,
     },
 
-    city: {
+    city: { 
       type: String,
       required: true,
     },

@@ -159,11 +159,14 @@ const registerOrganization = async (req, res) => {
 
 
 
-const loginUser = async (req, res) => {
+ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // ----------------------------------------
     // 1. Validate fields
+    // ----------------------------------------
+
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -171,10 +174,22 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // 2. Find user
+    // ----------------------------------------
+    // 2. Normalize email
+    // ----------------------------------------
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // ----------------------------------------
+    // 3. Find user
+    // IMPORTANT:
+    // password has select:false in User schema
+    // so explicitly select it here
+    // ----------------------------------------
+
     const user = await User.findOne({
-      email: email.toLowerCase(),
-    });
+      email: normalizedEmail,
+    }).select("+password");
 
     if (!user) {
       return res.status(401).json({
@@ -183,7 +198,21 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // 3. Check password
+    // ----------------------------------------
+    // 4. Check user status
+    // ----------------------------------------
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account is inactive",
+      });
+    }
+
+    // ----------------------------------------
+    // 5. Check password
+    // ----------------------------------------
+
     const isPasswordValid = await bcrypt.compare(
       password,
       user.password
@@ -196,7 +225,10 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // 4. Find organization
+    // ----------------------------------------
+    // 6. Find organization
+    // ----------------------------------------
+
     const organization = await Organization.findById(
       user.organizationId
     );
@@ -208,24 +240,44 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // 5. Check organization status
-    if (organization.status !== "ACTIVE") {
+    // ----------------------------------------
+    // 7. Check organization status
+    // Your Organization schema uses isActive
+    // ----------------------------------------
+
+    if (!organization.isActive) {
       return res.status(403).json({
         success: false,
-        message: "Organization account is suspended",
+        message: "Organization account is inactive",
       });
     }
 
-    // 6. Generate JWT
+    // ----------------------------------------
+    // 8. Update last login
+    // ----------------------------------------
+
+    user.lastLoginAt = new Date();
+    await user.save();
+
+    // ----------------------------------------
+    // 9. Generate JWT
+    // ----------------------------------------
+
     const token = generateToken(user);
+
+    // ----------------------------------------
+    // 10. Store JWT in HTTP-only cookie
+    // ----------------------------------------
+
     setAuthCookie(res, token);
 
-    // 7. Send response
+    // ----------------------------------------
+    // 11. Send response
+    // ----------------------------------------
+
     return res.status(200).json({
       success: true,
       message: "Login successful",
-
-      token,
 
       user: {
         id: user._id,
@@ -233,13 +285,22 @@ const loginUser = async (req, res) => {
         email: user.email,
         role: user.role,
         organizationId: user.organizationId,
+        isActive: user.isActive,
+        isEmailVerified: user.isEmailVerified,
       },
 
       organization: {
         id: organization._id,
         name: organization.name,
-        email: organization.email,
-        status: organization.status,
+        officialEmail: organization.officialEmail,
+        phone: organization.phone,
+        industry: organization.industry,
+        companySize: organization.companySize,
+        country: organization.country,
+        state: organization.state,
+        city: organization.city,
+        website: organization.website,
+        isActive: organization.isActive,
       },
     });
   } catch (error) {

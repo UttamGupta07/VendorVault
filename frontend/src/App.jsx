@@ -10,6 +10,8 @@ import RegisterOrganization from "./pages/RegisterOrganization"
 import LandingPage from './pages/public/LandingPage'
 import RegisterPage from './pages/public/RegisterPage'
 import LoginPage from './pages/public/LoginPage'
+import SuperAdminDashboard from './pages/superAdminPages/SuperAdminDashboard'
+import SuperAdminLayout from './layout/SuperAdminLayout'
 
 const App = () => {
   return (
@@ -29,17 +31,76 @@ const App = () => {
           <Route path="/login" element={<LoginPage/>}/>
 
 
-          {/* <Route
-            path="/login"
-            element={<Login />}
-          />
-
-          <Route
-            path="/register"
-            element={<Register />}
-          /> */}
+           
 
         </Route>
+
+        
+      <Route element={<SuperAdminLayout />}>
+
+        <Route
+          path="/super-admin/dashboard"
+          element={<SuperAdminDashboard />}
+        />
+
+        <Route
+          path="/super-admin/organizations"
+          element={<div>Organizations</div>}
+        />
+
+        <Route
+          path="/super-admin/users"
+          element={<div>Users</div>}
+        />
+
+        <Route
+          path="/super-admin/roles"
+          element={<div>Roles & Permissions</div>}
+        />
+
+        <Route
+          path="/super-admin/vendors"
+          element={<div>Vendors</div>}
+        />
+
+        <Route
+          path="/super-admin/auditors"
+          element={<div>Auditors</div>}
+        />
+
+        <Route
+          path="/super-admin/compliance-teams"
+          element={<div>Compliance Teams</div>}
+        />
+
+        <Route
+          path="/super-admin/documents"
+          element={<div>Documents Overview</div>}
+        />
+
+        <Route
+          path="/super-admin/alerts"
+          element={<div>System Alerts</div>}
+        />
+
+        <Route
+          path="/super-admin/reports"
+          element={<div>Reports & Analytics</div>}
+        />
+
+        <Route
+          path="/super-admin/activity-logs"
+          element={<div>Activity Logs</div>}
+        />
+
+        <Route
+          path="/super-admin/settings"
+          element={<div>Settings</div>}
+        />
+
+      </Route>
+
+
        
 
 
