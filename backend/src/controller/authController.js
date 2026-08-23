@@ -314,11 +314,14 @@ const registerOrganization = async (req, res) => {
 };
 
 
-const getMe = async (req, res) => {
+ const getMe = async (req, res) => {
   try {
+    // Prevent caching of authentication data
+    res.set("Cache-Control", "no-store");
+
+    // JWT contains userId
     const user = await User.findById(req.user.userId)
-      .select("-password")
-      .populate("organizationId", "name email phone website industry status");
+      .select("-password");
 
     if (!user) {
       return res.status(404).json({
@@ -327,9 +330,61 @@ const getMe = async (req, res) => {
       });
     }
 
+    // Check user status
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "User account is inactive",
+      });
+    }
+
+    // Find organization
+    const organization = await Organization.findById(
+      user.organizationId
+    );
+
+    if (!organization) {
+      return res.status(404).json({
+        success: false,
+        message: "Organization not found",
+      });
+    }
+
+    // Check organization status
+    if (!organization.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Organization account is inactive",
+      });
+    }
+
     return res.status(200).json({
       success: true,
-      user,
+
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        organizationId: user.organizationId,
+        isActive: user.isActive,
+        isEmailVerified: user.isEmailVerified,
+        lastLoginAt: user.lastLoginAt,
+      },
+
+      organization: {
+        id: organization._id,
+        name: organization.name,
+        officialEmail: organization.officialEmail,
+        phone: organization.phone,
+        industry: organization.industry,
+        companySize: organization.companySize,
+        country: organization.country,
+        state: organization.state,
+        city: organization.city,
+        website: organization.website,
+        isActive: organization.isActive,
+      },
     });
   } catch (error) {
     console.error("Get me error:", error);

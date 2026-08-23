@@ -1,13 +1,24 @@
-import { Navigate, Outlet } from "react-router-dom";
-// import { useAuth } from "../context/AuthContext";
+ import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = () => {
-  const { token } = useAuth();
+  const { user, loading } = useAuth();
 
-  if (!token) {
+  // Wait for /api/auth/me
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  // Authentication check finished
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
+  // User authenticated
   return <Outlet />;
 };
 

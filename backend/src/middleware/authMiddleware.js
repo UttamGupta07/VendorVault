@@ -3,7 +3,7 @@
 const protect = (req, res, next) => {
   try {
     // Get JWT from HTTP-only cookie
-    const token = req.cookies.token;
+    const token = req.cookies?.token;
 
     if (!token) {
       return res.status(401).json({
@@ -13,14 +13,20 @@ const protect = (req, res, next) => {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
 
-    // Store decoded user information in request
+    // Store decoded user information
     req.user = decoded;
 
     next();
   } catch (error) {
-    console.error("Auth middleware error:", error.message);
+    console.error(
+      "Auth middleware error:",
+      error.message
+    );
 
     return res.status(401).json({
       success: false,

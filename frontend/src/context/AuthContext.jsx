@@ -11,6 +11,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [organization, setOrganization] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // ==========================================
@@ -19,19 +20,27 @@ export const AuthProvider = ({ children }) => {
 
   const getCurrentUser = async () => {
     try {
-      setLoading(true);
-
       const response = await axiosInstance.get(
         "/api/auth/me"
       );
 
       if (response.data.success) {
         setUser(response.data.user);
+        setOrganization(
+          response.data.organization || null
+        );
       } else {
         setUser(null);
+        setOrganization(null);
       }
     } catch (error) {
+      // 401 is expected when there is no valid cookie.
       setUser(null);
+      setOrganization(null);
+
+      console.log(
+        "No authenticated session found."
+      );
     } finally {
       setLoading(false);
     }
@@ -53,6 +62,10 @@ export const AuthProvider = ({ children }) => {
 
       if (response.data.success) {
         setUser(response.data.user);
+
+        setOrganization(
+          response.data.organization || null
+        );
       }
 
       return response.data;
@@ -75,18 +88,11 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (response.data.success) {
-        /*
-         * Backend has already:
-         *
-         * 1. Created organization
-         * 2. Created SUPER_ADMIN
-         * 3. Generated JWT
-         * 4. Stored JWT in HTTP-only cookie
-         *
-         * We only need to update React state.
-         */
-
         setUser(response.data.user);
+
+        setOrganization(
+          response.data.organization || null
+        );
       }
 
       return response.data;
@@ -101,11 +107,17 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axiosInstance.post("/api/auth/logout");
+      await axiosInstance.post(
+        "/api/auth/logout"
+      );
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error(
+        "Logout error:",
+        error.response?.data || error.message
+      );
     } finally {
       setUser(null);
+      setOrganization(null);
     }
   };
 
@@ -125,12 +137,17 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        organization,
+
         setUser,
+        setOrganization,
+
         loading,
 
         login,
         logout,
         registerOrganization,
+        getCurrentUser,
 
         isAuthenticated: !!user,
       }}
