@@ -12,6 +12,6 @@ connectdb().then(()=>{
         console.log(err);
         
         
-})
+});
 
 module.exports = connectdb
