@@ -1,17 +1,22 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const url=process.env.MONGO_URI || "mongodb://localhost:27017/vendro_vault";
-async function connectdb(){
-        await mongoose.connect(url);
+async function connectdb() {
+    // Moving this inside ensures dotenv has loaded the environment variables first
+    const url = process.env.MONGO_URL; 
+    
+    if (!url) {
+        throw new Error("MONGO_URL variable is undefined. Check your dotenv configuration.");
+    }
+
+    await mongoose.connect(url);
 }
-connectdb().then(()=>{
-        console.log("db connection successfull");
-        
-}).catch((err)=>{
-        console.log("db connection failed !");
-        console.log(err);
-        
-        
+
+// Call the function to connect
+connectdb().then(() => {
+    console.log("db connection successful");
+}).catch((err) => {
+    console.log("db connection failed !");
+    console.log(err);
 });
 
-module.exports = connectdb
+module.exports = connectdb;

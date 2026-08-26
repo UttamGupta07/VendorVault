@@ -12,6 +12,12 @@ import LoginPage from "./pages/public/LoginPage";
 import RegisterOrganization from "./pages/RegisterOrganization";
 
 import SuperAdminDashboard from "./pages/superAdminPages/SuperAdminDashboard";
+import Users from "./pages/superAdminPages/Users";
+import Home from "./pages/public/Home";
+import ComplianceOfficer from "./pages/superAdminPages/ComplianceOfficer";
+import ComplianceOfficerLayout from "./layout/ComplianceOfficerLayout";
+import ComplianceDashboard from "./pages/compliance/ComplianceDashboard";
+import ComplianceVendor from "./pages/compliance/ComplianceVendor";
 
 const App = () => {
   return (
@@ -27,7 +33,7 @@ const App = () => {
 
             <Route
               path="/"
-              element={<LandingPage />}
+              element={<Home />}
             />
 
             <Route
@@ -69,12 +75,12 @@ const App = () => {
 
             <Route
               path="/super-admin/users"
-              element={<div>Users</div>}
+              element={<Users/>}
             />
 
             <Route
               path="/super-admin/roles"
-              element={<div>Roles & Permissions</div>}
+              element={<ComplianceOfficer/>}
             />
 
             <Route
@@ -118,6 +124,14 @@ const App = () => {
             />
 
           </Route>
+           <Route element={<ComplianceOfficerLayout />}>
+           <Route path="/compliance/dashboard" element={<ComplianceDashboard/>}/>
+           <Route
+              path="/compliance/vendors"
+              element={<ComplianceVendor />}
+            />
+
+           </Route>
 
         </Route>
 

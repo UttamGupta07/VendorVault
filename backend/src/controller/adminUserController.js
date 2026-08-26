@@ -11,7 +11,7 @@ const getUsers = async (req, res) => {
   try {
     const {
       page = 1,
-      limit = 10,
+      limit = 1,
       search = "",
       role = "All",
       status = "All",
@@ -59,10 +59,10 @@ const getUsers = async (req, res) => {
     // Pagination
     // ----------------------------------------
 
-    const currentPage = Math.max(parseInt(page, 10) || 1, 1);
+    const currentPage = Math.max(parseInt(page, 10) || 10, 1);
 
     const perPage = Math.min(
-      Math.max(parseInt(limit, 10) || 10, 1),
+      Math.max(parseInt(limit, 1) || 1, 1),
       100
     );
 
