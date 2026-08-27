@@ -18,6 +18,7 @@ import ComplianceOfficer from "./pages/superAdminPages/ComplianceOfficer";
 import ComplianceOfficerLayout from "./layout/ComplianceOfficerLayout";
 import ComplianceDashboard from "./pages/compliance/ComplianceDashboard";
 import ComplianceVendor from "./pages/compliance/ComplianceVendor";
+import RolesPermissions from "./pages/superAdminPages/RolesPermissions";
 
 const App = () => {
   return (
@@ -80,7 +81,7 @@ const App = () => {
 
             <Route
               path="/super-admin/roles"
-              element={<ComplianceOfficer/>}
+              element={<RolesPermissions/>}
             />
 
             <Route
