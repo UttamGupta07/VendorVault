@@ -60,8 +60,8 @@ const SuperAdminSidebar = ({ open, setOpen }) => {
       icon: FileText,
     },
     {
-      name: "System Alerts",
-      path: "/super-admin/alerts",
+      name: "Services",
+      path: "/super-admin/service",
       icon: AlertTriangle,
     },
     {

@@ -19,6 +19,8 @@ import ComplianceOfficerLayout from "./layout/ComplianceOfficerLayout";
 import ComplianceDashboard from "./pages/compliance/ComplianceDashboard";
 import ComplianceVendor from "./pages/compliance/ComplianceVendor";
 import RolesPermissions from "./pages/superAdminPages/RolesPermissions";
+import DocumentTypes from "./pages/superAdminPages/DocumentTypes";
+import ServiceTypes from "./pages/superAdminPages/ServiceTypes";
 
 const App = () => {
   return (
@@ -101,12 +103,12 @@ const App = () => {
 
             <Route
               path="/super-admin/documents"
-              element={<div>Documents Overview</div>}
+              element={<DocumentTypes/>}
             />
 
             <Route
-              path="/super-admin/alerts"
-              element={<div>System Alerts</div>}
+              path="/super-admin/service"
+              element={<ServiceTypes/>}
             />
 
             <Route

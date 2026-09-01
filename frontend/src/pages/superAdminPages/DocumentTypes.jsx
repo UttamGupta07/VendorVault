@@ -36,7 +36,7 @@ const DocumentTypes = () => {
       setLoading(true);
       setError("");
 
-      const response = await axiosInstance.get("/api/document-types ");
+      const response = await axiosInstance.get("/api/document-types    ");
 
       setDocumentTypes(response.data.documentTypes || []);
     } catch (err) {
