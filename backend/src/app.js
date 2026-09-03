@@ -7,6 +7,7 @@ const adminUserRoutes=require("./routes/adminUserRoute")
 const rolePermissionRoutes = require("./routes/rolePermissionRoute");
 const documentRoute =require("./routes/documentTypeRoute");
 const serviceRoute=require("./routes/serviceTypeRoute");
+const documentRoutes=require("./routes/documentRoute");
 const app = express();
 
 // ==========================================
@@ -36,6 +37,7 @@ app.use(
 );
 app.use("/api/document-types",documentRoute)
 app.use("/api/service-types",serviceRoute);
+app.use("/api/documents",documentRoutes)
 // ==========================================
 // EXPORT
 // ==========================================

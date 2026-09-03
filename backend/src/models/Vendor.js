@@ -33,10 +33,12 @@ const vendorSchema = new mongoose.Schema(
       trim: true,
     },
 
-    category: {
-      type: String,
+    // Service provided by the vendor
+    serviceTypeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ServiceType",
       required: true,
-      trim: true,
+      index: true,
     },
 
     address: {
@@ -63,14 +65,8 @@ const vendorSchema = new mongoose.Schema(
       default: 0,
       min: 0,
       max: 100,
-    },
-
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: null,
-    },
-
+    }, 
+    // Compliance Officer / Super Admin who created the vendor
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -82,14 +78,22 @@ const vendorSchema = new mongoose.Schema(
   }
 );
 
+// Prevent duplicate vendor email inside the same organization
 vendorSchema.index({
   organizationId: 1,
   email: 1,
 });
 
+// Useful for filtering vendors by status
 vendorSchema.index({
   organizationId: 1,
   status: 1,
+});
+
+// Useful for filtering vendors by service type
+vendorSchema.index({
+  organizationId: 1,
+  serviceTypeId: 1,
 });
 
 module.exports = mongoose.model("Vendor", vendorSchema);

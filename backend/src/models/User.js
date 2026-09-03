@@ -34,7 +34,6 @@ const userSchema = new mongoose.Schema(
         "SUPER_ADMIN",
         "COMPLIANCE_OFFICER",
         "AUDITOR",
-        "VENDOR",
       ],
       required: true,
     },

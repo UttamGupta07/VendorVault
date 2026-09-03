@@ -174,7 +174,6 @@ const createUser = async (req, res) => {
       "SUPER_ADMIN",
       "COMPLIANCE_OFFICER",
       "AUDITOR",
-      "VENDOR",
     ];
 
     if (!allowedRoles.includes(role)) {

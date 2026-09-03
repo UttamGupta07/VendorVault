@@ -1,142 +1,157 @@
-const { GoogleGenAI, Type } = require("@google/genai");
-const fs = require("fs");
+ const {
+  GoogleGenAI,
+  createPartFromUri,
+  createUserContent,
+} = require("@google/genai");
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-/**
- * Extract structured data from a vendor document using Gemini.
- *
- * @param {Object} params
- * @param {string} params.filePath - Local path of the uploaded PDF
- * @param {string} params.documentType - Type of document
- * @param {Array<string>} params.fields - Fields to extract
- *
- * @returns {Promise<Object>} Extracted document data
- */
-const extractDocumentData = async ({
-  filePath,
-  documentType,
-  fields,
-}) => {
+const extractDocumentData = async (filePath) => {
+  let uploadedFile = null;
+
   try {
-    if (!filePath) {
-      throw new Error("Document file path is required");
-    }
+    console.log("Uploading document to Gemini...");
 
-    if (!documentType) {
-      throw new Error("Document type is required");
-    }
-
-    if (!fields || !Array.isArray(fields) || fields.length === 0) {
-      throw new Error("Extraction fields are required");
-    }
-
-    if (!fs.existsSync(filePath)) {
-      throw new Error("Document file not found");
-    }
-
-    /*
-     * Convert PDF to base64.
-     *
-     * Gemini supports PDF input directly.
-     */
-    const pdfData = fs.readFileSync(filePath).toString("base64");
-
-    /*
-     * Create dynamic JSON schema.
-     *
-     * Example:
-     *
-     * {
-     *   policyNumber: string | null,
-     *   provider: string | null,
-     *   issueDate: string | null,
-     *   expiryDate: string | null
-     * }
-     */
-    const properties = {};
-
-    fields.forEach((field) => {
-      properties[field] = {
-        type: Type.STRING,
-        nullable: true,
-        description: `Extract the ${field} from the document. Return null if it is not present.`,
-      };
-    });
-
-    const prompt = `
-You are an intelligent document extraction system for VendorVault,
-a B2B vendor compliance management platform.
-
-Analyze the uploaded document carefully.
-
-DOCUMENT TYPE:
-${documentType}
-
-FIELDS TO EXTRACT:
-${fields.map((field) => `- ${field}`).join("\n")}
-
-IMPORTANT RULES:
-
-1. Extract information ONLY from the document.
-2. Never guess or invent information.
-3. If a field is not present, return null.
-4. Preserve the original meaning of the extracted information.
-5. Dates should be returned in YYYY-MM-DD format whenever possible.
-6. Do not add fields that were not requested.
-7. Do not provide explanations.
-8. Return only the structured JSON object.
-`;
-
-    const response = await ai.models.generateContent({
-      model: "gemini-3.7-flash",
-
-      contents: [
-        {
-          inlineData: {
-            mimeType: "application/pdf",
-            data: pdfData,
-          },
-        },
-        {
-          text: prompt,
-        },
-      ],
-
+    // Upload PDF to Gemini Files API
+    uploadedFile = await ai.files.upload({
+      file: filePath,
       config: {
-        temperature: 0,
-
-        responseMimeType: "application/json",
-
-        responseSchema: {
-          type: Type.OBJECT,
-          properties,
-          required: fields,
-        },
+        mimeType: "application/pdf",
       },
     });
 
-    /*
-     * Gemini returns JSON as text.
-     */
-    const extractedData = JSON.parse(response.text);
+    console.log("Gemini file uploaded:");
+    console.log({
+      name: uploadedFile.name,
+      uri: uploadedFile.uri,
+      mimeType: uploadedFile.mimeType,
+    });
 
-    return {
-      success: true,
-      documentType,
-      data: extractedData,
-    };
+    const prompt = `
+You are a document information extraction system for a vendor compliance platform.
+
+Analyze the provided PDF document.
+
+Extract the following information:
+
+{
+  "documentType": null,
+  "documentNumber": null,
+  "vendorName": null,
+  "issueDate": null,
+  "expiryDate": null,
+  "address":"null",
+  "clauses": []
+}
+
+Rules:
+
+1. documentType:
+   Identify the type of document.
+
+2. documentNumber:
+   Extract the main certificate, license, registration,
+   agreement, or document number.
+   If unavailable, return null.
+
+3. vendorName:
+   Extract the company/person/entity the document belongs to.
+   If unavailable, return null.
+
+4. issueDate:
+   Extract the issue/start/effective date.
+   Return YYYY-MM-DD.
+   If unavailable, return null.
+5. address:
+    Extract the address of the vendor or entity mentioned in the document.
+    Return the address as a single string. If unavailable, return null.
+
+
+6. expiryDate:
+   Extract the expiry/valid-until/end date.
+   Return YYYY-MM-DD.
+   If the document does not expire, return null.
+
+7. clauses:
+   Extract important compliance-related clauses,
+   obligations, restrictions, conditions, or renewal requirements.
+   Return an array of strings.
+   If none exist, return [].
+
+8. Do NOT guess or invent information.
+
+9. If information is not present in the document, return null.
+
+Return ONLY valid JSON.
+`;
+
+    console.log("Sending document to Gemini for extraction...");
+
+    // IMPORTANT:
+    // Convert the uploaded Gemini file into a valid Part
+    const filePart = createPartFromUri(
+      uploadedFile.uri,
+      uploadedFile.mimeType
+    );
+
+    const response = await ai.models.generateContent({
+      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+
+      contents: createUserContent([
+        filePart,
+        prompt,
+      ]),
+
+      config: {
+        responseMimeType: "application/json",
+      },
+    });
+
+    console.log("Gemini extraction completed.");
+
+    const text = response.text;
+
+    console.log("Gemini raw response:");
+    console.log(text);
+
+    let extractedData;
+
+    try {
+      extractedData = JSON.parse(text);
+    } catch (error) {
+      console.error("Invalid JSON returned by Gemini:");
+      console.error(text);
+
+      throw new Error("Gemini returned invalid JSON");
+    }
+
+    return extractedData;
+
   } catch (error) {
-    console.error(
-      "Gemini document extraction error:",
-      error
-    );
+    console.error("Gemini document extraction error:");
+    console.error(error);
 
-    throw new Error(
-      error.message || "Failed to extract document data"
-    );
+    throw error;
+
+  } finally {
+
+    // Delete Gemini temporary file after extraction
+    if (uploadedFile?.name) {
+      try {
+        await ai.files.delete({
+          name: uploadedFile.name,
+        });
+
+        console.log("Gemini temporary file deleted.");
+      } catch (deleteError) {
+        console.error(
+          "Failed to delete Gemini temporary file:",
+          deleteError.message
+        );
+      }
+    }
   }
 };
 
