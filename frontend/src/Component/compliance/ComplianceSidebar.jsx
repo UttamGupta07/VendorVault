@@ -22,7 +22,7 @@ const ComplianceSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       path: "/compliance/dashboard",
       icon: LayoutDashboard,
     },
-    {
+    {  
       name: "Vendors",
       path: "/compliance/vendors",
       icon: Users,
