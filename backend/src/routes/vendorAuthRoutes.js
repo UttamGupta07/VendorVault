@@ -8,6 +8,7 @@ const {
   loginVendor,
   getVendorDashboard,
   getVendorDocumentRequirements,
+  getAllVendors,
 } = require("../controller/vendorAuthController");
 
 const getCurrentVendor =
@@ -47,6 +48,18 @@ router.get(
   getVendorDashboard
 );
 router.get("/documents/requirements", protect, getVendorDocumentRequirements);
+ 
 
+const authorizeRoles = require("../middleware/authorizeRoles");
+
+router.get(
+  "/",
+  protect,
+  authorizeRoles(
+    "SUPER_ADMIN",
+    "COMPLIANCE_OFFICER"
+  ),
+  getAllVendors
+);
 module.exports = router;
 

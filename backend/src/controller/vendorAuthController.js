@@ -843,7 +843,289 @@ const getVendorDocumentRequirements = async (req, res) => {
     });
   }
 };
+// ============================================================
+// Get All Vendors - Compliance Officer / Super Admin
+// ============================================================
 
+const getAllVendors = async (req, res) => {
+  try {
+    // --------------------------------------------------------
+    // 1. Check authentication
+    // --------------------------------------------------------
+
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    // --------------------------------------------------------
+    // 2. Check role
+    // --------------------------------------------------------
+
+    if (
+      req.user.role !== "SUPER_ADMIN" &&
+      req.user.role !== "COMPLIANCE_OFFICER"
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to view vendors",
+      });
+    }
+
+    // --------------------------------------------------------
+    // 3. Get all vendors from same organization
+    // --------------------------------------------------------
+
+    const vendors = await Vendor.find({
+      organizationId: req.user.organizationId,
+    })
+      .select("-password")
+      .populate("serviceTypeId", "name description requiredDocuments")
+      .sort({ createdAt: -1 });
+
+    // --------------------------------------------------------
+    // 4. Prepare vendor data
+    // --------------------------------------------------------
+
+    const vendorData = await Promise.all(
+      vendors.map(async (vendor) => {
+        // ----------------------------------------------------
+        // Get all documents of this vendor
+        // ----------------------------------------------------
+
+        const documents = await VendorDocument.find({
+          vendorId: vendor._id,
+          organizationId: req.user.organizationId,
+        }).select(
+          "documentTypeId status expiryDate createdAt"
+        );
+
+        // ----------------------------------------------------
+        // Required documents
+        // ----------------------------------------------------
+
+        const requiredDocuments =
+          vendor.serviceTypeId?.requiredDocuments || [];
+
+        const totalRequiredDocuments =
+          requiredDocuments.filter(
+            (doc) => doc.isRequired !== false
+          ).length;
+
+        // ----------------------------------------------------
+        // Approved documents
+        // ----------------------------------------------------
+
+        const approvedDocuments = documents.filter(
+          (doc) => doc.status === "APPROVED"
+        ).length;
+
+        // ----------------------------------------------------
+        // Pending documents
+        // ----------------------------------------------------
+
+        const pendingDocuments = documents.filter(
+          (doc) => doc.status === "PENDING_REVIEW"
+        ).length;
+
+        // ----------------------------------------------------
+        // Rejected documents
+        // ----------------------------------------------------
+
+        const rejectedDocuments = documents.filter(
+          (doc) => doc.status === "REJECTED"
+        ).length;
+
+        // ----------------------------------------------------
+        // Missing documents
+        // ----------------------------------------------------
+
+        const uploadedDocumentTypes = new Set(
+          documents
+            .filter((doc) => doc.documentTypeId)
+            .map((doc) =>
+              doc.documentTypeId.toString()
+            )
+        );
+
+        const missingDocuments = requiredDocuments.filter(
+          (requiredDoc) => {
+            if (!requiredDoc.isRequired) {
+              return false;
+            }
+
+            const documentTypeId =
+              requiredDoc.documentTypeId?._id ||
+              requiredDoc.documentTypeId;
+
+            if (!documentTypeId) {
+              return false;
+            }
+
+            return !uploadedDocumentTypes.has(
+              documentTypeId.toString()
+            );
+          }
+        );
+
+        // ----------------------------------------------------
+        // Compliance score
+        // ----------------------------------------------------
+
+        let complianceScore = 0;
+
+        if (totalRequiredDocuments > 0) {
+          complianceScore = Math.round(
+            (approvedDocuments /
+              totalRequiredDocuments) *
+              100
+          );
+
+          complianceScore = Math.min(
+            complianceScore,
+            100
+          );
+        }
+
+        // ----------------------------------------------------
+        // Expiring documents
+        // Next 30 days
+        // ----------------------------------------------------
+
+        const today = new Date();
+
+        const thirtyDaysFromNow = new Date();
+
+        thirtyDaysFromNow.setDate(
+          thirtyDaysFromNow.getDate() + 30
+        );
+
+        const expiringDocuments = documents.filter(
+          (doc) => {
+            if (!doc.expiryDate) {
+              return false;
+            }
+
+            const expiryDate = new Date(
+              doc.expiryDate
+            );
+
+            return (
+              expiryDate >= today &&
+              expiryDate <= thirtyDaysFromNow
+            );
+          }
+        );
+
+        // ----------------------------------------------------
+        // Expired documents
+        // ----------------------------------------------------
+
+        const expiredDocuments = documents.filter(
+          (doc) => {
+            if (!doc.expiryDate) {
+              return false;
+            }
+
+            return (
+              new Date(doc.expiryDate) < today
+            );
+          }
+        );
+
+        // ----------------------------------------------------
+        // Determine compliance status
+        // ----------------------------------------------------
+
+        let complianceStatus = "Active";
+
+        if (vendor.status === "suspended") {
+          complianceStatus = "Suspended";
+        } else if (vendor.status === "inactive") {
+          complianceStatus = "Inactive";
+        } else if (
+          rejectedDocuments > 0 ||
+          missingDocuments.length > 0
+        ) {
+          complianceStatus = "Review";
+        } else if (pendingDocuments > 0) {
+          complianceStatus = "Pending";
+        } else if (
+          expiringDocuments.length > 0 ||
+          expiredDocuments.length > 0
+        ) {
+          complianceStatus = "Expiring";
+        }
+
+        // ----------------------------------------------------
+        // Return vendor
+        // ----------------------------------------------------
+
+        return {
+          id: vendor._id,
+
+          name: vendor.name,
+
+          companyName: vendor.companyName,
+
+          email: vendor.email,
+
+          phone: vendor.phone,
+
+          status: vendor.status,
+
+          complianceStatus,
+
+          serviceType: {
+            id: vendor.serviceTypeId?._id || null,
+            name:
+              vendor.serviceTypeId?.name ||
+              "Not Assigned",
+          },
+
+          documents: {
+            uploaded: documents.length,
+            required: totalRequiredDocuments,
+            approved: approvedDocuments,
+            pending: pendingDocuments,
+            rejected: rejectedDocuments,
+            missing: missingDocuments.length,
+          },
+
+          complianceScore,
+
+          expiringSoon: expiringDocuments.length,
+
+          expired: expiredDocuments.length,
+
+          createdAt: vendor.createdAt,
+        };
+      })
+    );
+
+    // --------------------------------------------------------
+    // 5. Send response
+    // --------------------------------------------------------
+
+    return res.status(200).json({
+      success: true,
+      count: vendorData.length,
+      vendors: vendorData,
+    });
+  } catch (error) {
+    console.error(
+      "Get all vendors error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch vendors",
+    });
+  }
+};
  
 
 
@@ -858,5 +1140,6 @@ module.exports = {
   getCurrentVendor,
   getVendorDashboard,
   getVendorDocumentRequirements,
+  getAllVendors,
 };
  

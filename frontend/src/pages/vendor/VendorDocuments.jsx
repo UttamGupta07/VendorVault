@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+ import React, { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
-import {
+ import {
   Upload,
   FileText,
   CheckCircle,
@@ -9,6 +9,7 @@ import {
   Eye,
   Loader2,
   X,
+  MessageSquare,
 } from "lucide-react";
 
 const VendorDocuments = () => {
@@ -17,6 +18,9 @@ const VendorDocuments = () => {
   const [uploadingId, setUploadingId] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedDocument, setSelectedDocument] = useState(null);
+
+  // Rejection reason modal
+  const [rejectionDocument, setRejectionDocument] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -93,9 +97,9 @@ const VendorDocuments = () => {
       setUploadingId(document._id);
 
       const formData = new FormData();
-      formData.append("serviceTypeId", document.serviceTypeId);
-formData.append("documentTypeId", document.documentTypeId);
 
+      formData.append("serviceTypeId", document.serviceTypeId);
+      formData.append("documentTypeId", document.documentTypeId);
       formData.append("document", file);
       formData.append("documentId", document._id);
 
@@ -127,6 +131,20 @@ formData.append("documentTypeId", document.documentTypeId);
       setSelectedFile(null);
       setSelectedDocument(null);
     }
+  };
+
+  // ----------------------------------------
+  // Open rejection reason
+  // ----------------------------------------
+  const handleRejectedClick = (document) => {
+    setRejectionDocument(document);
+  };
+
+  // ----------------------------------------
+  // Close rejection modal
+  // ----------------------------------------
+  const closeRejectionModal = () => {
+    setRejectionDocument(null);
   };
 
   // ----------------------------------------
@@ -345,15 +363,29 @@ formData.append("documentTypeId", document.documentTypeId);
                       </div>
 
                       {/* Status + Action */}
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 flex-wrap">
 
                         {/* Status */}
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${status.className}`}
-                        >
-                          {status.icon}
-                          {status.label}
-                        </span>
+                        {document.status === "REJECTED" ? (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleRejectedClick(document)
+                            }
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${status.className} hover:opacity-80 transition cursor-pointer`}
+                            title="Click to view rejection reason"
+                          >
+                            {status.icon}
+                            {status.label}
+                          </button>
+                        ) : (
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${status.className}`}
+                          >
+                            {status.icon}
+                            {status.label}
+                          </span>
+                        )}
 
                         {/* View */}
                         {document.uploaded &&
@@ -405,15 +437,6 @@ formData.append("documentTypeId", document.documentTypeId);
           )}
         </div>
 
-        {/* Hidden file input */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/pdf"
-          className="hidden"
-          onChange={handleFileChange}
-        />
-
         {/* Upload Information */}
         <div className="mt-5 flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl p-4">
           <AlertCircle
@@ -433,9 +456,119 @@ formData.append("documentTypeId", document.documentTypeId);
           </div>
         </div>
       </div>
+
+      {/* ========================================
+          REJECTION REASON MODAL
+      ======================================== */}
+      {rejectionDocument && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={closeRejectionModal}
+        >
+          <div
+            className="bg-white w-full max-w-md rounded-2xl shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+
+                <div className="p-2.5 bg-red-100 text-red-600 rounded-lg">
+                  <MessageSquare size={20} />
+                </div>
+
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Rejection Reason
+                  </h2>
+
+                  <p className="text-sm text-gray-500">
+                    {rejectionDocument.name}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={closeRejectionModal}
+                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="px-6 py-6">
+
+              <div className="bg-red-50 border border-red-100 rounded-xl p-4">
+
+                <div className="flex items-start gap-3">
+
+                  <AlertCircle
+                    size={20}
+                    className="text-red-600 mt-0.5 flex-shrink-0"
+                  />
+
+                  <div>
+                    <p className="text-sm font-medium text-red-800">
+                      This document was rejected
+                    </p>
+
+                    <p className="text-sm text-red-700 mt-2 leading-relaxed">
+                      {rejectionDocument.rejectionReason ||
+                        "No rejection reason was provided."}
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Action message */}
+              <p className="text-sm text-gray-500 mt-4">
+                Please review the reason above and upload a corrected
+                document.
+              </p>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200">
+
+              <button
+                type="button"
+                onClick={closeRejectionModal}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+              >
+                Close
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  closeRejectionModal();
+                  handleUploadClick(rejectionDocument);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+              >
+                <Upload size={16} />
+                Upload Again
+              </button>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/pdf"
+        className="hidden"
+        onChange={handleFileChange}
+      />
     </div>
   );
 };
 
 export default VendorDocuments;
-

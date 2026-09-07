@@ -1,3 +1,4 @@
+ 
 import React from "react";
 import { NavLink } from "react-router-dom";
 import {
@@ -8,12 +9,12 @@ import {
   User,
   X,
   ShieldCheck,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
-const VendorSidebar = ({
-  sidebarOpen,
-  setSidebarOpen,
-}) => {
+const VendorSidebar = ({ sidebarOpen, setSidebarOpen }) => {
+  const { logout } = useAuth();
 
   const menuItems = [
     {
@@ -43,6 +44,17 @@ const VendorSidebar = ({
     },
   ];
 
+  // ----------------------------------------
+  // Logout
+  // ----------------------------------------
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <>
       {/* Mobile overlay */}
@@ -61,7 +73,6 @@ const VendorSidebar = ({
           border-r border-gray-200
           z-50
           transition-transform duration-300
-
           ${
             sidebarOpen
               ? "translate-x-0"
@@ -69,23 +80,14 @@ const VendorSidebar = ({
           }
         `}
       >
-
         {/* Logo */}
         <div className="h-16 px-5 flex items-center justify-between border-b">
-
           <div className="flex items-center gap-3">
-
             <div className="w-9 h-9 bg-gray-900 rounded-lg flex items-center justify-center">
-
-              <ShieldCheck
-                size={21}
-                className="text-white"
-              />
-
+              <ShieldCheck size={21} className="text-white" />
             </div>
 
             <div>
-
               <h1 className="font-bold text-gray-900">
                 VendorVault
               </h1>
@@ -93,9 +95,7 @@ const VendorSidebar = ({
               <p className="text-xs text-gray-500">
                 Vendor Portal
               </p>
-
             </div>
-
           </div>
 
           {/* Mobile close */}
@@ -105,20 +105,16 @@ const VendorSidebar = ({
           >
             <X size={21} />
           </button>
-
         </div>
 
         {/* Menu */}
         <nav className="p-4">
-
           <p className="px-3 mb-3 text-xs font-semibold text-gray-400 uppercase">
             Menu
           </p>
 
           <div className="space-y-1">
-
             {menuItems.map((item) => {
-
               const Icon = item.icon;
 
               return (
@@ -133,7 +129,6 @@ const VendorSidebar = ({
                     rounded-lg
                     text-sm font-medium
                     transition
-
                     ${
                       isActive
                         ? "bg-gray-900 text-white"
@@ -142,36 +137,27 @@ const VendorSidebar = ({
                     `
                   }
                 >
-
                   <Icon size={19} />
 
-                  <span>
-                    {item.name}
-                  </span>
-
+                  <span>{item.name}</span>
                 </NavLink>
               );
-
             })}
-
           </div>
-
         </nav>
 
-        {/* Bottom */}
+        {/* Bottom Section */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
-
-          <div className="bg-gray-50 rounded-lg p-3">
-
+          
+          {/* Vendor Account */}
+          <div className="bg-gray-50 rounded-lg p-3 mb-3">
             <div className="flex items-center gap-2">
-
               <ShieldCheck
                 size={18}
                 className="text-gray-600"
               />
 
               <div>
-
                 <p className="text-xs font-medium text-gray-700">
                   Vendor Account
                 </p>
@@ -179,15 +165,30 @@ const VendorSidebar = ({
                 <p className="text-xs text-gray-500">
                   Compliance Portal
                 </p>
-
               </div>
-
             </div>
-
           </div>
 
-        </div>
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="
+              w-full
+              flex items-center gap-3
+              px-3 py-2.5
+              rounded-lg
+              text-sm font-medium
+              text-red-600
+              hover:bg-red-50
+              transition
+            "
+          >
+            <LogOut size={19} />
 
+            <span>Logout</span>
+          </button>
+
+        </div>
       </aside>
     </>
   );

@@ -1,5 +1,6 @@
- 
-import React, { useMemo, useState } from "react";
+
+import React, { useEffect, useMemo, useState } from "react";
+
 import {
   Search,
   Plus,
@@ -10,81 +11,128 @@ import {
   AlertTriangle,
   ChevronLeft,
   ChevronRight,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react";
 
 import AddVendorModel from "./vendor/AddVendorModel";
 
 const VendorManagement = () => {
+  // ============================================================
+  // STATE
+  // ============================================================
+
+  const [vendors, setVendors] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+
+  const [error, setError] = useState("");
+
   const [search, setSearch] = useState("");
+
   const [statusFilter, setStatusFilter] = useState("All");
+
   const [serviceFilter, setServiceFilter] = useState("All");
 
-  // Controls Add Vendor modal
   const [showAddVendor, setShowAddVendor] = useState(false);
 
-  // Temporary vendor data
-  // We will replace this with API data later
-  const vendors = [
-    {
-      id: 1,
-      name: "ABC Technologies Pvt Ltd",
-      email: "contact@abctech.com",
-      serviceType: "IT Services",
-      documents: "8/8",
-      compliance: 96,
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "XYZ Security Solutions",
-      email: "info@xyzsecurity.com",
-      serviceType: "Security",
-      documents: "6/8",
-      compliance: 72,
-      status: "Pending",
-    },
-    {
-      id: 3,
-      name: "TechCorp Solutions",
-      email: "admin@techcorp.com",
-      serviceType: "Consulting",
-      documents: "8/8",
-      compliance: 100,
-      status: "Active",
-    },
-    {
-      id: 4,
-      name: "SafeGuard Services",
-      email: "support@safeguard.com",
-      serviceType: "Security",
-      documents: "7/8",
-      compliance: 84,
-      status: "Review",
-    },
-    {
-      id: 5,
-      name: "Global Logistics Ltd",
-      email: "contact@globallogistics.com",
-      serviceType: "Logistics",
-      documents: "5/7",
-      compliance: 68,
-      status: "Pending",
-    },
-  ];
+  // ============================================================
+  // FETCH VENDORS
+  // ============================================================
 
-  // Filter vendors
+  const fetchVendors = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await fetch(
+        "http://localhost:5000/api/vendor/auth",
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Failed to fetch vendors"
+        );
+      }
+
+      setVendors(data.vendors || []);
+    } catch (error) {
+      console.error(
+        "Failed to fetch vendors:",
+        error
+      );
+
+      setError(
+        error.message || "Failed to load vendors"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ============================================================
+  // INITIAL FETCH
+  // ============================================================
+
+  useEffect(() => {
+    fetchVendors();
+  }, []);
+
+  // ============================================================
+  // SERVICE TYPES
+  // ============================================================
+
+  const serviceTypes = useMemo(() => {
+    const services = vendors
+      .map((vendor) => vendor.serviceType?.name)
+      .filter(Boolean);
+
+    return [...new Set(services)];
+  }, [vendors]);
+
+  // ============================================================
+  // FILTERED VENDORS
+  // ============================================================
+
   const filteredVendors = useMemo(() => {
+    const searchValue = search
+      .toLowerCase()
+      .trim();
+
     return vendors.filter((vendor) => {
+      const vendorName =
+        vendor.companyName ||
+        vendor.name ||
+        "";
+
+      const vendorEmail =
+        vendor.email || "";
+
+      const serviceName =
+        vendor.serviceType?.name || "";
+
       const matchesSearch =
-        vendor.name.toLowerCase().includes(search.toLowerCase()) ||
-        vendor.email.toLowerCase().includes(search.toLowerCase());
+        vendorName
+          .toLowerCase()
+          .includes(searchValue) ||
+        vendorEmail
+          .toLowerCase()
+          .includes(searchValue);
 
       const matchesStatus =
-        statusFilter === "All" || vendor.status === statusFilter;
+        statusFilter === "All" ||
+        vendor.complianceStatus ===
+          statusFilter;
 
       const matchesService =
         serviceFilter === "All" ||
-        vendor.serviceType === serviceFilter;
+        serviceName === serviceFilter;
 
       return (
         matchesSearch &&
@@ -92,9 +140,42 @@ const VendorManagement = () => {
         matchesService
       );
     });
-  }, [search, statusFilter, serviceFilter]);
+  }, [
+    vendors,
+    search,
+    statusFilter,
+    serviceFilter,
+  ]);
 
-  // Status styling
+  // ============================================================
+  // STATISTICS
+  // ============================================================
+
+  const totalVendors = vendors.length;
+
+  const compliantVendors = vendors.filter(
+    (vendor) =>
+      vendor.complianceScore >= 90
+  ).length;
+
+  const pendingVendors = vendors.filter(
+    (vendor) =>
+      vendor.complianceStatus ===
+        "Pending" ||
+      vendor.complianceStatus ===
+        "Review"
+  ).length;
+
+  const expiringVendors = vendors.filter(
+    (vendor) =>
+      (vendor.expiringSoon || 0) > 0 ||
+      (vendor.expired || 0) > 0
+  ).length;
+
+  // ============================================================
+  // STATUS STYLE
+  // ============================================================
+
   const getStatusStyle = (status) => {
     switch (status) {
       case "Active":
@@ -106,31 +187,87 @@ const VendorManagement = () => {
       case "Review":
         return "bg-orange-50 text-orange-700 border-orange-200";
 
+      case "Expiring":
+        return "bg-red-50 text-red-700 border-red-200";
+
+      case "Suspended":
+        return "bg-red-50 text-red-700 border-red-200";
+
+      case "Inactive":
+        return "bg-gray-50 text-gray-700 border-gray-200";
+
       default:
         return "bg-gray-50 text-gray-700 border-gray-200";
     }
   };
 
-  // Compliance color
+  // ============================================================
+  // COMPLIANCE COLOR
+  // ============================================================
+
   const getComplianceColor = (score) => {
-    if (score >= 90) return "text-green-600";
-    if (score >= 75) return "text-yellow-600";
+    if (score >= 90) {
+      return "text-green-600";
+    }
+
+    if (score >= 75) {
+      return "text-yellow-600";
+    }
 
     return "text-red-600";
   };
 
-  // Called after vendor is successfully created
-  const handleVendorAdded = (vendor) => {
-    console.log("Vendor created successfully:", vendor);
+  // ============================================================
+  // HANDLE VENDOR ADDED
+  // ============================================================
 
-    // Later we will refetch the vendor list here
-    // or add the new vendor to local state.
+  const handleVendorAdded = async (vendor) => {
+    console.log(
+      "Vendor created successfully:",
+      vendor
+    );
+
+    setShowAddVendor(false);
+
+    // Fetch fresh vendor data
+    await fetchVendors();
   };
+
+  // ============================================================
+  // LOADING SCREEN
+  // ============================================================
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="flex items-center justify-center py-32">
+
+          <div className="flex flex-col items-center gap-3">
+
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+
+            <p className="text-sm text-gray-500">
+              Loading vendors...
+            </p>
+
+          </div>
+
+        </div>
+      </div>
+    );
+  }
+
+  // ============================================================
+  // MAIN UI
+  // ============================================================
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
 
-      {/* ================= HEADER ================= */}
+      {/* ========================================================
+          HEADER
+      ======================================================== */}
+
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
 
         <div>
@@ -139,37 +276,99 @@ const VendorManagement = () => {
           </h1>
 
           <p className="text-sm text-gray-500 mt-1">
-            Manage vendors and monitor their compliance status
+            Manage vendors and monitor their
+            compliance status
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setShowAddVendor(true)}
-          className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium transition"
-        >
-          <Plus size={18} />
-          Add Vendor
-        </button>
+        <div className="flex gap-3">
+
+          {/* Refresh */}
+
+          <button
+            type="button"
+            onClick={fetchVendors}
+            disabled={loading}
+            className="flex items-center justify-center gap-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2.5 rounded-lg font-medium transition disabled:opacity-50"
+          >
+            <RefreshCw
+              size={18}
+              className={
+                loading
+                  ? "animate-spin"
+                  : ""
+              }
+            />
+
+            Refresh
+          </button>
+
+          {/* Add Vendor */}
+
+          <button
+            type="button"
+            onClick={() =>
+              setShowAddVendor(true)
+            }
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium transition"
+          >
+            <Plus size={18} />
+
+            Add Vendor
+          </button>
+
+        </div>
 
       </div>
 
-      {/* ================= STATISTICS ================= */}
+      {/* ========================================================
+          ERROR
+      ======================================================== */}
+
+      {error && (
+        <div className="mb-6 flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+
+          <div className="flex items-center gap-3">
+
+            <AlertCircle size={18} />
+
+            <span>{error}</span>
+
+          </div>
+
+          <button
+            type="button"
+            onClick={fetchVendors}
+            className="font-medium underline hover:no-underline"
+          >
+            Retry
+          </button>
+
+        </div>
+      )}
+
+      {/* ========================================================
+          STATISTICS
+      ======================================================== */}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
         {/* Total Vendors */}
+
         <div className="bg-white border border-gray-200 rounded-xl p-5">
 
           <div className="flex items-center justify-between">
 
             <div>
+
               <p className="text-sm text-gray-500">
                 Total Vendors
               </p>
 
               <h2 className="text-2xl font-bold text-gray-900 mt-1">
-                128
+                {totalVendors}
               </h2>
+
             </div>
 
             <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
@@ -181,18 +380,21 @@ const VendorManagement = () => {
         </div>
 
         {/* Compliant */}
+
         <div className="bg-white border border-gray-200 rounded-xl p-5">
 
           <div className="flex items-center justify-between">
 
             <div>
+
               <p className="text-sm text-gray-500">
                 Compliant
               </p>
 
               <h2 className="text-2xl font-bold text-gray-900 mt-1">
-                94
+                {compliantVendors}
               </h2>
+
             </div>
 
             <div className="p-3 bg-green-50 text-green-600 rounded-lg">
@@ -204,18 +406,21 @@ const VendorManagement = () => {
         </div>
 
         {/* Pending */}
+
         <div className="bg-white border border-gray-200 rounded-xl p-5">
 
           <div className="flex items-center justify-between">
 
             <div>
+
               <p className="text-sm text-gray-500">
                 Pending Review
               </p>
 
               <h2 className="text-2xl font-bold text-gray-900 mt-1">
-                22
+                {pendingVendors}
               </h2>
+
             </div>
 
             <div className="p-3 bg-yellow-50 text-yellow-600 rounded-lg">
@@ -227,18 +432,21 @@ const VendorManagement = () => {
         </div>
 
         {/* Expiring */}
+
         <div className="bg-white border border-gray-200 rounded-xl p-5">
 
           <div className="flex items-center justify-between">
 
             <div>
+
               <p className="text-sm text-gray-500">
                 Expiring Soon
               </p>
 
               <h2 className="text-2xl font-bold text-gray-900 mt-1">
-                12
+                {expiringVendors}
               </h2>
+
             </div>
 
             <div className="p-3 bg-red-50 text-red-600 rounded-lg">
@@ -251,12 +459,16 @@ const VendorManagement = () => {
 
       </div>
 
-      {/* ================= FILTERS ================= */}
+      {/* ========================================================
+          FILTERS
+      ======================================================== */}
+
       <div className="bg-white border border-gray-200 rounded-xl p-4 mb-5">
 
         <div className="flex flex-col lg:flex-row gap-3">
 
           {/* Search */}
+
           <div className="relative flex-1">
 
             <Search
@@ -268,18 +480,24 @@ const VendorManagement = () => {
               type="text"
               placeholder="Search vendors by name or email..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) =>
+                setSearch(e.target.value)
+              }
               className="w-full border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
 
           </div>
 
           {/* Status */}
+
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) =>
+              setStatusFilter(e.target.value)
+            }
             className="border border-gray-200 rounded-lg px-4 py-2.5 bg-white outline-none focus:ring-2 focus:ring-blue-500"
           >
+
             <option value="All">
               All Status
             </option>
@@ -295,40 +513,54 @@ const VendorManagement = () => {
             <option value="Review">
               Review
             </option>
+
+            <option value="Expiring">
+              Expiring
+            </option>
+
+            <option value="Suspended">
+              Suspended
+            </option>
+
+            <option value="Inactive">
+              Inactive
+            </option>
+
           </select>
 
-          {/* Service */}
+          {/* Service Type */}
+
           <select
             value={serviceFilter}
-            onChange={(e) => setServiceFilter(e.target.value)}
+            onChange={(e) =>
+              setServiceFilter(e.target.value)
+            }
             className="border border-gray-200 rounded-lg px-4 py-2.5 bg-white outline-none focus:ring-2 focus:ring-blue-500"
           >
+
             <option value="All">
               All Services
             </option>
 
-            <option value="IT Services">
-              IT Services
-            </option>
+            {serviceTypes.map((service) => (
+              <option
+                key={service}
+                value={service}
+              >
+                {service}
+              </option>
+            ))}
 
-            <option value="Security">
-              Security
-            </option>
-
-            <option value="Consulting">
-              Consulting
-            </option>
-
-            <option value="Logistics">
-              Logistics
-            </option>
           </select>
 
         </div>
 
       </div>
 
-      {/* ================= VENDOR TABLE ================= */}
+      {/* ========================================================
+          VENDOR TABLE
+      ======================================================== */}
+
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
 
         <div className="overflow-x-auto">
@@ -371,100 +603,168 @@ const VendorManagement = () => {
 
               {filteredVendors.length > 0 ? (
 
-                filteredVendors.map((vendor) => (
+                filteredVendors.map((vendor) => {
 
-                  <tr
-                    key={vendor.id}
-                    className="hover:bg-gray-50 transition"
-                  >
+                  const complianceScore =
+                    vendor.complianceScore || 0;
 
-                    {/* Vendor */}
-                    <td className="px-6 py-4">
+                  const uploadedDocuments =
+                    vendor.documents?.uploaded || 0;
 
-                      <p className="font-medium text-gray-900">
-                        {vendor.name}
-                      </p>
+                  const requiredDocuments =
+                    vendor.documents?.required || 0;
 
-                      <p className="text-sm text-gray-500 mt-1">
-                        {vendor.email}
-                      </p>
+                  return (
+                    <tr
+                      key={vendor.id}
+                      className="hover:bg-gray-50 transition"
+                    >
 
-                    </td>
+                      {/* =================================================
+                          VENDOR
+                      ================================================= */}
 
-                    {/* Service */}
-                    <td className="px-6 py-4 text-sm text-gray-700">
-                      {vendor.serviceType}
-                    </td>
+                      <td className="px-6 py-4">
 
-                    {/* Documents */}
-                    <td className="px-6 py-4">
+                        <div>
 
-                      <span className="text-sm font-medium text-gray-700">
-                        {vendor.documents}
-                      </span>
+                          <p className="font-medium text-gray-900">
+                            {vendor.companyName ||
+                              vendor.name ||
+                              "Unnamed Vendor"}
+                          </p>
 
-                    </td>
-
-                    {/* Compliance */}
-                    <td className="px-6 py-4">
-
-                      <div className="flex items-center gap-3">
-
-                        <div className="w-20 h-2 bg-gray-100 rounded-full overflow-hidden">
-
-                          <div
-                            className="h-full bg-blue-600 rounded-full"
-                            style={{
-                              width: `${vendor.compliance}%`,
-                            }}
-                          />
+                          <p className="text-sm text-gray-500 mt-1">
+                            {vendor.email ||
+                              "No email"}
+                          </p>
 
                         </div>
 
+                      </td>
+
+                      {/* =================================================
+                          SERVICE TYPE
+                      ================================================= */}
+
+                      <td className="px-6 py-4 text-sm text-gray-700">
+
+                        {vendor.serviceType?.name ||
+                          "Not Assigned"}
+
+                      </td>
+
+                      {/* =================================================
+                          DOCUMENTS
+                      ================================================= */}
+
+                      <td className="px-6 py-4">
+
+                        <div className="flex items-center gap-2">
+
+                          <FileText
+                            size={16}
+                            className="text-gray-400"
+                          />
+
+                          <span className="text-sm font-medium text-gray-700">
+                            {uploadedDocuments}/
+                            {requiredDocuments}
+                          </span>
+
+                        </div>
+
+                        {vendor.documents
+                          ?.missing > 0 && (
+                          <p className="text-xs text-red-500 mt-1">
+                            {
+                              vendor.documents
+                                .missing
+                            }{" "}
+                            missing
+                          </p>
+                        )}
+
+                      </td>
+
+                      {/* =================================================
+                          COMPLIANCE
+                      ================================================= */}
+
+                      <td className="px-6 py-4">
+
+                        <div className="flex items-center gap-3">
+
+                          <div className="w-20 h-2 bg-gray-100 rounded-full overflow-hidden">
+
+                            <div
+                              className="h-full bg-blue-600 rounded-full transition-all"
+                              style={{
+                                width: `${Math.min(
+                                  Math.max(
+                                    complianceScore,
+                                    0
+                                  ),
+                                  100
+                                )}%`,
+                              }}
+                            />
+
+                          </div>
+
+                          <span
+                            className={`text-sm font-semibold ${getComplianceColor(
+                              complianceScore
+                            )}`}
+                          >
+                            {complianceScore}%
+                          </span>
+
+                        </div>
+
+                      </td>
+
+                      {/* =================================================
+                          STATUS
+                      ================================================= */}
+
+                      <td className="px-6 py-4">
+
                         <span
-                          className={`text-sm font-semibold ${getComplianceColor(
-                            vendor.compliance
+                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusStyle(
+                            vendor.complianceStatus
                           )}`}
                         >
-                          {vendor.compliance}%
+                          {vendor.complianceStatus ||
+                            "Unknown"}
                         </span>
 
-                      </div>
+                      </td>
 
-                    </td>
+                      {/* =================================================
+                          ACTIONS
+                      ================================================= */}
 
-                    {/* Status */}
-                    <td className="px-6 py-4">
+                      <td className="px-6 py-4">
 
-                      <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusStyle(
-                          vendor.status
-                        )}`}
-                      >
-                        {vendor.status}
-                      </span>
+                        <div className="flex justify-end">
 
-                    </td>
+                          <button
+                            type="button"
+                            className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 transition"
+                          >
+                            <MoreVertical
+                              size={18}
+                            />
+                          </button>
 
-                    {/* Actions */}
-                    <td className="px-6 py-4">
+                        </div>
 
-                      <div className="flex justify-end">
+                      </td>
 
-                        <button
-                          type="button"
-                          className="p-2 hover:bg-gray-100 rounded-lg text-gray-500"
-                        >
-                          <MoreVertical size={18} />
-                        </button>
-
-                      </div>
-
-                    </td>
-
-                  </tr>
-
-                ))
+                    </tr>
+                  );
+                })
 
               ) : (
 
@@ -474,9 +774,25 @@ const VendorManagement = () => {
                     colSpan="6"
                     className="px-6 py-12 text-center"
                   >
-                    <p className="text-gray-500">
-                      No vendors found
-                    </p>
+
+                    <div className="flex flex-col items-center">
+
+                      <FileText
+                        size={42}
+                        className="text-gray-300 mb-3"
+                      />
+
+                      <p className="text-gray-600 font-medium">
+                        No vendors found
+                      </p>
+
+                      <p className="text-sm text-gray-400 mt-1">
+                        Try changing your search
+                        or filters.
+                      </p>
+
+                    </div>
+
                   </td>
 
                 </tr>
@@ -489,27 +805,36 @@ const VendorManagement = () => {
 
         </div>
 
-        {/* ================= PAGINATION ================= */}
+        {/* ========================================================
+            PAGINATION
+        ======================================================== */}
+
         <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
 
           <p className="text-sm text-gray-500">
+
             Showing{" "}
+
             <span className="font-medium text-gray-700">
               {filteredVendors.length}
             </span>{" "}
+
             of{" "}
+
             <span className="font-medium text-gray-700">
-              128
+              {totalVendors}
             </span>{" "}
+
             vendors
+
           </p>
 
           <div className="flex items-center gap-2">
 
             <button
               type="button"
-              className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
               disabled
+              className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
             >
               <ChevronLeft size={18} />
             </button>
@@ -523,21 +848,8 @@ const VendorManagement = () => {
 
             <button
               type="button"
-              className="px-3 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50"
-            >
-              2
-            </button>
-
-            <button
-              type="button"
-              className="px-3 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50"
-            >
-              3
-            </button>
-
-            <button
-              type="button"
-              className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50"
+              disabled
+              className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
             >
               <ChevronRight size={18} />
             </button>
@@ -548,11 +860,18 @@ const VendorManagement = () => {
 
       </div>
 
-      {/* ================= ADD VENDOR MODAL ================= */}
+      {/* ========================================================
+          ADD VENDOR MODAL
+      ======================================================== */}
+
       {showAddVendor && (
         <AddVendorModel
-          onClose={() => setShowAddVendor(false)}
-          onVendorAdded={handleVendorAdded}
+          onClose={() =>
+            setShowAddVendor(false)
+          }
+          onVendorAdded={
+            handleVendorAdded
+          }
         />
       )}
 
@@ -561,4 +880,3 @@ const VendorManagement = () => {
 };
 
 export default VendorManagement;
-
