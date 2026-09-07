@@ -8,6 +8,7 @@ const rolePermissionRoutes = require("./routes/rolePermissionRoute");
 const documentRoute =require("./routes/documentTypeRoute");
 const serviceRoute=require("./routes/serviceTypeRoute");
 const documentRoutes=require("./routes/documentRoute");
+const vendorAuthRoutes=require("./routes/vendorAuthRoutes");
 const app = express();
 
 // ==========================================
@@ -30,13 +31,14 @@ app.use(cookieParser());
 // ==========================================
 
 app.use("/api/auth", authRoutes);
+app.use("/api/vendor/auth", vendorAuthRoutes);
 app.use("/api/admin/users",adminUserRoutes);
 app.use(
   "/api/admin/roles",
   rolePermissionRoutes
 );
 app.use("/api/document-types",documentRoute)
-app.use("/api/service-types",serviceRoute);
+app.use("/api/service-types",serviceRoute); 
 app.use("/api/documents",documentRoutes)
 // ==========================================
 // EXPORT

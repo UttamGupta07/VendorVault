@@ -29,7 +29,7 @@ const vendorDocumentSchema = new mongoose.Schema(
     serviceTypeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ServiceType",
-      required: true,
+      required: true,  
     },
 
     // --------------------------------------------------
@@ -55,6 +55,10 @@ const vendorDocumentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    cloudinaryPublicId: {
+  type: String,
+  default: null,
+},
 
     mimeType: {
       type: String,

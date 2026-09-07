@@ -16,14 +16,7 @@ const createServiceType = async (req, res) => {
 
     const organizationId = req.user.organizationId;
 
-    // Check role
-    if (req.user.role !== "SUPER_ADMIN") {
-      return res.status(403).json({
-        success: false,
-        message: "Only Super Admin can create service types",
-      });
-    }
-
+ 
     // Validate name
     if (!name || !name.trim()) {
       return res.status(400).json({
@@ -122,12 +115,7 @@ const createServiceType = async (req, res) => {
 
 const getServiceTypes = async (req, res) => {
   try {
-    if (req.user.role !== "SUPER_ADMIN") {
-      return res.status(403).json({
-        success: false,
-        message: "Only Super Admin can access service types",
-      });
-    }
+    
 
     const organizationId = req.user.organizationId;
 
@@ -163,12 +151,7 @@ const getServiceTypes = async (req, res) => {
 
 const getServiceTypeById = async (req, res) => {
   try {
-    if (req.user.role !== "SUPER_ADMIN") {
-      return res.status(403).json({
-        success: false,
-        message: "Only Super Admin can access service types",
-      });
-    }
+     
 
     const organizationId = req.user.organizationId;
 
@@ -209,13 +192,7 @@ const getServiceTypeById = async (req, res) => {
 
 const updateServiceType = async (req, res) => {
   try {
-    if (req.user.role !== "SUPER_ADMIN") {
-      return res.status(403).json({
-        success: false,
-        message: "Only Super Admin can update service types",
-      });
-    }
-
+     
     const organizationId = req.user.organizationId;
 
     const {
@@ -352,12 +329,7 @@ const updateServiceType = async (req, res) => {
 
 const deleteServiceType = async (req, res) => {
   try {
-    if (req.user.role !== "SUPER_ADMIN") {
-      return res.status(403).json({
-        success: false,
-        message: "Only Super Admin can delete service types",
-      });
-    }
+     
 
     const organizationId = req.user.organizationId;
 

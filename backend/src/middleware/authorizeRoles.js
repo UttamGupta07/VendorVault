@@ -1,7 +1,7 @@
 const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     // User must already be authenticated
-    if (!req.user) {
+    if (!req.user) { 
       return res.status(401).json({
         success: false,
         message: "Not authenticated",

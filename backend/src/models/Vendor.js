@@ -1,4 +1,4 @@
- const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 const vendorSchema = new mongoose.Schema(
   {
@@ -26,6 +26,18 @@ const vendorSchema = new mongoose.Schema(
       required: true,
       lowercase: true,
       trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
+      select: false,
+    },
+    role: {
+      type: String,
+      enum: ["VENDOR"],
+      default: "VENDOR",
+      immutable: true,
     },
 
     phone: {
@@ -65,7 +77,7 @@ const vendorSchema = new mongoose.Schema(
       default: 0,
       min: 0,
       max: 100,
-    }, 
+    },
     // Compliance Officer / Super Admin who created the vendor
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
