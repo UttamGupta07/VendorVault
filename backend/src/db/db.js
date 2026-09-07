@@ -1,22 +1,34 @@
 const mongoose = require("mongoose");
 
+
+// =====================================================
+// MongoDB Connection
+// =====================================================
+
 async function connectdb() {
-    // Moving this inside ensures dotenv has loaded the environment variables first
-    const url = process.env.MONGO_URL; 
-    
+
+    const url = process.env.MONGO_URL;
+
+
+    // MONGO_URL check
+
     if (!url) {
-        throw new Error("MONGO_URL variable is undefined. Check your dotenv configuration.");
+
+        throw new Error(
+            "MONGO_URL variable is undefined. Check your dotenv configuration."
+        );
     }
 
+
+    // MongoDB se connect karo
+
     await mongoose.connect(url);
+
+
+    console.log(
+        "db connection successful"
+    );
 }
 
-// Call the function to connect
-connectdb().then(() => {
-    console.log("db connection successful");
-}).catch((err) => {
-    console.log("db connection failed !");
-    console.log(err);
-});
 
 module.exports = connectdb;
