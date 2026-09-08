@@ -9,6 +9,7 @@ const documentRoute =require("./routes/documentTypeRoute");
 const serviceRoute=require("./routes/serviceTypeRoute");
 const documentRoutes=require("./routes/documentRoute");
 const vendorAuthRoutes=require("./routes/vendorAuthRoutes");
+const adminDashboardRoute = require("./routes/adminDashboardRoute");
 const app = express();
 
 // ==========================================
@@ -40,6 +41,10 @@ app.use(
 app.use("/api/document-types",documentRoute)
 app.use("/api/service-types",serviceRoute); 
 app.use("/api/documents",documentRoutes)
+app.use(
+    "/api/admin/dashboard",
+    adminDashboardRoute
+);
 // ==========================================
 // EXPORT
 // ==========================================

@@ -1,4 +1,4 @@
- import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 
 import {
@@ -35,7 +35,7 @@ const roleLabels = {
 };
 
 const roleStyles = {
-  SUPER_ADMIN: "bg-[#1C2B3A] text-[#F5F3EB]",
+  SUPER_ADMIN: "bg-[#0F172A] text-[#F5F3EB]",
   COMPLIANCE_OFFICER: "bg-[#E8E0CE] text-[#8B631F]",
   AUDITOR: "bg-[#DCE8E1] text-[#33604F]",
   VENDOR: "bg-[#F0DDD7] text-[#A6402B]",
@@ -201,7 +201,7 @@ const Users = () => {
 
       throw new Error(
         error.response?.data?.message ||
-          "Failed to create user."
+        "Failed to create user."
       );
     } finally {
       setSaving(false);
@@ -239,7 +239,7 @@ const Users = () => {
 
       throw new Error(
         error.response?.data?.message ||
-          "Failed to update user."
+        "Failed to update user."
       );
     } finally {
       setSaving(false);
@@ -373,7 +373,7 @@ const Users = () => {
 
   return (
     <div
-      className="min-h-screen bg-[#EDEAE0] text-[#1C2B3A]"
+      className="min-h-screen bg-slate-50 text-slate-900"
       onClick={() => setMenuId(null)}
     >
       {/* ==================================================
@@ -382,17 +382,17 @@ const Users = () => {
 
       <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="mb-2 text-sm font-medium uppercase tracking-[0.18em] text-[#A8792C]">
-            Organization
+          <p className="mb-2 text-sm font-medium uppercase tracking-[0.18em] text-[#4F46E5]">
+            Super Admin
           </p>
 
           <h1 className="text-3xl font-semibold tracking-tight">
             User Management
           </h1>
 
-          <p className="mt-2 max-w-xl text-sm text-[#54636F]">
+          <p classNaNe="mt-2 max-w-xl text-sm text-[#64748B]">
             Manage administrators, compliance officers,
-            auditors and vendors in your organization.
+            auditors and vendors across the platform.
           </p>
         </div>
 
@@ -401,7 +401,7 @@ const Users = () => {
             event.stopPropagation();
             openCreateModal();
           }}
-          className="flex items-center justify-center gap-2 bg-[#1C2B3A] px-5 py-3 text-sm font-semibold text-[#F5F3EB] transition hover:bg-[#A8792C]"
+          className="flex items-center justify-center gap-2 bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 shadow-sm"
         >
           <Plus size={18} />
           Add User
@@ -414,11 +414,10 @@ const Users = () => {
 
       {message.text && (
         <div
-          className={`mb-6 flex items-center gap-3 border px-4 py-3 text-sm ${
-            message.type === "success"
-              ? "border-[#33604F] bg-[#DCE8E1] text-[#33604F]"
-              : "border-[#A6402B] bg-[#F0DDD7] text-[#A6402B]"
-          }`}
+          className={`mb-6 flex items-center gap-3 border px-4 py-3 text-sm ${message.type === "success"
+            ? "border-[#33604F] bg-[#DCE8E1] text-[#33604F]"
+            : "border-[#A6402B] bg-[#F0DDD7] text-[#A6402B]"
+            }`}
         >
           {message.type === "success" ? (
             <CheckCircle2 size={18} />
@@ -464,16 +463,16 @@ const Users = () => {
           TABLE CARD
       ================================================== */}
 
-      <div className="border border-[#C9C2AE] bg-[#F5F3EB]">
+      <div className="border border-slate-200 bg-white">
         {/* FILTERS */}
 
-        <div className="flex flex-col gap-4 border-b border-[#C9C2AE] p-5 lg:flex-row">
+        <div className="flex flex-col gap-4 border-b border-[#E2E8F0] p-5 lg:flex-row">
           {/* SEARCH */}
 
           <div className="relative flex-1">
             <Search
               size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#54636F]"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B]"
             />
 
             <input
@@ -483,7 +482,7 @@ const Users = () => {
               onChange={(e) =>
                 setSearch(e.target.value)
               }
-              className="w-full border border-[#C9C2AE] bg-[#EDEAE0] py-3 pl-11 pr-4 text-sm outline-none transition focus:border-[#A8792C]"
+              className="w-full border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-indigo-500"
             />
           </div>
 
@@ -495,7 +494,7 @@ const Users = () => {
               setRole(e.target.value);
               setPage(1);
             }}
-            className="border border-[#C9C2AE] bg-[#EDEAE0] px-4 py-3 text-sm outline-none focus:border-[#A8792C]"
+            className="border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-indigo-500"
           >
             <option value="All">All Roles</option>
             <option value="SUPER_ADMIN">
@@ -520,7 +519,7 @@ const Users = () => {
               setStatus(e.target.value);
               setPage(1);
             }}
-            className="border border-[#C9C2AE] bg-[#EDEAE0] px-4 py-3 text-sm outline-none focus:border-[#A8792C]"
+            className="border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-indigo-500"
           >
             <option value="All">All Status</option>
             <option value="Active">
@@ -539,7 +538,7 @@ const Users = () => {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px]">
             <thead>
-              <tr className="border-b border-[#C9C2AE] text-left text-xs uppercase tracking-wider text-[#54636F]">
+              <tr className="border-b border-[#E2E8F0] text-left text-xs uppercase tracking-wider text-[#64748B]">
                 <th className="px-6 py-4">
                   User
                 </th>
@@ -592,8 +591,8 @@ const Users = () => {
             PAGINATION
         ================================================== */}
 
-        <div className="flex items-center justify-between border-t border-[#C9C2AE] px-5 py-4">
-          <p className="text-sm text-[#54636F]">
+        <div className="flex items-center justify-between border-t border-[#E2E8F0] px-5 py-4">
+          <p className="text-sm text-[#64748B]">
             Page{" "}
             {pagination.currentPage || page}{" "}
             of {pagination.totalPages || 1}
@@ -607,7 +606,7 @@ const Users = () => {
               onClick={() =>
                 setPage((prev) => prev - 1)
               }
-              className="border border-[#C9C2AE] p-2 transition hover:bg-[#EDEAE0] disabled:cursor-not-allowed disabled:opacity-40"
+              className="border border-[#E2E8F0] p-2 transition hover:bg-[#EDEAE0] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft size={18} />
             </button>
@@ -619,7 +618,7 @@ const Users = () => {
               onClick={() =>
                 setPage((prev) => prev + 1)
               }
-              className="border border-[#C9C2AE] p-2 transition hover:bg-[#EDEAE0] disabled:cursor-not-allowed disabled:opacity-40"
+              className="border border-[#E2E8F0] p-2 transition hover:bg-[#EDEAE0] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronRight size={18} />
             </button>
@@ -654,10 +653,10 @@ const StatCard = ({
   icon: Icon,
 }) => {
   return (
-    <div className="border border-[#C9C2AE] bg-[#F5F3EB] p-5">
+    <div className="border border-slate-200 bg-white p-5">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-[#54636F]">
+          <p className="text-sm text-[#64748B]">
             {title}
           </p>
 
@@ -666,7 +665,7 @@ const StatCard = ({
           </p>
         </div>
 
-        <div className="bg-[#EDEAE0] p-3 text-[#A8792C]">
+        <div className="bg-indigo-50 p-3 text-indigo-600">
           <Icon size={20} />
         </div>
       </div>
@@ -689,12 +688,12 @@ const UserRow = ({
   const isMenuOpen = menuId === user._id;
 
   return (
-    <tr className="border-b border-[#C9C2AE] last:border-0 hover:bg-[#EDEAE0]/50">
+    <tr className="border-b border-[#E2E8F0] last:border-0 hover:bg-slate-50">
       {/* USER */}
 
       <td className="px-6 py-5">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#1C2B3A] text-sm font-semibold text-[#F5F3EB]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-indigo-600 text-sm font-semibold text-white">
             {user.name
               ?.charAt(0)
               ?.toUpperCase() || "U"}
@@ -705,7 +704,7 @@ const UserRow = ({
               {user.name}
             </p>
 
-            <p className="mt-1 text-xs text-[#54636F]">
+            <p className="mt-1 text-xs text-[#64748B]">
               {user.email}
             </p>
           </div>
@@ -716,10 +715,9 @@ const UserRow = ({
 
       <td className="px-6 py-5">
         <span
-          className={`inline-flex px-3 py-1 text-xs font-semibold ${
-            roleStyles[user.role] ||
-            "bg-[#EDEAE0] text-[#1C2B3A]"
-          }`}
+          className={`inline-flex px-3 py-1 text-xs font-semibold ${roleStyles[user.role] ||
+            "bg-[#EDEAE0] text-[#0F172A]"
+            }`}
         >
           {roleLabels[user.role] ||
             user.role}
@@ -731,11 +729,10 @@ const UserRow = ({
       <td className="px-6 py-5">
         <div className="flex items-center gap-2">
           <span
-            className={`h-2 w-2 rounded-full ${
-              user.isActive
-                ? "bg-[#33604F]"
-                : "bg-[#A6402B]"
-            }`}
+            className={`h-2 w-2 rounded-full ${user.isActive
+              ? "bg-[#33604F]"
+              : "bg-[#A6402B]"
+              }`}
           />
 
           <span className="text-sm">
@@ -750,11 +747,10 @@ const UserRow = ({
 
       <td className="px-6 py-5">
         <span
-          className={`text-xs font-medium ${
-            user.isEmailVerified
-              ? "text-[#33604F]"
-              : "text-[#A6402B]"
-          }`}
+          className={`text-xs font-medium ${user.isEmailVerified
+            ? "text-[#33604F]"
+            : "text-[#A6402B]"
+            }`}
         >
           {user.isEmailVerified
             ? "Verified"
@@ -764,11 +760,11 @@ const UserRow = ({
 
       {/* LAST LOGIN */}
 
-      <td className="px-6 py-5 text-sm text-[#54636F]">
+      <td className="px-6 py-5 text-sm text-[#64748B]">
         {user.lastLoginAt
           ? new Date(
-              user.lastLoginAt
-            ).toLocaleDateString()
+            user.lastLoginAt
+          ).toLocaleDateString()
           : "Never"}
       </td>
 
@@ -793,7 +789,7 @@ const UserRow = ({
             onClick={(event) =>
               event.stopPropagation()
             }
-            className="absolute right-6 top-14 z-30 w-48 border border-[#C9C2AE] bg-[#F5F3EB] py-1 text-left shadow-lg"
+            className="absolute right-6 top-14 z-30 w-48 border border-slate-200 bg-white py-1 text-left shadow-lg"
           >
             {/* EDIT */}
 
@@ -856,11 +852,11 @@ const LoadingState = () => {
         className="py-16 text-center"
       >
         <Loader2
-          className="mx-auto animate-spin text-[#A8792C]"
+          className="mx-auto animate-spin text-[#4F46E5]"
           size={28}
         />
 
-        <p className="mt-3 text-sm text-[#54636F]">
+        <p className="mt-3 text-sm text-[#64748B]">
           Loading users...
         </p>
       </td>
@@ -880,7 +876,7 @@ const EmptyState = () => {
         className="py-16 text-center"
       >
         <UsersIcon
-          className="mx-auto text-[#C9C2AE]"
+          className="mx-auto text-[#E2E8F0]"
           size={40}
         />
 
@@ -888,7 +884,7 @@ const EmptyState = () => {
           No users found
         </p>
 
-        <p className="mt-1 text-sm text-[#54636F]">
+        <p className="mt-1 text-sm text-[#64748B]">
           Try changing your search or filters.
         </p>
       </td>
@@ -1003,25 +999,25 @@ const UserModal = ({
     } catch (error) {
       setError(
         error.message ||
-          "Something went wrong."
+        "Something went wrong."
       );
     }
   };
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#1C2B3A]/60 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/60 p-4"
       onClick={onClose}
     >
       <div
         onClick={(event) =>
           event.stopPropagation()
         }
-        className="w-full max-w-lg border border-[#C9C2AE] bg-[#F5F3EB]"
+        className="w-full max-w-lg border border-slate-200 bg-white"
       >
         {/* MODAL HEADER */}
 
-        <div className="flex items-center justify-between border-b border-[#C9C2AE] px-6 py-5">
+        <div className="flex items-center justify-between border-b border-[#E2E8F0] px-6 py-5">
           <div>
             <h2 className="text-xl font-semibold">
               {isEditing
@@ -1029,7 +1025,7 @@ const UserModal = ({
                 : "Add New User"}
             </h2>
 
-            <p className="mt-1 text-sm text-[#54636F]">
+            <p className="mt-1 text-sm text-[#64748B]">
               {isEditing
                 ? "Update user information and role."
                 : "Create a user for your organization."}
@@ -1116,7 +1112,7 @@ const UserModal = ({
               name="role"
               value={form.role}
               onChange={handleChange}
-              className="w-full border border-[#C9C2AE] bg-[#EDEAE0] px-4 py-3 text-sm outline-none focus:border-[#A8792C]"
+              className="w-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-indigo-500"
             >
               <option value="SUPER_ADMIN">
                 Super Admin
@@ -1138,12 +1134,12 @@ const UserModal = ({
 
           {/* BUTTONS */}
 
-          <div className="flex justify-end gap-3 border-t border-[#C9C2AE] pt-5">
+          <div className="flex justify-end gap-3 border-t border-[#E2E8F0] pt-5">
             <button
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="border border-[#C9C2AE] px-5 py-3 text-sm font-medium hover:bg-[#EDEAE0] disabled:opacity-50"
+              className="border border-[#E2E8F0] px-5 py-3 text-sm font-medium hover:bg-[#EDEAE0] disabled:opacity-50"
             >
               Cancel
             </button>
@@ -1151,7 +1147,7 @@ const UserModal = ({
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 bg-[#1C2B3A] px-5 py-3 text-sm font-semibold text-[#F5F3EB] hover:bg-[#A8792C] disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex items-center gap-2 bg-[#0F172A] px-5 py-3 text-sm font-semibold text-[#F5F3EB] hover:bg-[#4F46E5] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {saving && (
                 <Loader2
@@ -1197,7 +1193,7 @@ const Input = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full border border-[#C9C2AE] bg-[#EDEAE0] px-4 py-3 text-sm outline-none transition focus:border-[#A8792C]"
+        className="w-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-indigo-500"
       />
     </div>
   );
