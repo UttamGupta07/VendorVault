@@ -30,6 +30,7 @@ import DocumentReview from "./pages/compliance/DocumentReview";
 import VendorLayout from "./layout/VendorLayout";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorDocuments from "./pages/vendor/VendorDocuments";
+import VendorNotifications from "./pages/vendor/VendorNotifications";
 
 const App = () => {
   return (
@@ -161,7 +162,7 @@ const App = () => {
             <Route path="/vendor/dashboard" element={<VendorDashboard />} />
             <Route path="/vendor/documents" element={<VendorDocuments />} />
             <Route path="/vendor/requests" element={<div>Vendor Requests</div>} />
-            <Route path="/vendor/notifications" element={<div>Vendor Notifications</div>} />
+            <Route path="/vendor/notifications" element={<VendorNotifications/>} />
             <Route path="/vendor/profile" element={<div>Vendor Profile</div>} />
           </Route>
 

@@ -32,7 +32,7 @@ const VendorDocuments = () => {
       setLoading(true);
 
       const response = await axiosInstance.get(
-        "/api/vendor/auth/documents/requirements"
+        "/api/vendor/documents/requirements"
       );
 
       setDocuments(response.data.documents || []);

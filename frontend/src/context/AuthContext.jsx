@@ -224,7 +224,7 @@ export const AuthProvider = ({ children }) => {
   const getCurrentVendor = async () => {
     try {
       const response = await axiosInstance.get(
-        "/api/vendor/auth/me"
+        "/api/vendor/me"
       );
 
       if (response.data.success) {
