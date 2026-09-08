@@ -36,4 +36,4 @@ const seedDefaultRoles = async (organizationId) => {
   }
 };
 
-module.exports = {seedDefaultRoles};
+module.exports = {seedDefaultRoles};  

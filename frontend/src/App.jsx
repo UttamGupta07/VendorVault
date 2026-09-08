@@ -23,6 +23,7 @@ import DocumentTypes from "./pages/superAdminPages/DocumentTypes";
 import ServiceTypes from "./pages/superAdminPages/ServiceTypes";
 import VendorManagement from "./pages/compliance/VendorManagement";
 import ComplianceDocuments from "./pages/compliance/ComplianceDocuments";
+import VendorDetail from "./pages/compliance/vendor/VendorDetail";
 import DocumentReview from "./pages/compliance/DocumentReview";
 
 
@@ -140,6 +141,10 @@ const App = () => {
             <Route
               path="/compliance/vendors"
               element={<VendorManagement />}
+            />
+            <Route
+              path="/compliance/vendors/:vendorId"
+              element={<VendorDetail />}
             />
             <Route path="/compliance/documents" element={<ComplianceDocuments />} />
 

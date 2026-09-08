@@ -31,8 +31,8 @@ app.use(cookieParser());
 // ==========================================
 
 app.use("/api/auth", authRoutes);
-app.use("/api/vendor/auth", vendorAuthRoutes);
-app.use("/api/admin/users",adminUserRoutes);
+app.use("/api/vendor", vendorAuthRoutes);
+app.use("/api/admin/users",adminUserRoutes); 
 app.use(
   "/api/admin/roles",
   rolePermissionRoutes

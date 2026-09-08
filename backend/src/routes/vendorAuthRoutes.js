@@ -9,6 +9,7 @@ const {
   getVendorDashboard,
   getVendorDocumentRequirements,
   getAllVendors,
+  getVendorById,
 } = require("../controller/vendorAuthController");
 
 const getCurrentVendor =
@@ -60,6 +61,12 @@ router.get(
     "COMPLIANCE_OFFICER"
   ),
   getAllVendors
+);
+router.get(
+  "/:vendorId",
+  protect,
+  authorizeRoles("SUPER_ADMIN", "COMPLIANCE_OFFICER"),
+  getVendorById
 );
 module.exports = router;
 

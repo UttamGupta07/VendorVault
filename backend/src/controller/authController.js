@@ -1,7 +1,7 @@
  const bcrypt = require("bcryptjs");
 const Organization = require("../models/Organization");
 const User = require("../models/User");
-const seedDefaultRoles = require("../utills/seedRoles");
+// const {seedDefaultRoles} = require("../utills/seedRoles");
 const Vendor = require("../models/Vendor");
 const generateToken = require("../utills/generatetoken");
 const setAuthCookie = require("../utills/setAuthCookie");
@@ -91,7 +91,7 @@ const registerOrganization = async (req, res) => {
       website,
     });
 
-    await seedDefaultRoles(organization._id);
+    // await seedDefaultRoles(organization._id);
     // -----------------------------
     // 5. Hash password
     // -----------------------------
