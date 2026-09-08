@@ -25,11 +25,6 @@ const SuperAdminSidebar = ({ open, setOpen }) => {
       icon: LayoutDashboard,
     },
     {
-      name: "Organizations",
-      path: "/super-admin/organizations",
-      icon: Building2,
-    },
-    {
       name: "Users",
       path: "/super-admin/users",
       icon: Users,

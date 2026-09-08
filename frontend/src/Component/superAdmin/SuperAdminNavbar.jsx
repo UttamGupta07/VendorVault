@@ -1,13 +1,79 @@
- import React from "react";
-
+import React, { useEffect, useState } from "react";
 import {
   Menu,
   Search,
   Bell,
   ChevronDown,
+  XCircle,
+  AlertTriangle,
+  Clock,
+  CheckCircle,
 } from "lucide-react";
 
+import { getSuperAdminDashboard } from "../../api/adminDashboardApi";
+
 const SuperAdminNavbar = ({ setOpen }) => {
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  // =========================
+  // LOAD NOTIFICATIONS
+  // =========================
+  const loadNotifications = async () => {
+    try {
+      const response = await getSuperAdminDashboard();
+
+      if (response?.success) {
+        setNotifications(response?.data?.notifications || []);
+      }
+    } catch (error) {
+      console.error(
+        "Notification loading error:",
+        error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
+  const unreadCount = notifications.filter(
+    (notification) => !notification.isRead
+  ).length;
+
+  // =========================
+  // NOTIFICATION ICON
+  // =========================
+  const getIcon = (type) => {
+    if (type === "1_DAY") return XCircle;
+    if (type === "7_DAY") return AlertTriangle;
+    return Clock;
+  };
+
+  const getIconStyle = (type) => {
+    if (type === "1_DAY") {
+      return "bg-red-100 text-red-500";
+    }
+
+    if (type === "7_DAY") {
+      return "bg-orange-100 text-orange-500";
+    }
+
+    return "bg-blue-100 text-blue-500";
+  };
+
+  const formatTime = (date) => {
+    if (!date) return "";
+
+    return new Date(date).toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <header
       className="
@@ -29,12 +95,9 @@ const SuperAdminNavbar = ({ setOpen }) => {
         lg:pr-8
       "
     >
-
       {/* ================= LEFT ================= */}
 
       <div className="flex items-center gap-4">
-
-        {/* Mobile Menu */}
 
         <button
           type="button"
@@ -50,8 +113,6 @@ const SuperAdminNavbar = ({ setOpen }) => {
         >
           <Menu size={23} />
         </button>
-
-        {/* Page Title */}
 
         <h1 className="text-xl font-semibold text-slate-900">
           Dashboard
@@ -81,7 +142,6 @@ const SuperAdminNavbar = ({ setOpen }) => {
             lg:w-[295px]
           "
         >
-
           <Search
             size={19}
             className="shrink-0 text-slate-400"
@@ -99,47 +159,213 @@ const SuperAdminNavbar = ({ setOpen }) => {
               placeholder:text-slate-400
             "
           />
-
         </div>
 
         {/* ================= NOTIFICATION ================= */}
 
-        <button
-          type="button"
-          className="
-            relative
-            rounded-xl
-            p-2.5
-            text-slate-700
-            transition
-            hover:bg-slate-100
-          "
-        >
+        <div className="relative">
 
-          <Bell size={21} />
-
-          <span
+          <button
+            type="button"
+            onClick={() =>
+              setShowNotifications((prev) => !prev)
+            }
             className="
-              absolute
-              -right-0.5
-              -top-0.5
-              flex
-              h-5
-              min-w-5
-              items-center
-              justify-center
-              rounded-full
-              bg-indigo-600
-              px-1
-              text-[10px]
-              font-bold
-              text-white
+              relative
+              rounded-xl
+              p-2.5
+              text-slate-700
+              transition
+              hover:bg-slate-100
             "
           >
-            12
-          </span>
+            <Bell size={21} />
 
-        </button>
+            {unreadCount > 0 && (
+              <span
+                className="
+                  absolute
+                  -right-0.5
+                  -top-0.5
+                  flex
+                  h-5
+                  min-w-5
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-indigo-600
+                  px-1
+                  text-[10px]
+                  font-bold
+                  text-white
+                "
+              >
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
+          </button>
+
+          {/* ================= NOTIFICATION PANEL ================= */}
+
+          {showNotifications && (
+            <div
+              className="
+                absolute
+                right-0
+                top-14
+                z-50
+                w-[360px]
+                max-w-[calc(100vw-30px)]
+                overflow-hidden
+                rounded-2xl
+                border
+                border-slate-200
+                bg-white
+                shadow-xl
+              "
+            >
+
+              {/* Header */}
+
+              <div className="flex items-center justify-between border-b border-slate-100 p-4">
+
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">
+                    Notifications
+                  </h3>
+
+                  <p className="mt-0.5 text-xs text-slate-400">
+                    {unreadCount} unread notification
+                    {unreadCount !== 1 ? "s" : ""}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowNotifications(false)
+                  }
+                  className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100"
+                >
+                  <XCircle size={18} />
+                </button>
+
+              </div>
+
+              {/* Notification List */}
+
+              <div className="max-h-[400px] overflow-y-auto">
+
+                {notifications.length === 0 ? (
+                  <div className="p-8 text-center">
+
+                    <CheckCircle
+                      size={30}
+                      className="mx-auto text-green-500"
+                    />
+
+                    <p className="mt-2 text-sm font-medium text-slate-700">
+                      No notifications
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      You're all caught up.
+                    </p>
+
+                  </div>
+                ) : (
+                  notifications.map((notification) => {
+                    const Icon = getIcon(
+                      notification.reminderType
+                    );
+
+                    return (
+                      <div
+                        key={notification._id}
+                        className={`
+                          flex
+                          gap-3
+                          border-b
+                          border-slate-100
+                          p-4
+                          transition
+                          hover:bg-slate-50
+                          ${
+                            !notification.isRead
+                              ? "bg-indigo-50/40"
+                              : ""
+                          }
+                        `}
+                      >
+
+                        {/* Icon */}
+
+                        <div
+                          className={`
+                            flex
+                            h-10
+                            w-10
+                            shrink-0
+                            items-center
+                            justify-center
+                            rounded-xl
+                            ${getIconStyle(
+                              notification.reminderType
+                            )}
+                          `}
+                        >
+                          <Icon size={18} />
+                        </div>
+
+                        {/* Content */}
+
+                        <div className="min-w-0 flex-1">
+
+                          <div className="flex items-start justify-between gap-2">
+
+                            <p className="text-sm font-semibold text-slate-800">
+                              {notification.title}
+                            </p>
+
+                            {!notification.isRead && (
+                              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-indigo-600" />
+                            )}
+
+                          </div>
+
+                          <p className="mt-1 text-xs leading-5 text-slate-500">
+                            {notification.message}
+                          </p>
+
+                          <div className="mt-2 flex items-center justify-between gap-2">
+
+                            <span className="truncate text-xs font-medium text-slate-400">
+                              {notification.vendorId
+                                ?.companyName ||
+                                notification.vendorId
+                                  ?.name ||
+                                "Vendor"}
+                            </span>
+
+                            <span className="whitespace-nowrap text-[11px] text-slate-400">
+                              {formatTime(
+                                notification.createdAt
+                              )}
+                            </span>
+
+                          </div>
+
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+
+              </div>
+            </div>
+          )}
+
+        </div>
 
         {/* Divider */}
 
@@ -160,8 +386,6 @@ const SuperAdminNavbar = ({ setOpen }) => {
           "
         >
 
-          {/* Avatar */}
-
           <div
             className="
               flex
@@ -180,13 +404,9 @@ const SuperAdminNavbar = ({ setOpen }) => {
             SA
           </div>
 
-          {/* Name */}
-
           <span className="hidden text-sm font-semibold text-slate-800 sm:block">
             Super Admin
           </span>
-
-          {/* Arrow */}
 
           <ChevronDown
             size={17}
@@ -196,7 +416,6 @@ const SuperAdminNavbar = ({ setOpen }) => {
         </button>
 
       </div>
-
     </header>
   );
 };
