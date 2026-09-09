@@ -14,7 +14,8 @@ import RegisterOrganization from "./pages/RegisterOrganization";
 import SuperAdminDashboard from "./pages/superAdminPages/SuperAdminDashboard";
 import Users from "./pages/superAdminPages/Users";
 import Home from "./pages/public/Home";
-import ComplianceOfficer from "./pages/superAdminPages/ComplianceOfficer";
+// import ComplianceOfficer from "./pages/superAdminPages/ComplianceOfficer";
+import ComplianceTeam from "./pages/superAdminPages/ComplianceTeam";
 
 import ComplianceOfficerLayout from "./layout/ComplianceOfficerLayout";
 import ComplianceDashboard from "./pages/compliance/ComplianceDashboard";
@@ -25,6 +26,7 @@ import VendorManagement from "./pages/compliance/VendorManagement";
 import ComplianceDocuments from "./pages/compliance/ComplianceDocuments";
 import VendorDetail from "./pages/compliance/vendor/VendorDetail";
 import DocumentReview from "./pages/compliance/DocumentReview";
+import ReportsAnalytics from "./pages/superAdminPages/ReportsAnalytics";
 
 
 import VendorLayout from "./layout/VendorLayout";
@@ -107,7 +109,7 @@ const App = () => {
 
             <Route
               path="/super-admin/compliance-teams"
-              element={<div>Compliance Teams</div>}
+              element={<ComplianceTeam />}
             />
 
             <Route
@@ -122,7 +124,7 @@ const App = () => {
 
             <Route
               path="/super-admin/reports"
-              element={<div>Reports & Analytics</div>}
+              element={<ReportsAnalytics />}
             />
 
             <Route

@@ -10,6 +10,10 @@ const serviceRoute=require("./routes/serviceTypeRoute");
 const documentRoutes=require("./routes/documentRoute");
 const vendorAuthRoutes=require("./routes/vendorAuthRoutes");
 const adminDashboardRoute = require("./routes/adminDashboardRoute");
+const complianceTeamRoute = require("./routes/complianceTeamRoute");
+const adminReportRoute = require("./routes/adminReportRoute");
+const auditLogRoute = require("./routes/auditLogRoute");
+
 const app = express();
 
 // ==========================================
@@ -45,6 +49,15 @@ app.use(
     "/api/admin/dashboard",
     adminDashboardRoute
 );
+
+app.use(
+    "/api/admin/compliance-team",
+    complianceTeamRoute
+);
+
+app.use("/api/admin/reports", adminReportRoute);
+
+app.use("/api/admin/activity-logs", auditLogRoute);
 // ==========================================
 // EXPORT
 // ==========================================
