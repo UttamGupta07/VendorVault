@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
       );
 
       if (response.data.success) {
-        setVendor();
+        setVendor(response.data.vendor);
         setUser(response.data.vendor);
 
         setOrganization(null);

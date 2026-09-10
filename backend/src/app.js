@@ -12,6 +12,7 @@ const vendorAuthRoutes=require("./routes/vendorAuthRoutes");
 const adminDashboardRoute = require("./routes/adminDashboardRoute");
 const complianceRoute = require("./routes/complianceRoute");
 const complianceDashboardRoute = require("./routes/complianceDashboardRoute");
+const notificationRoutes = require("./routes/notificationRoute");
 const app = express();
 
 // ==========================================
@@ -34,7 +35,7 @@ app.use(cookieParser());
 // ==========================================
 
 app.use("/api/auth", authRoutes);
-app.use("/api/vendor", vendorAuthRoutes);
+app.use("/api/vendor", vendorAuthRoutes); 
 app.use("/api/admin/users",adminUserRoutes); 
 app.use(
   "/api/admin/roles",
@@ -59,5 +60,14 @@ app.use(
 // ==========================================
 // EXPORT
 // ==========================================
+
+// ==========================================
+// NOTIFICATION ROUTES
+// ==========================================
+
+app.use(
+  "/api/notifications",
+  notificationRoutes
+);
 
 module.exports = app;
