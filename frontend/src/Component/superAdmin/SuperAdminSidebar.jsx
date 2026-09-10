@@ -3,11 +3,11 @@ import { NavLink } from "react-router-dom";
 
 import {
   LayoutDashboard,
-  Building2,
+  // Building2,
   Users,
   ShieldCheck,
-  Truck,
-  UserCheck,
+  // Truck,
+  // UserCheck,
   UsersRound,
   FileText,
   AlertTriangle,
@@ -18,63 +18,53 @@ import {
 } from "lucide-react";
 
 const SuperAdminSidebar = ({ open, setOpen }) => {
-  const navItems = [
+ const navItems = [
     {
-      name: "Dashboard",
-      path: "/super-admin/dashboard",
-      icon: LayoutDashboard,
+        name: "Dashboard",
+        path: "/super-admin/dashboard",
+        icon: LayoutDashboard,
     },
     {
-      name: "Users",
-      path: "/super-admin/users",
-      icon: Users,
+        name: "Users",
+        path: "/super-admin/users",
+        icon: Users,
     },
     {
-      name: "Roles & Permissions",
-      path: "/super-admin/roles",
-      icon: ShieldCheck,
+        name: "Compliance Team",
+        path: "/super-admin/compliance-teams",
+        icon: UsersRound,
     },
     {
-      name: "Vendors",
-      path: "/super-admin/vendors",
-      icon: Truck,
+        name: "Roles & Permissions",
+        path: "/super-admin/roles",
+        icon: ShieldCheck,
     },
     {
-      name: "Auditors",
-      path: "/super-admin/auditors",
-      icon: UserCheck,
+        name: "Documents Overview",
+        path: "/super-admin/documents",
+        icon: FileText,
     },
     {
-      name: "Compliance Teams",
-      path: "/super-admin/compliance-teams",
-      icon: UsersRound,
+        name: "Services",
+        path: "/super-admin/service",
+        icon: AlertTriangle,
     },
     {
-      name: "Documents Overview",
-      path: "/super-admin/documents",
-      icon: FileText,
+        name: "Reports & Analytics",
+        path: "/super-admin/reports",
+        icon: BarChart3,
     },
     {
-      name: "Services",
-      path: "/super-admin/service",
-      icon: AlertTriangle,
+        name: "Activity Logs",
+        path: "/super-admin/activity-logs",
+        icon: Activity,
     },
     {
-      name: "Reports & Analytics",
-      path: "/super-admin/reports",
-      icon: BarChart3,
+        name: "Settings",
+        path: "/super-admin/settings",
+        icon: Settings,
     },
-    {
-      name: "Activity Logs",
-      path: "/super-admin/activity-logs",
-      icon: Activity,
-    },
-    {
-      name: "Settings",
-      path: "/super-admin/settings",
-      icon: Settings,
-    },
-  ];
+];
 
   return (
     <>

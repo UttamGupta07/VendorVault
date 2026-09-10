@@ -13,6 +13,10 @@ const adminDashboardRoute = require("./routes/adminDashboardRoute");
 const complianceRoute = require("./routes/complianceRoute");
 const complianceDashboardRoute = require("./routes/complianceDashboardRoute");
 const notificationRoutes = require("./routes/notificationRoute");
+const complianceTeamRoute = require("./routes/complianceTeamRoute");
+const adminReportRoute = require("./routes/adminReportRoute");
+const auditLogRoute = require("./routes/auditLogRoute");
+
 const app = express();
 
 // ==========================================
@@ -57,6 +61,13 @@ app.use(
   "/api/compliance-dashboard",
   complianceDashboardRoute
 );
+    app.use( "/api/admin/compliance-team",
+    complianceTeamRoute
+);
+
+app.use("/api/admin/reports", adminReportRoute);
+
+app.use("/api/admin/activity-logs", auditLogRoute);
 // ==========================================
 // EXPORT
 // ==========================================
