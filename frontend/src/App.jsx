@@ -26,12 +26,15 @@ import VendorManagement from "./pages/compliance/VendorManagement";
 import ComplianceDocuments from "./pages/compliance/ComplianceDocuments";
 import VendorDetail from "./pages/compliance/vendor/VendorDetail";
 import DocumentReview from "./pages/compliance/DocumentReview";
+import Compliance from "./pages/compliance/Compliance";
 import ReportsAnalytics from "./pages/superAdminPages/ReportsAnalytics";
 
 
 import VendorLayout from "./layout/VendorLayout";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorDocuments from "./pages/vendor/VendorDocuments";
+import VendorNotifications from "./pages/vendor/VendorNotifications";
+import VendorProfile from "./pages/vendor/VendorProfile";
 
 const App = () => {
   return (
@@ -156,6 +159,10 @@ const App = () => {
 
                 <DocumentReview />}
             />
+            <Route
+              path="/compliance"
+              element={<Compliance />}
+            />
 
 
           </Route>
@@ -163,8 +170,8 @@ const App = () => {
             <Route path="/vendor/dashboard" element={<VendorDashboard />} />
             <Route path="/vendor/documents" element={<VendorDocuments />} />
             <Route path="/vendor/requests" element={<div>Vendor Requests</div>} />
-            <Route path="/vendor/notifications" element={<div>Vendor Notifications</div>} />
-            <Route path="/vendor/profile" element={<div>Vendor Profile</div>} />
+            <Route path="/vendor/notifications" element={<VendorNotifications/>} />
+            <Route path="/vendor/profile" element={<VendorProfile/>} />
           </Route>
 
         </Route>

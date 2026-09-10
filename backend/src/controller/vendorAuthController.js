@@ -1110,12 +1110,12 @@ const getVendorById = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch vendor details",
+      message: "Failed to fetch vendor details", 
       error: error.message,
     });
   }
 };
-
+  
 
 
 

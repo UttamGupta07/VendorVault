@@ -10,6 +10,9 @@ const serviceRoute=require("./routes/serviceTypeRoute");
 const documentRoutes=require("./routes/documentRoute");
 const vendorAuthRoutes=require("./routes/vendorAuthRoutes");
 const adminDashboardRoute = require("./routes/adminDashboardRoute");
+const complianceRoute = require("./routes/complianceRoute");
+const complianceDashboardRoute = require("./routes/complianceDashboardRoute");
+const notificationRoutes = require("./routes/notificationRoute");
 const complianceTeamRoute = require("./routes/complianceTeamRoute");
 const adminReportRoute = require("./routes/adminReportRoute");
 const auditLogRoute = require("./routes/auditLogRoute");
@@ -17,13 +20,13 @@ const auditLogRoute = require("./routes/auditLogRoute");
 const app = express();
 
 // ==========================================
-// MIDDLEWARE
+// MIDDLEWARE  
 // ==========================================
 
 app.use(express.json());
 
 app.use(
-  cors({
+  cors({ 
     origin: "http://localhost:5173",
     credentials: true,
   })
@@ -36,11 +39,15 @@ app.use(cookieParser());
 // ==========================================
 
 app.use("/api/auth", authRoutes);
-app.use("/api/vendor", vendorAuthRoutes);
+app.use("/api/vendor", vendorAuthRoutes); 
 app.use("/api/admin/users",adminUserRoutes); 
 app.use(
   "/api/admin/roles",
   rolePermissionRoutes
+);
+app.use(
+  "/api/compliance",
+  complianceRoute
 );
 app.use("/api/document-types",documentRoute)
 app.use("/api/service-types",serviceRoute); 
@@ -51,7 +58,10 @@ app.use(
 );
 
 app.use(
-    "/api/admin/compliance-team",
+  "/api/compliance-dashboard",
+  complianceDashboardRoute
+);
+    app.use( "/api/admin/compliance-team",
     complianceTeamRoute
 );
 
@@ -61,5 +71,14 @@ app.use("/api/admin/activity-logs", auditLogRoute);
 // ==========================================
 // EXPORT
 // ==========================================
+
+// ==========================================
+// NOTIFICATION ROUTES
+// ==========================================
+
+app.use(
+  "/api/notifications",
+  notificationRoutes
+);
 
 module.exports = app;

@@ -65,7 +65,7 @@ router.get(
 router.get(
   "/:vendorId",
   protect,
-  authorizeRoles("SUPER_ADMIN", "COMPLIANCE_OFFICER"),
+  authorizeRoles("SUPER_ADMIN", "COMPLIANCE_OFFICER","VENDOR"),
   getVendorById
 );
 module.exports = router;
