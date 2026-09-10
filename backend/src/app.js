@@ -10,16 +10,18 @@ const serviceRoute=require("./routes/serviceTypeRoute");
 const documentRoutes=require("./routes/documentRoute");
 const vendorAuthRoutes=require("./routes/vendorAuthRoutes");
 const adminDashboardRoute = require("./routes/adminDashboardRoute");
+const complianceRoute = require("./routes/complianceRoute");
+const complianceDashboardRoute = require("./routes/complianceDashboardRoute");
 const app = express();
 
 // ==========================================
-// MIDDLEWARE
+// MIDDLEWARE  
 // ==========================================
 
 app.use(express.json());
 
 app.use(
-  cors({
+  cors({ 
     origin: "http://localhost:5173",
     credentials: true,
   })
@@ -38,12 +40,21 @@ app.use(
   "/api/admin/roles",
   rolePermissionRoutes
 );
+app.use(
+  "/api/compliance",
+  complianceRoute
+);
 app.use("/api/document-types",documentRoute)
 app.use("/api/service-types",serviceRoute); 
 app.use("/api/documents",documentRoutes)
 app.use(
     "/api/admin/dashboard",
     adminDashboardRoute
+);
+
+app.use(
+  "/api/compliance-dashboard",
+  complianceDashboardRoute
 );
 // ==========================================
 // EXPORT

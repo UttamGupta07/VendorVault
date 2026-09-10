@@ -25,6 +25,7 @@ import VendorManagement from "./pages/compliance/VendorManagement";
 import ComplianceDocuments from "./pages/compliance/ComplianceDocuments";
 import VendorDetail from "./pages/compliance/vendor/VendorDetail";
 import DocumentReview from "./pages/compliance/DocumentReview";
+import Compliance from "./pages/compliance/Compliance";
 
 
 import VendorLayout from "./layout/VendorLayout";
@@ -153,6 +154,10 @@ const App = () => {
               element={
 
                 <DocumentReview />}
+            />
+            <Route
+              path="/compliance"
+              element={<Compliance />}
             />
 
 

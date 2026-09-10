@@ -110,7 +110,7 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setError("");
+    setError(""); 
     setSuccessMsg("");
 
     // Validation
@@ -126,7 +126,7 @@ export default function LoginPage() {
       // JWT cookie and user state.
       const data = await login(
         formData.email.trim().toLowerCase(),
-        formData.password
+        formData.password 
       );
 
       console.log("Login response:", data);

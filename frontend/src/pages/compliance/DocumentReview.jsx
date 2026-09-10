@@ -1,55 +1,65 @@
-
-import { useEffect, useState } from "react";
+ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import {
   ArrowLeft,
+  FileText,
   CheckCircle,
   XCircle,
-  FileText,
-  Calendar,
-  User,
-  Hash,
-  MapPin,
-  AlertCircle,
+  Clock,
+  AlertTriangle,
   Loader2,
+  ExternalLink,
 } from "lucide-react";
+
+import axiosInstance from "../../api/axiosInstance";
 
 const DocumentReview = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [document, setDocument] = useState(null);
+
   const [loading, setLoading] = useState(true);
-  const [reviewing, setReviewing] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+
   const [error, setError] = useState("");
 
-  const [showRejectModal, setShowRejectModal] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState("");
+  const [showRejectBox, setShowRejectBox] =
+    useState(false);
 
-  // ==========================================
+  const [rejectionReason, setRejectionReason] =
+    useState("");
+
+  // ============================================================
   // Fetch document
-  // ==========================================
+  // ============================================================
 
   const fetchDocument = async () => {
     try {
       setLoading(true);
       setError("");
 
-      const response = await axios.get(
-        `http://localhost:5000/api/documents/${id}`,
-        {
-          withCredentials: true,
-        }
+      const response = await axiosInstance.get(
+        `/api/documents/${id}`
       );
 
-      setDocument(response.data.document);
-    } catch (error) {
-      console.error("Failed to fetch document:", error);
+      if (response.data.success) {
+        setDocument(response.data.document);
+      } else {
+        setError(
+          response.data.message ||
+            "Failed to load document"
+        );
+      }
+    } catch (err) {
+      console.error(
+        "Fetch document error:",
+        err
+      );
 
       setError(
-        error.response?.data?.message ||
-          "Failed to load document"
+        err.response?.data?.message ||
+          "Unable to load document"
       );
     } finally {
       setLoading(false);
@@ -60,555 +70,671 @@ const DocumentReview = () => {
     fetchDocument();
   }, [id]);
 
-  // ==========================================
-  // Approve document
-  // ==========================================
+  // ============================================================
+  // Format date
+  // ============================================================
+
+  const formatDate = (date) => {
+    if (!date) return "—";
+
+    return new Date(date).toLocaleDateString(
+      "en-IN",
+      {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }
+    );
+  };
+
+  // ============================================================
+  // Approve
+  // ============================================================
 
   const handleApprove = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to approve this document?"
+    );
+
+    if (!confirmed) return;
+
     try {
-      setReviewing(true);
+      setActionLoading(true);
       setError("");
 
-      await axios.put(
-        `http://localhost:5000/api/documents/${id}/review`,
-        {
-          action: "APPROVE",
-        },
-        {
-          withCredentials: true,
-        }
+      const response =
+        await axiosInstance.put(
+          `/api/documents/${id}/review`,
+          {
+            action: "APPROVE",
+          }
+        );
+
+      if (response.data.success) {
+        setDocument((prev) => ({
+          ...prev,
+          status:
+            response.data.document.status,
+          reviewedBy:
+            response.data.document.reviewedBy,
+          reviewedAt:
+            response.data.document.reviewedAt,
+          rejectionReason: null,
+        }));
+
+        setShowRejectBox(false);
+      }
+    } catch (err) {
+      console.error(
+        "Approve document error:",
+        err
       );
 
-      navigate("/compliance/documents");
-    } catch (error) {
-      console.error("Approve document error:", error);
-
       setError(
-        error.response?.data?.message ||
+        err.response?.data?.message ||
           "Failed to approve document"
       );
     } finally {
-      setReviewing(false);
+      setActionLoading(false);
     }
   };
 
-  // ==========================================
-  // Reject document
-  // ==========================================
+  // ============================================================
+  // Reject
+  // ============================================================
 
   const handleReject = async () => {
     if (!rejectionReason.trim()) {
-      setError("Please provide a rejection reason");
+      setError(
+        "Please provide a rejection reason."
+      );
       return;
     }
 
     try {
-      setReviewing(true);
+      setActionLoading(true);
       setError("");
 
-      await axios.put(
-        `http://localhost:5000/api/documents/${id}/review`,
-        {
-          action: "REJECT",
-          rejectionReason: rejectionReason.trim(),
-        },
-        {
-          withCredentials: true,
-        }
+      const response =
+        await axiosInstance.put(
+          `/api/documents/${id}/review`,
+          {
+            action: "REJECT",
+            rejectionReason:
+              rejectionReason.trim(),
+          }
+        );
+
+      if (response.data.success) {
+        setDocument((prev) => ({
+          ...prev,
+          status:
+            response.data.document.status,
+          reviewedBy:
+            response.data.document.reviewedBy,
+          reviewedAt:
+            response.data.document.reviewedAt,
+          rejectionReason:
+            response.data.document.rejectionReason,
+        }));
+
+        setShowRejectBox(false);
+      }
+    } catch (err) {
+      console.error(
+        "Reject document error:",
+        err
       );
 
-      navigate("/compliance/documents");
-    } catch (error) {
-      console.error("Reject document error:", error);
-
       setError(
-        error.response?.data?.message ||
+        err.response?.data?.message ||
           "Failed to reject document"
       );
     } finally {
-      setReviewing(false);
+      setActionLoading(false);
     }
   };
 
-  // ==========================================
+  // ============================================================
+  // Status badge
+  // ============================================================
+
+  const StatusBadge = () => {
+    if (!document) return null;
+
+    const status = document.status;
+
+    if (status === "APPROVED") {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-green-50 text-green-700 border border-green-200">
+          <CheckCircle size={15} />
+          Approved
+        </span>
+      );
+    }
+
+    if (status === "REJECTED") {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-red-50 text-red-700 border border-red-200">
+          <XCircle size={15} />
+          Rejected
+        </span>
+      );
+    }
+
+    return (
+      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-amber-50 text-amber-700 border border-amber-200">
+        <Clock size={15} />
+        Pending Review
+      </span>
+    );
+  };
+
+  // ============================================================
   // Loading
-  // ==========================================
+  // ============================================================
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <Loader2
-          size={35}
-          className="animate-spin text-blue-600"
-        />
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="animate-pulse space-y-6">
+
+            <div className="h-8 bg-gray-200 rounded w-40" />
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="h-[650px] bg-white rounded-xl border" />
+              <div className="h-[650px] bg-white rounded-xl border" />
+            </div>
+
+          </div>
+        </div>
       </div>
     );
   }
 
-  // ==========================================
-  // Error
-  // ==========================================
+  // ============================================================
+  // Error / not found
+  // ============================================================
 
-  if (!document) {
+  if (error && !document) {
     return (
       <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-3xl mx-auto">
+
+          <button
+            onClick={() =>
+              navigate("/compliance/documents")
+            }
+            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6"
+          >
+            <ArrowLeft size={17} />
+            Back to Documents
+          </button>
+
+          <div className="bg-white border border-red-200 rounded-xl p-8 text-center">
+
+            <XCircle
+              size={40}
+              className="mx-auto text-red-500"
+            />
+
+            <h2 className="mt-4 text-lg font-semibold text-gray-900">
+              Unable to load document
+            </h2>
+
+            <p className="mt-2 text-sm text-gray-500">
+              {error}
+            </p>
+
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!document) return null;
+
+  const vendorName =
+    document.vendorId?.companyName ||
+    document.vendorId?.name ||
+    "Unknown Vendor";
+
+  const documentType =
+    document.documentTypeId?.name ||
+    "Unknown";
+
+  const serviceType =
+    document.serviceTypeId?.name ||
+    "—";
+
+  const extractedData =
+    document.extractedData || {};
+
+  const isPending =
+    document.status === "PENDING_REVIEW";
+
+  // ============================================================
+  // Page
+  // ============================================================
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+
+      <div className="max-w-7xl mx-auto">
+
+        {/* Back */}
         <button
           onClick={() =>
             navigate("/compliance/documents")
           }
-          className="mb-6 flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-5"
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={17} />
           Back to Documents
         </button>
 
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-700">
-          <div className="flex items-center gap-2">
-            <AlertCircle size={20} />
-            {error || "Document not found"}
-          </div>
-        </div>
-      </div>
-    );
-  }
+        {/* Header */}
+        <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
 
-  const extractedData = document.extractedData || {};
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-  return (
-    <div className="min-h-screen bg-gray-50">
+            <div className="flex items-center gap-4">
 
-      {/* ======================================
-          Header
-      ======================================= */}
+              <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
+                <FileText
+                  size={24}
+                  className="text-blue-600"
+                />
+              </div>
 
-      <div className="border-b bg-white">
-        <div className="flex items-center justify-between px-6 py-4">
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">
+                  {document.originalFileName ||
+                    "Document"}
+                </h1>
 
-          <div className="flex items-center gap-4">
+                <p className="text-sm text-gray-500 mt-1">
+                  {vendorName}
+                </p>
+              </div>
 
-            <button
-              onClick={() =>
-                navigate("/compliance/documents")
-              }
-              className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-            >
-              <ArrowLeft size={20} />
-            </button>
-
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">
-                Document Review
-              </h1>
-
-              <p className="text-sm text-gray-500">
-                Review AI-extracted information before
-                approving the document
-              </p>
             </div>
 
+            <StatusBadge />
+
           </div>
+        </div>
 
-          <div className="flex items-center gap-2 rounded-full bg-yellow-50 px-3 py-1.5 text-sm font-medium text-yellow-700">
-            <span className="h-2 w-2 rounded-full bg-yellow-500" />
-            Pending Review
+        {/* Error */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-sm">
+            {error}
           </div>
+        )}
 
-        </div>
-      </div>
+        {/* Main */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
-      {/* ======================================
-          Error
-      ======================================= */}
+          {/* ================================================== */}
+          {/* PDF */}
+          {/* ================================================== */}
 
-      {error && (
-        <div className="mx-6 mt-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          <AlertCircle size={18} />
-          {error}
-        </div>
-      )}
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
 
-      {/* ======================================
-          Main Content
-      ======================================= */}
+            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
 
-      <div className="grid min-h-[calc(100vh-81px)] grid-cols-1 lg:grid-cols-2">
+              <div>
+                <h2 className="font-semibold text-gray-900">
+                  Document Preview
+                </h2>
 
-        {/* ====================================
-            PDF
-        ===================================== */}
+                <p className="text-xs text-gray-500 mt-1">
+                  {document.originalFileName}
+                </p>
+              </div>
 
-        <div className="flex flex-col border-r bg-gray-100">
+              <a
+                href={document.fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                <ExternalLink size={15} />
+                Open
+              </a>
 
-          <div className="flex items-center gap-3 border-b bg-white px-6 py-4">
+            </div>
 
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-              <FileText
-                size={20}
-                className="text-blue-600"
+            <div className="h-[650px] bg-gray-100">
+
+              <iframe
+                src={document.fileUrl}
+                title="Document Preview"
+                className="w-full h-full border-0"
               />
-            </div>
 
-            <div className="min-w-0">
-              <h2 className="truncate font-semibold text-gray-900">
-                {document.originalFileName}
-              </h2>
-
-              <p className="text-xs text-gray-500">
-                PDF Document
-              </p>
             </div>
 
           </div>
 
-          <div className="flex-1 p-4">
+          {/* ================================================== */}
+          {/* Information */}
+          {/* ================================================== */}
 
-            <iframe
-              src={document.fileUrl}
-              title={document.originalFileName}
-              className="h-full min-h-[700px] w-full rounded-lg border bg-white shadow-sm"
-            />
+          <div className="space-y-6">
 
-          </div>
+            {/* Document information */}
+            <div className="bg-white border border-gray-200 rounded-xl">
 
-        </div>
+              <div className="px-5 py-4 border-b border-gray-200">
+                <h2 className="font-semibold text-gray-900">
+                  Document Information
+                </h2>
+              </div>
 
-        {/* ====================================
-            Extracted Information
-        ===================================== */}
+              <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-        <div className="flex flex-col bg-white">
+                <InfoItem
+                  label="Vendor"
+                  value={vendorName}
+                />
 
-          <div className="flex-1 overflow-y-auto p-6">
+                <InfoItem
+                  label="Vendor Email"
+                  value={
+                    document.vendorId?.email ||
+                    "—"
+                  }
+                />
 
-            {/* Vendor */}
-            <div className="mb-6 rounded-xl border bg-gray-50 p-5">
+                <InfoItem
+                  label="Document Type"
+                  value={documentType}
+                />
 
-              <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
-                Vendor Information
-              </h2>
+                <InfoItem
+                  label="Service Type"
+                  value={serviceType}
+                />
 
-              <div className="flex items-center gap-3">
+                <InfoItem
+                  label="Uploaded"
+                  value={formatDate(
+                    document.createdAt
+                  )}
+                />
 
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100">
-                  <User
-                    size={21}
-                    className="text-blue-600"
-                  />
-                </div>
+                <InfoItem
+                  label="Expiry Date"
+                  value={formatDate(
+                    document.expiryDate
+                  )}
+                />
 
-                <div>
-                  <p className="font-semibold text-gray-900">
-                    {document.vendorId?.name ||
-                      "Unknown Vendor"}
-                  </p>
+                <InfoItem
+                  label="Version"
+                  value={
+                    document.version || 1
+                  }
+                />
 
-                  <p className="text-sm text-gray-500">
-                    {document.vendorId?.email || ""}
-                  </p>
-                </div>
+                <InfoItem
+                  label="Extraction"
+                  value={
+                    document.extractionStatus
+                  }
+                />
 
               </div>
 
             </div>
 
-            {/* Document Information */}
-            <div className="mb-6">
+            {/* Extracted data */}
+            <div className="bg-white border border-gray-200 rounded-xl">
 
-              <h2 className="mb-4 text-lg font-semibold text-gray-900">
-                Extracted Information
-              </h2>
-
-              <div className="space-y-4">
-
-                {/* Document Type */}
-                <div className="rounded-lg border p-4">
-
-                  <div className="mb-1 flex items-center gap-2 text-xs font-medium uppercase text-gray-500">
-                    <FileText size={15} />
-                    Document Type
-                  </div>
-
-                  <p className="font-medium text-gray-900">
-                    {extractedData.documentType ||
-                      "Not available"}
-                  </p>
-
-                </div>
-
-                {/* Document Number */}
-                <div className="rounded-lg border p-4">
-
-                  <div className="mb-1 flex items-center gap-2 text-xs font-medium uppercase text-gray-500">
-                    <Hash size={15} />
-                    Document Number
-                  </div>
-
-                  <p className="font-medium text-gray-900">
-                    {extractedData.documentNumber ||
-                      "Not available"}
-                  </p>
-
-                </div>
-
-                {/* Vendor Name from document */}
-                <div className="rounded-lg border p-4">
-
-                  <div className="mb-1 flex items-center gap-2 text-xs font-medium uppercase text-gray-500">
-                    <User size={15} />
-                    Name in Document
-                  </div>
-
-                  <p className="font-medium text-gray-900">
-                    {extractedData.vendorName ||
-                      "Not available"}
-                  </p>
-
-                </div>
-
-                {/* Issue Date */}
-                <div className="rounded-lg border p-4">
-
-                  <div className="mb-1 flex items-center gap-2 text-xs font-medium uppercase text-gray-500">
-                    <Calendar size={15} />
-                    Issue / Effective Date
-                  </div>
-
-                  <p className="font-medium text-gray-900">
-                    {extractedData.issueDate ||
-                      "Not available"}
-                  </p>
-
-                </div>
-
-                {/* Expiry Date */}
-                <div className="rounded-lg border p-4">
-
-                  <div className="mb-1 flex items-center gap-2 text-xs font-medium uppercase text-gray-500">
-                    <Calendar size={15} />
-                    Expiry Date
-                  </div>
-
-                  <p className="font-medium text-gray-900">
-                    {extractedData.expiryDate ||
-                      "No expiry date"}
-                  </p>
-
-                </div>
-
-                {/* Address */}
-                <div className="rounded-lg border p-4">
-
-                  <div className="mb-1 flex items-center gap-2 text-xs font-medium uppercase text-gray-500">
-                    <MapPin size={15} />
-                    Address
-                  </div>
-
-                  <p className="leading-relaxed text-gray-900">
-                    {extractedData.address ||
-                      "Not available"}
-                  </p>
-
-                </div>
-
+              <div className="px-5 py-4 border-b border-gray-200">
+                <h2 className="font-semibold text-gray-900">
+                  Extracted Information
+                </h2>
               </div>
 
-            </div>
+              <div className="p-5">
 
-            {/* Clauses */}
-            <div className="mb-6">
+                {Object.keys(extractedData)
+                  .length === 0 ? (
+                  <div className="text-center py-8">
 
-              <h2 className="mb-4 text-lg font-semibold text-gray-900">
-                Compliance Clauses
-              </h2>
+                    <AlertTriangle
+                      size={28}
+                      className="mx-auto text-amber-500"
+                    />
 
-              {extractedData.clauses?.length > 0 ? (
-                <div className="space-y-3">
+                    <p className="mt-3 text-sm text-gray-500">
+                      No extracted information
+                      available.
+                    </p>
 
-                  {extractedData.clauses.map(
-                    (clause, index) => (
-                      <div
-                        key={index}
-                        className="rounded-lg border bg-gray-50 p-4"
-                      >
-                        <div className="flex gap-3">
-                          <span className="font-semibold text-blue-600">
-                            {index + 1}.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+
+                    {Object.entries(
+                      extractedData
+                    ).map(
+                      ([key, value]) => (
+                        <div
+                          key={key}
+                          className="flex flex-col sm:flex-row sm:justify-between gap-1 border-b border-gray-100 pb-3 last:border-0"
+                        >
+                          <span className="text-sm font-medium text-gray-600 capitalize">
+                            {formatKey(key)}
                           </span>
 
-                          <p className="text-sm leading-relaxed text-gray-700">
-                            {clause}
-                          </p>
+                          <span className="text-sm text-gray-900 sm:text-right max-w-md break-words">
+                            {formatValue(
+                              value
+                            )}
+                          </span>
                         </div>
-                      </div>
-                    )
-                  )}
+                      )
+                    )}
 
-                </div>
-              ) : (
-                <div className="rounded-lg border bg-gray-50 p-4 text-sm text-gray-500">
-                  No compliance clauses were extracted.
+                  </div>
+                )}
+
+              </div>
+
+            </div>
+
+            {/* Rejection reason */}
+            {document.status ===
+              "REJECTED" &&
+              document.rejectionReason && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-5">
+
+                  <div className="flex gap-3">
+
+                    <XCircle
+                      size={20}
+                      className="text-red-600 flex-shrink-0"
+                    />
+
+                    <div>
+                      <h3 className="font-semibold text-red-800">
+                        Rejection Reason
+                      </h3>
+
+                      <p className="text-sm text-red-700 mt-1">
+                        {
+                          document.rejectionReason
+                        }
+                      </p>
+                    </div>
+
+                  </div>
+
                 </div>
               )}
 
-            </div>
+            {/* ================================================= */}
+            {/* Review Actions */}
+            {/* ================================================= */}
 
-            {/* AI Status */}
-            <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+            {isPending && (
+              <div className="bg-white border border-gray-200 rounded-xl p-5">
 
-              <div className="flex items-center gap-3">
+                <h2 className="font-semibold text-gray-900">
+                  Review Document
+                </h2>
 
-                <CheckCircle
-                  size={20}
-                  className="text-green-600"
-                />
+                <p className="text-sm text-gray-500 mt-1 mb-5">
+                  Verify the document and extracted
+                  information before making a decision.
+                </p>
 
-                <div>
-                  <p className="font-medium text-green-800">
-                    AI Extraction Completed
-                  </p>
+                {/* Reject box */}
+                {showRejectBox && (
+                  <div className="mb-5">
 
-                  <p className="text-sm text-green-700">
-                    The information above was extracted
-                    from the uploaded document.
-                  </p>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Rejection Reason
+                    </label>
+
+                    <textarea
+                      value={
+                        rejectionReason
+                      }
+                      onChange={(e) =>
+                        setRejectionReason(
+                          e.target.value
+                        )
+                      }
+                      rows={4}
+                      placeholder="Explain why this document is being rejected..."
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none resize-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    />
+
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-3">
+
+                  {!showRejectBox ? (
+                    <button
+                      onClick={() =>
+                        setShowRejectBox(
+                          true
+                        )
+                      }
+                      disabled={actionLoading}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-red-200 bg-red-50 text-red-600 font-medium text-sm hover:bg-red-100 disabled:opacity-50"
+                    >
+                      <XCircle size={17} />
+                      Reject
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleReject}
+                      disabled={
+                        actionLoading ||
+                        !rejectionReason.trim()
+                      }
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-red-600 text-white font-medium text-sm hover:bg-red-700 disabled:opacity-50"
+                    >
+                      {actionLoading ? (
+                        <Loader2
+                          size={17}
+                          className="animate-spin"
+                        />
+                      ) : (
+                        <XCircle size={17} />
+                      )}
+
+                      {actionLoading
+                        ? "Rejecting..."
+                        : "Confirm Rejection"}
+                    </button>
+                  )}
+
+                  <button
+                    onClick={handleApprove}
+                    disabled={actionLoading}
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-green-600 text-white font-medium text-sm hover:bg-green-700 disabled:opacity-50"
+                  >
+                    {actionLoading ? (
+                      <Loader2
+                        size={17}
+                        className="animate-spin"
+                      />
+                    ) : (
+                      <CheckCircle size={17} />
+                    )}
+
+                    {actionLoading
+                      ? "Processing..."
+                      : "Approve"}
+                  </button>
+
                 </div>
 
               </div>
-
-            </div>
-
-          </div>
-
-          {/* ==================================
-              Decision Footer
-          =================================== */}
-
-          <div className="border-t bg-white p-5">
-
-            <div className="mb-4">
-              <h3 className="font-semibold text-gray-900">
-                Compliance Decision
-              </h3>
-
-              <p className="text-sm text-gray-500">
-                Verify the extracted information against
-                the original document before making a
-                decision.
-              </p>
-            </div>
-
-            <div className="flex gap-3">
-
-              <button
-                onClick={() =>
-                  setShowRejectModal(true)
-                }
-                disabled={reviewing}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-3 font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <XCircle size={18} />
-                Reject
-              </button>
-
-              <button
-                onClick={handleApprove}
-                disabled={reviewing}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-3 font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {reviewing ? (
-                  <Loader2
-                    size={18}
-                    className="animate-spin"
-                  />
-                ) : (
-                  <CheckCircle size={18} />
-                )}
-
-                Approve
-              </button>
-
-            </div>
+            )}
 
           </div>
 
         </div>
 
       </div>
-
-      {/* ======================================
-          Reject Modal
-      ======================================= */}
-
-      {showRejectModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-
-          <div className="w-full max-w-md rounded-xl bg-white shadow-xl">
-
-            <div className="border-b px-6 py-5">
-
-              <h2 className="text-lg font-semibold text-gray-900">
-                Reject Document
-              </h2>
-
-              <p className="mt-1 text-sm text-gray-500">
-                Please provide a reason for rejecting
-                this document.
-              </p>
-
-            </div>
-
-            <div className="p-6">
-
-              <textarea
-                value={rejectionReason}
-                onChange={(e) =>
-                  setRejectionReason(e.target.value)
-                }
-                placeholder="Enter rejection reason..."
-                rows={5}
-                className="w-full resize-none rounded-lg border border-gray-300 p-3 text-sm outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
-              />
-
-            </div>
-
-            <div className="flex justify-end gap-3 border-t px-6 py-4">
-
-              <button
-                onClick={() => {
-                  setShowRejectModal(false);
-                  setRejectionReason("");
-                }}
-                disabled={reviewing}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={handleReject}
-                disabled={reviewing}
-                className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-              >
-                {reviewing && (
-                  <Loader2
-                    size={16}
-                    className="animate-spin"
-                  />
-                )}
-
-                Reject Document
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-      )}
-
     </div>
   );
 };
 
-export default DocumentReview;
+// ============================================================
+// Info Item
+// ============================================================
 
+const InfoItem = ({ label, value }) => {
+  return (
+    <div>
+      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+        {label}
+      </p>
+
+      <p className="text-sm font-medium text-gray-900 mt-1 break-words">
+        {value || "—"}
+      </p>
+    </div>
+  );
+};
+
+// ============================================================
+// Format extracted key
+// ============================================================
+
+const formatKey = (key) => {
+  return key
+    .replace(/([A-Z])/g, " $1")
+    .replace(/[_-]/g, " ")
+    .replace(/^./, (str) =>
+      str.toUpperCase()
+    );
+};
+
+// ============================================================
+// Format extracted value
+// ============================================================
+
+const formatValue = (value) => {
+  if (value === null || value === undefined) {
+    return "—";
+  }
+
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+
+  return String(value);
+};
+
+export default DocumentReview;

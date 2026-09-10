@@ -1,4 +1,8 @@
  const fs = require("fs");
+ const os = require("os");
+const axios = require("axios");
+const path = require("path");
+
 
 const cloudinary = require("../config/cloudinary");
 const VendorDocument = require("../models/VendorDocument");
@@ -433,9 +437,249 @@ const reviewDocument = async (req, res) => {
   }
 };
 
+const getAllDocuments = async (req, res) => {
+  try {
+    const organizationId = req.user.organizationId;
+
+    const documents = await VendorDocument.find({
+      organizationId,
+    })
+      .populate("vendorId", "name email companyName")
+      .populate("documentTypeId", "name description")
+      .populate("serviceTypeId", "name description")
+      .populate("reviewedBy", "name email")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: documents.length,
+      documents,
+    });
+  } catch (error) {
+    console.error("Get all documents error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch documents",
+      error: error.message,
+    });
+  }
+};
+ 
+
+
+const retryDocumentExtraction = async (req, res) => {
+  let temporaryFilePath = null;
+
+  try {
+    const { id } = req.params;
+    const organizationId = req.user.organizationId;
+
+    // -----------------------------------------
+    // 1. Find document
+    // -----------------------------------------
+
+    const document = await VendorDocument.findOne({
+      _id: id,
+      organizationId,
+    });
+
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        message: "Document not found",
+      });
+    }
+
+    // -----------------------------------------
+    // 2. Make sure file URL exists
+    // -----------------------------------------
+
+    if (!document.fileUrl) {
+      return res.status(400).json({
+        success: false,
+        message: "Document file is not available",
+      });
+    }
+
+    // -----------------------------------------
+    // 3. Only retry failed extraction
+    // -----------------------------------------
+
+    if (document.extractionStatus !== "FAILED") {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Extraction retry is only available for failed documents",
+      });
+    }
+
+    // -----------------------------------------
+    // 4. Mark extraction as processing
+    // -----------------------------------------
+
+    document.extractionStatus = "PROCESSING";
+    await document.save();
+
+    // -----------------------------------------
+    // 5. Create temporary file
+    // -----------------------------------------
+
+    const tempFileName = `vendor-document-${Date.now()}.pdf`;
+
+    temporaryFilePath = path.join(
+      os.tmpdir(),
+      tempFileName
+    );
+
+    // -----------------------------------------
+    // 6. Download PDF from Cloudinary
+    // -----------------------------------------
+
+    const response = await axios.get(document.fileUrl, {
+      responseType: "arraybuffer",
+    });
+
+    fs.writeFileSync(
+      temporaryFilePath,
+      response.data
+    );
+
+    // -----------------------------------------
+    // 7. Run Gemini extraction
+    // -----------------------------------------
+
+    console.log(
+      `Retrying Gemini extraction for document: ${document._id}`
+    );
+
+    const extractedData = await extractDocumentData(
+      temporaryFilePath
+    );
+
+    console.log(
+      "Retry extraction result:",
+      extractedData
+    );
+
+    // -----------------------------------------
+    // 8. Save extracted data
+    // -----------------------------------------
+
+    document.extractedData = extractedData || {};
+
+    document.extractionStatus = "COMPLETED";
+
+    // -----------------------------------------
+    // 9. Save expiry date
+    // -----------------------------------------
+
+    if (extractedData?.expiryDate) {
+      const expiryDate = new Date(
+        extractedData.expiryDate
+      );
+
+      if (!isNaN(expiryDate.getTime())) {
+        document.expiryDate = expiryDate;
+      }
+    }
+
+    await document.save();
+
+    // -----------------------------------------
+    // 10. Delete temporary file
+    // -----------------------------------------
+
+    if (temporaryFilePath) {
+      fs.unlink(temporaryFilePath, (err) => {
+        if (err) {
+          console.error(
+            "Failed to delete temporary file:",
+            err.message
+          );
+        }
+      });
+    }
+
+    temporaryFilePath = null;
+
+    // -----------------------------------------
+    // 11. Response
+    // -----------------------------------------
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Document details extracted successfully",
+      document: {
+        id: document._id,
+        extractionStatus:
+          document.extractionStatus,
+        extractedData:
+          document.extractedData,
+        expiryDate:
+          document.expiryDate,
+        status: document.status,
+      },
+    });
+  } catch (error) {
+    console.error(
+      "Retry document extraction error:",
+      error
+    );
+
+    // -----------------------------------------
+    // Mark extraction as failed
+    // -----------------------------------------
+
+    if (req.params.id) {
+      try {
+        await VendorDocument.findOneAndUpdate(
+          {
+            _id: req.params.id,
+            organizationId: req.user.organizationId,
+          },
+          {
+            extractionStatus: "FAILED",
+          }
+        );
+      } catch (updateError) {
+        console.error(
+          "Failed to update extraction status:",
+          updateError.message
+        );
+      }
+    }
+
+    // -----------------------------------------
+    // Delete temporary file
+    // -----------------------------------------
+
+    if (temporaryFilePath) {
+      fs.unlink(temporaryFilePath, (err) => {
+        if (err) {
+          console.error(
+            "Failed to delete temporary file:",
+            err.message
+          );
+        }
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Document extraction failed. Please try again.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   uploadVendorDocument,
   getPendingReviewDocuments,
   getDocumentForReview,
   reviewDocument,
+  getAllDocuments,
+  retryDocumentExtraction,
 };

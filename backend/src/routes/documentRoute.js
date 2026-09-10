@@ -13,6 +13,8 @@ const {
   getPendingReviewDocuments,
   getDocumentForReview,
   reviewDocument,
+  getAllDocuments,
+  retryDocumentExtraction,
 } = require("../controller/documentController");
 
 const protect = require("../middleware/authMiddleware");
@@ -42,18 +44,31 @@ router.get(
   getPendingReviewDocuments
 );
 
+router.get(
+  "/",
+  protect,
+  authorizeRoles("COMPLIANCE_OFFICER"),getAllDocuments
+);
+
 
 // ==========================================
 // Compliance Officer
 // Get single document for review
 // ==========================================
 
+router.post(
+  "/:id/retry-extraction",
+  protect,
+  authorizeRoles("COMPLIANCE_OFFICER"),
+  retryDocumentExtraction
+);
 router.get(
   "/:id",
   protect,
   authorizeRoles("COMPLIANCE_OFFICER"),
   getDocumentForReview
 );
+
 
 
 // ==========================================
@@ -69,4 +84,4 @@ router.put(
 );
 
 
-module.exports = router;
+module.exports = router; 

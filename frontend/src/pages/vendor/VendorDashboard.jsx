@@ -31,7 +31,7 @@ const VendorDashboard = () => {
         setError("");
 
         const response = await axiosInstance.get(
-          "/api/vendor/auth/dashboard"
+          "/api/vendor/dashboard"
         );
 
         setDashboard(response.data.data);
