@@ -1,8 +1,6 @@
-
-import React, { useState } from "react";
+ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-
 import {
   ShieldCheck,
   Building2,
@@ -78,8 +76,6 @@ export default function RegisterPage() {
   // STEP
   // =====================================================
 
-  // 1 = Organization Details
-  // 2 = Super Admin Details
   const [step, setStep] = useState(1);
 
   // =====================================================
@@ -96,7 +92,6 @@ export default function RegisterPage() {
     state: "",
     city: "",
     website: "",
-
     adminName: "",
     adminEmail: "",
     password: "",
@@ -110,7 +105,6 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [useOfficialForAdmin, setUseOfficialForAdmin] =
     useState(false);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -192,7 +186,6 @@ export default function RegisterPage() {
       setError(
         "Please fill in all required organization fields before proceeding."
       );
-
       return;
     }
 
@@ -259,7 +252,6 @@ export default function RegisterPage() {
       setError(
         "Please fill in all super admin details."
       );
-
       return;
     }
 
@@ -283,7 +275,6 @@ export default function RegisterPage() {
       setError(
         "Password must be at least 6 characters long."
       );
-
       return;
     }
 
@@ -302,20 +293,6 @@ export default function RegisterPage() {
       // ===================================================
       // PAYLOAD
       // ===================================================
-
-      /*
-       * IMPORTANT:
-       *
-       * companySize values here MUST exactly match
-       * the enum in the Organization schema:
-       *
-       * "1-10"
-       * "11-50"
-       * "51-200"
-       * "201-500"
-       * "501-1000"
-       * "1000+"
-       */
 
       const payload = {
         organizationName:
@@ -385,17 +362,6 @@ export default function RegisterPage() {
           "Organization registered successfully! Redirecting..."
         );
 
-        /*
-         * Backend already:
-         *
-         * 1. Created Organization
-         * 2. Created SUPER_ADMIN
-         * 3. Generated JWT
-         * 4. Set JWT in HTTP-only cookie
-         *
-         * AuthContext should update the authenticated user.
-         */
-
         setTimeout(() => {
           navigate(
             "/super-admin/dashboard",
@@ -423,7 +389,6 @@ export default function RegisterPage() {
       const backendData =
         err.response?.data;
 
-      // If backend returns validation errors
       if (
         backendData?.errors &&
         Array.isArray(backendData.errors)
@@ -465,794 +430,1069 @@ export default function RegisterPage() {
   // =====================================================
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-12 transition-colors">
-      <div className="w-full max-w-2xl">
+    <div className="min-h-screen bg-[#06142d] text-white relative overflow-hidden">
 
-        {/* =================================================
-            LOGO & HEADER
-        ================================================= */}
+      {/* ==================================================
+          BACKGROUND EFFECTS
+      ================================================== */}
 
-        <div className="text-center mb-8">
+      <div className="absolute inset-0 pointer-events-none">
 
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2.5 group"
-          >
+        {/* Blue glow */}
+        <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-blue-600/15 blur-[120px]" />
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">
-              <ShieldCheck className="h-6 w-6" />
-            </div>
+        {/* Violet glow */}
+        <div className="absolute top-1/4 -right-40 h-[500px] w-[500px] rounded-full bg-violet-600/15 blur-[120px]" />
 
-            <div className="flex items-center gap-1.5">
+        {/* Bottom glow */}
+        <div className="absolute -bottom-60 left-1/3 h-[450px] w-[450px] rounded-full bg-indigo-600/10 blur-[120px]" />
 
-              <span className="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">
-                Vendor
-                <span className="text-indigo-600 dark:text-indigo-400">
-                  Vault
-                </span>
-              </span>
+        {/* Grid */}
+        <div
+          className="absolute inset-0 opacity-[0.035]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
+            backgroundSize: "50px 50px",
+          }}
+        />
+      </div>
 
-              <span className="inline-flex items-center gap-0.5 rounded-md bg-indigo-50 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-600/20 dark:bg-indigo-950/50 dark:text-indigo-300">
-                <Sparkles className="h-2.5 w-2.5" />
-                AI
-              </span>
+      {/* ==================================================
+          MAIN
+      ================================================== */}
 
-            </div>
-          </Link>
+      <div className="relative min-h-screen flex items-center justify-center px-4 py-8 sm:px-6">
 
-          <h1 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
-            Register Your Organization
-          </h1>
+        <div className="w-full max-w-[1120px]">
 
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Set up your organization and configure your
-            Super Admin account
-          </p>
+         
 
-        </div>
+          {/* ==================================================
+              MAIN LAYOUT
+          ================================================== */}
 
-        {/* =================================================
-            STEP INDICATOR
-        ================================================= */}
+          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-12 items-start">
 
-        <div className="mb-8 flex items-center justify-center gap-4">
+            {/* ==================================================
+                LEFT BRAND / INFORMATION
+            ================================================== */}
 
-          {/* STEP 1 */}
+            <div className="hidden lg:block pt-4">
 
-          <div className="flex items-center gap-2">
+              {/* Logo */}
 
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-colors ${
-                step >= 1
-                  ? "bg-indigo-600 text-white"
-                  : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-              }`}
-            >
-              {step > 1 ? (
-                <CheckCircle2 className="h-4 w-4" />
-              ) : (
-                "1"
-              )}
-            </div>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-3 group mb-9"
+              >
 
-            <span
-              className={`text-xs font-semibold ${
-                step === 1
-                  ? "text-indigo-600 dark:text-indigo-400"
-                  : "text-slate-500 dark:text-slate-400"
-              }`}
-            >
-              Organization Details
-            </span>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-violet-600 to-purple-600 shadow-lg shadow-violet-600/25 group-hover:scale-105 transition-transform">
+                  <ShieldCheck className="h-6 w-6" />
+                </div>
 
-          </div>
+                <div className="flex items-center gap-2">
 
-          <div
-            className={`h-0.5 w-12 transition-colors ${
-              step === 2
-                ? "bg-indigo-600"
-                : "bg-slate-200 dark:bg-slate-800"
-            }`}
-          />
-
-          {/* STEP 2 */}
-
-          <div className="flex items-center gap-2">
-
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-colors ${
-                step === 2
-                  ? "bg-indigo-600 text-white"
-                  : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-              }`}
-            >
-              2
-            </div>
-
-            <span
-              className={`text-xs font-semibold ${
-                step === 2
-                  ? "text-indigo-600 dark:text-indigo-400"
-                  : "text-slate-500 dark:text-slate-400"
-              }`}
-            >
-              Super Admin Account
-            </span>
-
-          </div>
-
-        </div>
-
-        {/* =================================================
-            MAIN CARD
-        ================================================= */}
-
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900">
-
-          {/* ERROR MESSAGE */}
-
-          {error && (
-            <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300">
-
-              <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-
-              <span>{error}</span>
-
-            </div>
-          )}
-
-          {/* SUCCESS MESSAGE */}
-
-          {successMsg && (
-            <div className="mb-6 flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
-
-              <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
-
-              <span>{successMsg}</span>
-
-            </div>
-          )}
-
-          {/* =================================================
-              STEP 1
-          ================================================= */}
-
-          {step === 1 && (
-            <form
-              onSubmit={handleNextStep}
-              className="space-y-4"
-            >
-
-              <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-2">
-
-                <Building2 className="h-4 w-4 text-indigo-500" />
-
-                Company & Contact Information
-
-              </h2>
-
-              {/* ORGANIZATION NAME */}
-
-              <div>
-
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Organization Name{" "}
-                  <span className="text-rose-500">
-                    *
+                  <span className="text-2xl font-bold tracking-tight">
+                    Vendor
+                    <span className="text-blue-400">
+                      Vault
+                    </span>
                   </span>
-                </label>
 
-                <div className="relative">
-
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                    <Building2 className="h-4 w-4" />
-                  </div>
-
-                  <input
-                    type="text"
-                    name="organizationName"
-                    value={
-                      formData.organizationName
-                    }
-                    onChange={handleChange}
-                    placeholder="Acme Global Enterprises"
-                    required
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                  />
-
-                </div>
-
-              </div>
-
-              {/* EMAIL + PHONE */}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                {/* OFFICIAL EMAIL */}
-
-                <div>
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Official Email{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <div className="relative">
-
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                      <Mail className="h-4 w-4" />
-                    </div>
-
-                    <input
-                      type="email"
-                      name="officialEmail"
-                      value={
-                        formData.officialEmail
-                      }
-                      onChange={handleChange}
-                      placeholder="compliance@acme.com"
-                      required
-                      className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                    />
-
-                  </div>
-
-                </div>
-
-                {/* PHONE */}
-
-                <div>
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Official Phone{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <div className="relative">
-
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                      <Phone className="h-4 w-4" />
-                    </div>
-
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="+91 98765 43210"
-                      required
-                      className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                    />
-
-                  </div>
-
-                </div>
-
-              </div>
-
-              {/* INDUSTRY + COMPANY SIZE */}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                {/* INDUSTRY */}
-
-                <div>
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Industry{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <div className="relative">
-
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                      <Briefcase className="h-4 w-4" />
-                    </div>
-
-                    <select
-                      name="industry"
-                      value={formData.industry}
-                      onChange={handleChange}
-                      required
-                      className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                    >
-
-                      <option value="">
-                        Select Industry
-                      </option>
-
-                      {INDUSTRIES.map(
-                        (industry) => (
-                          <option
-                            key={industry}
-                            value={industry}
-                          >
-                            {industry}
-                          </option>
-                        )
-                      )}
-
-                    </select>
-
-                  </div>
-
-                </div>
-
-                {/* COMPANY SIZE */}
-
-                <div>
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Company Size{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <div className="relative">
-
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                      <Users className="h-4 w-4" />
-                    </div>
-
-                    <select
-                      name="companySize"
-                      value={
-                        formData.companySize
-                      }
-                      onChange={handleChange}
-                      required
-                      className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                    >
-
-                      <option value="">
-                        Select Size
-                      </option>
-
-                      {COMPANY_SIZES.map(
-                        (size) => (
-                          <option
-                            key={size.value}
-                            value={size.value}
-                          >
-                            {size.label}
-                          </option>
-                        )
-                      )}
-
-                    </select>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-              {/* COUNTRY / STATE / CITY */}
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-                {/* COUNTRY */}
-
-                <div>
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Country{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    placeholder="India"
-                    required
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                  />
-
-                </div>
-
-                {/* STATE */}
-
-                <div>
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    State{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    placeholder="Uttar Pradesh"
-                    required
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                  />
-
-                </div>
-
-                {/* CITY */}
-
-                <div>
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    City{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    placeholder="Lucknow"
-                    required
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                  />
-
-                </div>
-
-              </div>
-
-              {/* WEBSITE */}
-
-              <div>
-
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Website{" "}
-                  <span className="text-slate-400 font-normal">
-                    (Optional)
+                  <span className="inline-flex items-center gap-1 rounded-md border border-violet-400/20 bg-violet-500/10 px-2 py-1 text-[10px] font-semibold text-violet-300">
+                    <Sparkles className="h-3 w-3" />
+                    AI
                   </span>
-                </label>
 
-                <div className="relative">
+                </div>
 
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                    <Globe className="h-4 w-4" />
+              </Link>
+
+              {/* Heading */}
+
+              <div className="max-w-md">
+
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1.5 text-[11px] font-semibold tracking-wider text-violet-300">
+                  <Building2 className="h-3.5 w-3.5" />
+                  GET STARTED WITH VENDORVAULT
+                </div>
+
+                <h1 className="text-4xl xl:text-5xl font-bold leading-[1.08] tracking-tight">
+
+                  Build your{" "}
+                  <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    compliance workspace.
+                  </span>
+
+                </h1>
+
+                <p className="mt-5 text-base leading-7 text-slate-400">
+                  Create your organization, configure your
+                  administrator account, and start managing
+                  vendor compliance from one secure platform.
+                </p>
+
+              </div>
+
+              {/* Benefits */}
+
+              <div className="mt-9 space-y-4">
+
+                <div className="flex items-center gap-3 text-sm text-slate-300">
+
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-blue-400/10 bg-blue-500/10">
+                    <CheckCircle2 className="h-4 w-4 text-blue-400" />
                   </div>
 
-                  <input
-                    type="url"
-                    name="website"
-                    value={formData.website}
-                    onChange={handleChange}
-                    placeholder="https://acme.com"
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                  />
+                  Centralized vendor document management
+
+                </div>
+
+                <div className="flex items-center gap-3 text-sm text-slate-300">
+
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-violet-400/10 bg-violet-500/10">
+                    <CheckCircle2 className="h-4 w-4 text-violet-400" />
+                  </div>
+
+                  AI-powered document extraction
+
+                </div>
+
+                <div className="flex items-center gap-3 text-sm text-slate-300">
+
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-purple-400/10 bg-purple-500/10">
+                    <CheckCircle2 className="h-4 w-4 text-purple-400" />
+                  </div>
+
+                  Automated compliance monitoring
 
                 </div>
 
               </div>
 
-              {/* NEXT BUTTON */}
+              {/* Steps preview */}
 
-              <div className="pt-4">
+              <div className="mt-10 rounded-2xl border border-white/10 bg-white/[0.035] p-5">
 
-                <button
-                  type="submit"
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/25 hover:bg-indigo-500 transition-all"
+                <p className="mb-4 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                  Simple setup
+                </p>
+
+                <div className="space-y-4">
+
+                  <div className="flex items-center gap-3">
+
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-[11px] font-bold">
+                      1
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold text-slate-200">
+                        Organization details
+                      </p>
+                      <p className="text-[10px] text-slate-500">
+                        Company & location information
+                      </p>
+                    </div>
+
+                  </div>
+
+                  <div className="ml-3.5 h-4 border-l border-dashed border-white/10" />
+
+                  <div className="flex items-center gap-3">
+
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-[11px] font-bold text-slate-400">
+                      2
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold text-slate-300">
+                        Super Admin account
+                      </p>
+                      <p className="text-[10px] text-slate-500">
+                        Configure your administrator
+                      </p>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* ==================================================
+                RIGHT REGISTRATION AREA
+            ================================================== */}
+
+            <div>
+
+              {/* Mobile Logo */}
+
+              <div className="lg:hidden text-center mb-6">
+
+                <Link
+                  to="/"
+                  className="inline-flex items-center gap-2.5"
                 >
 
-                  <span>
-                    Continue to Admin Setup
-                  </span>
-
-                  <ArrowRight className="h-4 w-4" />
-
-                </button>
-
-              </div>
-
-            </form>
-          )}
-
-          {/* =================================================
-              STEP 2
-          ================================================= */}
-
-          {step === 2 && (
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-4"
-            >
-
-              <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-2">
-
-                <User className="h-4 w-4 text-indigo-500" />
-
-                Super Admin Account Credentials
-
-              </h2>
-
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                This account will have primary
-                administrative control over organization
-                policies, users, and vendor approvals.
-              </p>
-
-              {/* ADMIN NAME */}
-
-              <div>
-
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Admin Full Name{" "}
-                  <span className="text-rose-500">
-                    *
-                  </span>
-                </label>
-
-                <div className="relative">
-
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                    <User className="h-4 w-4" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-violet-600 to-purple-600 shadow-lg shadow-violet-600/20">
+                    <ShieldCheck className="h-5 w-5" />
                   </div>
 
-                  <input
-                    type="text"
-                    name="adminName"
-                    value={formData.adminName}
-                    onChange={handleChange}
-                    placeholder="Uttam Gupta"
-                    required
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                  />
+                  <div className="flex items-center gap-1.5">
 
-                </div>
-
-              </div>
-
-              {/* ADMIN EMAIL */}
-
-              <div>
-
-                <div className="flex items-center justify-between mb-1">
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                    Admin Work Email{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <label className="flex items-center gap-1.5 text-[11px] text-indigo-600 dark:text-indigo-400 cursor-pointer">
-
-                    <input
-                      type="checkbox"
-                      checked={useOfficialForAdmin}
-                      onChange={
-                        handleUseOfficialToggle
-                      }
-                      className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-
-                    <span>
-                      Same as official email
-                    </span>
-
-                  </label>
-
-                </div>
-
-                <div className="relative">
-
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                    <Mail className="h-4 w-4" />
-                  </div>
-
-                  <input
-                    type="email"
-                    name="adminEmail"
-                    value={formData.adminEmail}
-                    onChange={handleChange}
-                    placeholder="admin@acme.com"
-                    required
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                  />
-
-                </div>
-
-              </div>
-
-              {/* PASSWORDS */}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                {/* PASSWORD */}
-
-                <div>
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Password{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <div className="relative">
-
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                      <Lock className="h-4 w-4" />
-                    </div>
-
-                    <input
-                      type={
-                        showPassword
-                          ? "text"
-                          : "password"
-                      }
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="••••••••"
-                      required
-                      minLength={6}
-                      className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-10 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPassword(
-                          (prev) => !prev
-                        )
-                      }
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                    >
-
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-                {/* CONFIRM PASSWORD */}
-
-                <div>
-
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Confirm Password{" "}
-                    <span className="text-rose-500">
-                      *
-                    </span>
-                  </label>
-
-                  <div className="relative">
-
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                      <Lock className="h-4 w-4" />
-                    </div>
-
-                    <input
-                      type={
-                        showPassword
-                          ? "text"
-                          : "password"
-                      }
-                      name="confirmPassword"
-                      value={
-                        formData.confirmPassword
-                      }
-                      onChange={handleChange}
-                      placeholder="••••••••"
-                      required
-                      className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                    />
-
-                  </div>
-
-                </div>
-
-              </div>
-
-              {/* PASSWORD INFO */}
-
-              <div className="rounded-lg bg-slate-50 dark:bg-slate-800/50 p-2.5 text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2">
-
-                <ShieldCheck className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-
-                <span>
-                  Password will be securely encrypted
-                  with bcrypt (salt rounds: 10).
-                </span>
-
-              </div>
-
-              {/* ACTION BUTTONS */}
-
-              <div className="flex items-center gap-3 pt-4">
-
-                {/* BACK */}
-
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  disabled={loading}
-                  className="w-1/3 flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
-                >
-
-                  <ArrowLeft className="h-4 w-4" />
-
-                  <span>
-                    Back
-                  </span>
-
-                </button>
-
-                {/* SUBMIT */}
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-2/3 flex items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/25 hover:bg-indigo-500 disabled:opacity-60 transition-all"
-                >
-
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-
-                      <span>
-                        Creating Organization...
+                    <span className="font-bold text-xl">
+                      Vendor
+                      <span className="text-blue-400">
+                        Vault
                       </span>
-                    </>
-                  ) : (
-                    <>
-                      <span>
-                        Complete Registration
-                      </span>
+                    </span>
 
-                      <CheckCircle2 className="h-4 w-4" />
-                    </>
-                  )}
+                    <span className="inline-flex items-center gap-0.5 rounded-md bg-violet-500/10 border border-violet-400/20 px-1.5 py-0.5 text-[9px] font-semibold text-violet-300">
+                      <Sparkles className="h-2.5 w-2.5" />
+                      AI
+                    </span>
 
-                </button>
+                  </div>
+
+                </Link>
 
               </div>
 
-            </form>
-          )}
+              {/* Page heading */}
 
-          {/* =================================================
-              FOOTER
-          ================================================= */}
+              <div className="mb-5 lg:hidden text-center">
 
-          <div className="mt-6 border-t border-slate-100 pt-4 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                <h1 className="text-2xl font-bold">
+                  Register Your Organization
+                </h1>
 
-            Already have an organization account?{" "}
+                <p className="mt-1 text-sm text-slate-400">
+                  Set up your organization and Super Admin account
+                </p>
 
-            <Link
-              to="/login"
-              className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
-            >
-              Sign In
-            </Link>
+              </div>
+
+              {/* ==================================================
+                  REGISTRATION CARD
+              ================================================== */}
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.045] p-5 sm:p-7 shadow-2xl shadow-black/30 backdrop-blur-xl">
+
+                {/* ==================================================
+                    HEADER
+                ================================================== */}
+
+                <div className="mb-7 hidden lg:block">
+
+                  <h2 className="text-2xl font-bold tracking-tight">
+                    Create your organization
+                  </h2>
+
+                  <p className="mt-1.5 text-sm text-slate-400">
+                    Complete the setup in two simple steps.
+                  </p>
+
+                </div>
+
+                {/* ==================================================
+                    STEP INDICATOR
+                ================================================== */}
+
+                <div className="mb-7">
+
+                  <div className="flex items-center">
+
+                    {/* STEP 1 */}
+
+                    <div className="flex items-center gap-2">
+
+                      <div
+                        className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold transition-all ${
+                          step >= 1
+                            ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-lg shadow-violet-600/20"
+                            : "bg-white/10 text-slate-500"
+                        }`}
+                      >
+                        {step > 1 ? (
+                          <CheckCircle2 className="h-4 w-4" />
+                        ) : (
+                          "1"
+                        )}
+                      </div>
+
+                      <div className="hidden sm:block">
+
+                        <p
+                          className={`text-xs font-semibold ${
+                            step === 1
+                              ? "text-white"
+                              : "text-slate-500"
+                          }`}
+                        >
+                          Organization
+                        </p>
+
+                        <p className="text-[10px] text-slate-600">
+                          Company details
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    {/* CONNECTOR */}
+
+                    <div
+                      className={`mx-3 sm:mx-5 h-px flex-1 transition-all ${
+                        step === 2
+                          ? "bg-gradient-to-r from-blue-600 to-violet-600"
+                          : "bg-white/10"
+                      }`}
+                    />
+
+                    {/* STEP 2 */}
+
+                    <div className="flex items-center gap-2">
+
+                      <div
+                        className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold transition-all ${
+                          step === 2
+                            ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-600/20"
+                            : "bg-white/10 text-slate-500"
+                        }`}
+                      >
+                        2
+                      </div>
+
+                      <div className="hidden sm:block">
+
+                        <p
+                          className={`text-xs font-semibold ${
+                            step === 2
+                              ? "text-white"
+                              : "text-slate-500"
+                          }`}
+                        >
+                          Super Admin
+                        </p>
+
+                        <p className="text-[10px] text-slate-600">
+                          Account credentials
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {/* ==================================================
+                    ALERTS
+                ================================================== */}
+
+                {error && (
+                  <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 p-3.5 text-xs text-rose-300">
+                    <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                    <span>{error}</span>
+                  </div>
+                )}
+
+                {successMsg && (
+                  <div className="mb-6 flex items-center gap-2.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3.5 text-xs text-emerald-300">
+                    <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+                    <span>{successMsg}</span>
+                  </div>
+                )}
+
+                {/* ==================================================
+                    STEP 1
+                ================================================== */}
+
+                {step === 1 && (
+                  <form
+                    onSubmit={handleNextStep}
+                    className="space-y-4"
+                  >
+
+                    {/* Section title */}
+
+                    <div className="mb-5">
+
+                      <div className="flex items-center gap-2">
+
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-400/10">
+                          <Building2 className="h-4 w-4 text-blue-400" />
+                        </div>
+
+                        <div>
+
+                          <h3 className="text-sm font-semibold text-white">
+                            Company & Contact Information
+                          </h3>
+
+                          <p className="text-[10px] text-slate-500">
+                            Tell us about your organization
+                          </p>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* Organization name */}
+
+                    <div>
+
+                      <label className="block mb-2 text-xs font-medium text-slate-300">
+                        Organization Name{" "}
+                        <span className="text-rose-400">*</span>
+                      </label>
+
+                      <div className="relative">
+
+                        <Building2 className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                        <input
+                          type="text"
+                          name="organizationName"
+                          value={
+                            formData.organizationName
+                          }
+                          onChange={handleChange}
+                          placeholder="Acme Global Enterprises"
+                          required
+                          className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                        />
+
+                      </div>
+
+                    </div>
+
+                    {/* Email + Phone */}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                      {/* Official Email */}
+
+                      <div>
+
+                        <label className="block mb-2 text-xs font-medium text-slate-300">
+                          Official Email{" "}
+                          <span className="text-rose-400">*</span>
+                        </label>
+
+                        <div className="relative">
+
+                          <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                          <input
+                            type="email"
+                            name="officialEmail"
+                            value={
+                              formData.officialEmail
+                            }
+                            onChange={handleChange}
+                            placeholder="compliance@acme.com"
+                            required
+                            className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                          />
+
+                        </div>
+
+                      </div>
+
+                      {/* Phone */}
+
+                      <div>
+
+                        <label className="block mb-2 text-xs font-medium text-slate-300">
+                          Official Phone{" "}
+                          <span className="text-rose-400">*</span>
+                        </label>
+
+                        <div className="relative">
+
+                          <Phone className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            placeholder="+91 98765 43210"
+                            required
+                            className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                          />
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* Industry + Company Size */}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                      {/* Industry */}
+
+                      <div>
+
+                        <label className="block mb-2 text-xs font-medium text-slate-300">
+                          Industry{" "}
+                          <span className="text-rose-400">*</span>
+                        </label>
+
+                        <div className="relative">
+
+                          <Briefcase className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                          <select
+                            name="industry"
+                            value={formData.industry}
+                            onChange={handleChange}
+                            required
+                            className="w-full appearance-none rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                          >
+
+                            <option
+                              value=""
+                              className="bg-[#081a36]"
+                            >
+                              Select Industry
+                            </option>
+
+                            {INDUSTRIES.map(
+                              (industry) => (
+                                <option
+                                  key={industry}
+                                  value={industry}
+                                  className="bg-[#081a36]"
+                                >
+                                  {industry}
+                                </option>
+                              )
+                            )}
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      {/* Company Size */}
+
+                      <div>
+
+                        <label className="block mb-2 text-xs font-medium text-slate-300">
+                          Company Size{" "}
+                          <span className="text-rose-400">*</span>
+                        </label>
+
+                        <div className="relative">
+
+                          <Users className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                          <select
+                            name="companySize"
+                            value={
+                              formData.companySize
+                            }
+                            onChange={handleChange}
+                            required
+                            className="w-full appearance-none rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                          >
+
+                            <option
+                              value=""
+                              className="bg-[#081a36]"
+                            >
+                              Select Size
+                            </option>
+
+                            {COMPANY_SIZES.map(
+                              (size) => (
+                                <option
+                                  key={size.value}
+                                  value={size.value}
+                                  className="bg-[#081a36]"
+                                >
+                                  {size.label}
+                                </option>
+                              )
+                            )}
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* Country / State / City */}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                      {/* Country */}
+
+                      <div>
+
+                        <label className="block mb-2 text-xs font-medium text-slate-300">
+                          Country{" "}
+                          <span className="text-rose-400">*</span>
+                        </label>
+
+                        <input
+                          type="text"
+                          name="country"
+                          value={formData.country}
+                          onChange={handleChange}
+                          placeholder="India"
+                          required
+                          className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                        />
+
+                      </div>
+
+                      {/* State */}
+
+                      <div>
+
+                        <label className="block mb-2 text-xs font-medium text-slate-300">
+                          State{" "}
+                          <span className="text-rose-400">*</span>
+                        </label>
+
+                        <input
+                          type="text"
+                          name="state"
+                          value={formData.state}
+                          onChange={handleChange}
+                          placeholder="Uttar Pradesh"
+                          required
+                          className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                        />
+
+                      </div>
+
+                      {/* City */}
+
+                      <div>
+
+                        <label className="block mb-2 text-xs font-medium text-slate-300">
+                          City{" "}
+                          <span className="text-rose-400">*</span>
+                        </label>
+
+                        <input
+                          type="text"
+                          name="city"
+                          value={formData.city}
+                          onChange={handleChange}
+                          placeholder="Lucknow"
+                          required
+                          className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                        />
+
+                      </div>
+
+                    </div>
+
+                    {/* Website */}
+
+                    <div>
+
+                      <label className="block mb-2 text-xs font-medium text-slate-300">
+
+                        Website{" "}
+
+                        <span className="text-slate-600 font-normal">
+                          (Optional)
+                        </span>
+
+                      </label>
+
+                      <div className="relative">
+
+                        <Globe className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                        <input
+                          type="url"
+                          name="website"
+                          value={formData.website}
+                          onChange={handleChange}
+                          placeholder="https://acme.com"
+                          className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                        />
+
+                      </div>
+
+                    </div>
+
+                    {/* Continue */}
+
+                    <div className="pt-3">
+
+                      <button
+                        type="submit"
+                        className="group w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-violet-600 to-purple-600 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/20 transition-all hover:-translate-y-0.5 hover:shadow-violet-600/30"
+                      >
+
+                        <span>
+                          Continue to Admin Setup
+                        </span>
+
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+
+                      </button>
+
+                    </div>
+
+                  </form>
+                )}
+
+                {/* ==================================================
+                    STEP 2
+                ================================================== */}
+
+                {step === 2 && (
+                  <form
+                    onSubmit={handleSubmit}
+                    className="space-y-5"
+                  >
+
+                    {/* Section title */}
+
+                    <div className="mb-5">
+
+                      <div className="flex items-center gap-2">
+
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10 border border-violet-400/10">
+                          <User className="h-4 w-4 text-violet-400" />
+                        </div>
+
+                        <div>
+
+                          <h3 className="text-sm font-semibold text-white">
+                            Super Admin Account
+                          </h3>
+
+                          <p className="text-[10px] text-slate-500">
+                            Configure your primary administrator
+                          </p>
+
+                        </div>
+
+                      </div>
+
+                      <p className="mt-4 rounded-xl border border-white/5 bg-white/[0.025] p-3 text-xs leading-5 text-slate-400">
+                        This account will have primary
+                        administrative control over organization
+                        policies, users, and vendor approvals.
+                      </p>
+
+                    </div>
+
+                    {/* Admin name */}
+
+                    <div>
+
+                      <label className="block mb-2 text-xs font-medium text-slate-300">
+                        Admin Full Name{" "}
+                        <span className="text-rose-400">*</span>
+                      </label>
+
+                      <div className="relative">
+
+                        <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                        <input
+                          type="text"
+                          name="adminName"
+                          value={formData.adminName}
+                          onChange={handleChange}
+                          placeholder="Your full name"
+                          required
+                          className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-violet-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-violet-500/10"
+                        />
+
+                      </div>
+
+                    </div>
+
+                    {/* Admin email */}
+
+                    <div>
+
+                      <div className="flex items-center justify-between mb-2">
+
+                        <label className="block text-xs font-medium text-slate-300">
+
+                          Admin Work Email{" "}
+                          <span className="text-rose-400">
+                            *
+                          </span>
+
+                        </label>
+
+                        <label className="flex items-center gap-1.5 text-[10px] text-violet-300 cursor-pointer">
+
+                          <input
+                            type="checkbox"
+                            checked={
+                              useOfficialForAdmin
+                            }
+                            onChange={
+                              handleUseOfficialToggle
+                            }
+                            className="h-3.5 w-3.5 rounded border-white/20 bg-[#081a36] text-violet-600 focus:ring-violet-500 focus:ring-offset-0"
+                          />
+
+                          <span>
+                            Same as official email
+                          </span>
+
+                        </label>
+
+                      </div>
+
+                      <div className="relative">
+
+                        <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                        <input
+                          type="email"
+                          name="adminEmail"
+                          value={
+                            formData.adminEmail
+                          }
+                          onChange={handleChange}
+                          placeholder="admin@acme.com"
+                          required
+                          className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-violet-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-violet-500/10"
+                        />
+
+                      </div>
+
+                    </div>
+
+                    {/* Passwords */}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                      {/* Password */}
+
+                      <div>
+
+                        <label className="block mb-2 text-xs font-medium text-slate-300">
+
+                          Password{" "}
+                          <span className="text-rose-400">
+                            *
+                          </span>
+
+                        </label>
+
+                        <div className="relative">
+
+                          <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                          <input
+                            type={
+                              showPassword
+                                ? "text"
+                                : "password"
+                            }
+                            name="password"
+                            value={
+                              formData.password
+                            }
+                            onChange={handleChange}
+                            placeholder="••••••••"
+                            required
+                            minLength={6}
+                            className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-11 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-violet-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-violet-500/10"
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowPassword(
+                                (prev) => !prev
+                              )
+                            }
+                            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                            aria-label="Toggle password visibility"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+
+                        </div>
+
+                      </div>
+
+                      {/* Confirm password */}
+
+                      <div>
+
+                        <label className="block mb-2 text-xs font-medium text-slate-300">
+
+                          Confirm Password{" "}
+                          <span className="text-rose-400">
+                            *
+                          </span>
+
+                        </label>
+
+                        <div className="relative">
+
+                          <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                          <input
+                            type={
+                              showPassword
+                                ? "text"
+                                : "password"
+                            }
+                            name="confirmPassword"
+                            value={
+                              formData.confirmPassword
+                            }
+                            onChange={handleChange}
+                            placeholder="••••••••"
+                            required
+                            className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-violet-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-violet-500/10"
+                          />
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* Security info */}
+
+                    <div className="flex items-start gap-3 rounded-xl border border-emerald-500/10 bg-emerald-500/5 p-3.5">
+
+                      <ShieldCheck className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+
+                      <div>
+
+                        <p className="text-xs font-medium text-emerald-300">
+                          Secure account creation
+                        </p>
+
+                        <p className="mt-0.5 text-[10px] leading-4 text-slate-500">
+                          Your password is securely hashed
+                          before being stored.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    {/* Buttons */}
+
+                    <div className="flex items-center gap-3 pt-2">
+
+                      {/* Back */}
+
+                      <button
+                        type="button"
+                        onClick={handleBack}
+                        disabled={loading}
+                        className="w-1/3 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.025] py-3 text-sm font-semibold text-slate-400 hover:bg-white/[0.05] hover:text-white disabled:opacity-50 transition-all"
+                      >
+
+                        <ArrowLeft className="h-4 w-4" />
+
+                        <span>
+                          Back
+                        </span>
+
+                      </button>
+
+                      {/* Submit */}
+
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="group w-2/3 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-violet-600 to-purple-600 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/20 transition-all hover:-translate-y-0.5 hover:shadow-violet-600/30 disabled:opacity-60 disabled:hover:translate-y-0"
+                      >
+
+                        {loading ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+
+                            <span>
+                              Creating Organization...
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span>
+                              Complete Registration
+                            </span>
+
+                            <CheckCircle2 className="h-4 w-4 transition-transform group-hover:scale-110" />
+                          </>
+                        )}
+
+                      </button>
+
+                    </div>
+
+                  </form>
+                )}
+
+                {/* ==================================================
+                    LOGIN FOOTER
+                ================================================== */}
+
+                <div className="mt-7 border-t border-white/10 pt-5 text-center text-xs text-slate-500">
+
+                  Already have an organization account?{" "}
+
+                  <Link
+                    to="/login"
+                    className="font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    Sign In
+                  </Link>
+
+                </div>
+
+              </div>
+
+              {/* Security footer */}
+
+              <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-slate-600">
+
+                <ShieldCheck className="h-3.5 w-3.5" />
+
+                Secure organization onboarding
+
+              </div>
+
+            </div>
 
           </div>
 
         </div>
+
       </div>
     </div>
   );
 }
-
- 

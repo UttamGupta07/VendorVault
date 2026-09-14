@@ -1,7 +1,6 @@
  import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-
 import {
   ShieldCheck,
   Mail,
@@ -34,7 +33,6 @@ export default function LoginPage() {
   // ==========================================
   // HANDLE INPUT CHANGE
   // ==========================================
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -51,7 +49,6 @@ export default function LoginPage() {
   // ==========================================
   // QUICK ROLE LOGIN
   // ==========================================
-
   const handleQuickLogin = (roleEmail) => {
     setFormData({
       email: roleEmail,
@@ -66,7 +63,6 @@ export default function LoginPage() {
   // ==========================================
   // REDIRECT USER BASED ON ROLE
   // ==========================================
-
   const redirectUser = (user) => {
     if (!user?.role) {
       navigate("/", { replace: true });
@@ -106,14 +102,12 @@ export default function LoginPage() {
   // ==========================================
   // LOGIN
   // ==========================================
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setError(""); 
+    setError("");
     setSuccessMsg("");
 
-    // Validation
     if (!formData.email.trim() || !formData.password) {
       setError("Please enter your email and password.");
       return;
@@ -122,11 +116,9 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      // AuthContext handles the API request,
-      // JWT cookie and user state.
       const data = await login(
         formData.email.trim().toLowerCase(),
-        formData.password 
+        formData.password
       );
 
       console.log("Login response:", data);
@@ -136,13 +128,6 @@ export default function LoginPage() {
           "Login successful! Redirecting to dashboard..."
         );
 
-        /*
-         * login() returns the backend response and also
-         * updates AuthContext's user state.
-         *
-         * We use the returned user here because React
-         * state updates are asynchronous.
-         */
         const loggedInUser = data.user;
 
         setTimeout(() => {
@@ -168,340 +153,462 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-12 transition-colors">
+    <div className="min-h-screen bg-[#06142d] text-white relative overflow-hidden">
 
-      <div className="w-full max-w-md">
+      {/* ==========================================
+          BACKGROUND EFFECTS
+      ========================================== */}
 
-        {/* ==========================================
-            BRAND HEADER
-        ========================================== */}
+      <div className="absolute inset-0 pointer-events-none">
 
-        <div className="text-center mb-8">
+        {/* Blue glow */}
+        <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-blue-600/15 blur-[120px]" />
 
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2.5 group"
-          >
+        {/* Purple glow */}
+        <div className="absolute top-1/3 -right-40 h-[500px] w-[500px] rounded-full bg-violet-600/15 blur-[120px]" />
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">
+        {/* Bottom glow */}
+        <div className="absolute -bottom-60 left-1/3 h-[450px] w-[450px] rounded-full bg-indigo-600/10 blur-[120px]" />
 
-              <ShieldCheck className="h-6 w-6" />
+        {/* Grid */}
+        <div
+          className="absolute inset-0 opacity-[0.035]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
+            backgroundSize: "50px 50px",
+          }}
+        />
+      </div>
 
-            </div>
+      {/* ==========================================
+          MAIN
+      ========================================== */}
 
-            <div className="flex items-center gap-1.5">
+      <div className="relative min-h-screen flex items-center justify-center px-4 py-10 sm:px-6">
 
-              <span className="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">
+        <div className="w-full max-w-[1080px]">
 
-                Vendor
-                <span className="text-indigo-600 dark:text-indigo-400">
-                  Vault
-                </span>
+         
 
-              </span>
+          {/* ======================================
+              LOGIN LAYOUT
+          ====================================== */}
 
-              <span className="inline-flex items-center gap-0.5 rounded-md bg-indigo-50 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-600/20 dark:bg-indigo-950/50 dark:text-indigo-300">
+          <div className="grid lg:grid-cols-[1fr_440px] gap-8 lg:gap-14 items-center">
 
-                <Sparkles className="h-2.5 w-2.5" />
+            {/* ====================================
+                LEFT BRANDING
+            ==================================== */}
 
-                AI
+            <div className="hidden lg:block">
 
-              </span>
-
-            </div>
-
-          </Link>
-
-          <h1 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
-            Welcome Back
-          </h1>
-
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Sign in to access your compliance portal
-          </p>
-
-        </div>
-
-        {/* ==========================================
-            LOGIN CARD
-        ========================================== */}
-
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900">
-
-          {/* ========================================
-              ERROR ALERT
-          ======================================== */}
-
-          {error && (
-            <div className="mb-5 flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300 animate-in fade-in duration-200">
-
-              <AlertCircle className="h-4 w-4 flex-shrink-0" />
-
-              <span>{error}</span>
-
-            </div>
-          )}
-
-          {/* ========================================
-              SUCCESS ALERT
-          ======================================== */}
-
-          {successMsg && (
-            <div className="mb-5 flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300 animate-in fade-in duration-200">
-
-              <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
-
-              <span>{successMsg}</span>
-
-            </div>
-          )}
-
-          {/* ========================================
-              FORM
-          ======================================== */}
-
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-4"
-          >
-
-            {/* ======================================
-                EMAIL
-            ====================================== */}
-
-            <div>
-
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Work Email Address
-              </label>
-
-              <div className="relative">
-
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-
-                  <Mail className="h-4 w-4" />
-
+              {/* Logo */}
+              <Link
+                to="/"
+                className="inline-flex items-center gap-3 group mb-10"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-violet-600 to-purple-600 shadow-lg shadow-violet-600/25 group-hover:scale-105 transition-transform">
+                  <ShieldCheck className="h-6 w-6 text-white" />
                 </div>
 
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="name@company.com"
-                  required
-                  className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 py-2.5 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                />
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold tracking-tight">
+                    Vendor
+                    <span className="text-blue-400">
+                      Vault
+                    </span>
+                  </span>
 
+                  <span className="inline-flex items-center gap-1 rounded-md border border-violet-400/20 bg-violet-500/10 px-2 py-1 text-[10px] font-semibold text-violet-300">
+                    <Sparkles className="h-3 w-3" />
+                    AI
+                  </span>
+                </div>
+              </Link>
+
+              {/* Heading */}
+
+              <div className="max-w-xl">
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1.5 text-[11px] font-semibold tracking-wider text-blue-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
+                  SECURE COMPLIANCE PORTAL
+                </div>
+
+                <h1 className="text-4xl xl:text-5xl font-bold leading-[1.08] tracking-tight">
+                  Welcome back to{" "}
+                  <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    VendorVault
+                  </span>
+                </h1>
+
+                <p className="mt-5 max-w-lg text-base leading-7 text-slate-400">
+                  Manage vendor documents, monitor compliance,
+                  and stay ahead of every expiry — all from
+                  one secure platform.
+                </p>
+              </div>
+
+              {/* Benefits */}
+
+              <div className="mt-9 space-y-4">
+
+                <div className="flex items-center gap-3 text-sm text-slate-300">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-400/10">
+                    <CheckCircle2 className="h-4 w-4 text-blue-400" />
+                  </div>
+                  AI-powered document extraction
+                </div>
+
+                <div className="flex items-center gap-3 text-sm text-slate-300">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10 border border-violet-400/10">
+                    <CheckCircle2 className="h-4 w-4 text-violet-400" />
+                  </div>
+                  Automated expiry monitoring
+                </div>
+
+                <div className="flex items-center gap-3 text-sm text-slate-300">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10 border border-purple-400/10">
+                    <CheckCircle2 className="h-4 w-4 text-purple-400" />
+                  </div>
+                  Complete compliance visibility
+                </div>
+
+              </div>
+
+              {/* Security note */}
+
+              <div className="mt-10 flex items-center gap-3 text-xs text-slate-500">
+                <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                Your session is protected with secure authentication
               </div>
 
             </div>
 
-            {/* ======================================
-                PASSWORD
-            ====================================== */}
+            {/* ====================================
+                LOGIN CARD
+            ==================================== */}
 
             <div>
 
-              <div className="flex items-center justify-between mb-1">
+              {/* Mobile Logo */}
 
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                  Password
-                </label>
+              <div className="lg:hidden text-center mb-7">
 
                 <Link
-                  to="/forgot-password"
-                  className="text-[11px] font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+                  to="/"
+                  className="inline-flex items-center gap-2.5"
                 >
-                  Forgot password?
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-violet-600 to-purple-600 shadow-lg shadow-violet-600/20">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-xl">
+                      Vendor
+                      <span className="text-blue-400">
+                        Vault
+                      </span>
+                    </span>
+
+                    <span className="inline-flex items-center gap-0.5 rounded-md bg-violet-500/10 border border-violet-400/20 px-1.5 py-0.5 text-[9px] font-semibold text-violet-300">
+                      <Sparkles className="h-2.5 w-2.5" />
+                      AI
+                    </span>
+                  </div>
                 </Link>
 
               </div>
 
-              <div className="relative">
+              {/* Card */}
 
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.045] p-6 sm:p-8 shadow-2xl shadow-black/30 backdrop-blur-xl">
 
-                  <Lock className="h-4 w-4" />
+                {/* Header */}
+
+                <div className="mb-7">
+
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-violet-600 shadow-lg shadow-blue-600/20 mb-4">
+                    <Lock className="h-5 w-5 text-white" />
+                  </div>
+
+                  <h2 className="text-2xl font-bold tracking-tight">
+                    Sign in
+                  </h2>
+
+                  <p className="mt-1.5 text-sm text-slate-400">
+                    Access your VendorVault account
+                  </p>
 
                 </div>
 
-                <input
-                  type={
-                    showPassword
-                      ? "text"
-                      : "password"
-                  }
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  required
-                  className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-10 py-2.5 text-xs text-slate-900 focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-                />
+                {/* ==================================
+                    ERROR
+                ================================== */}
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowPassword(!showPassword)
-                  }
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                  aria-label="Toggle password visibility"
+                {error && (
+                  <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 p-3.5 text-xs text-rose-300">
+                    <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                    <span>{error}</span>
+                  </div>
+                )}
+
+                {/* ==================================
+                    SUCCESS
+                ================================== */}
+
+                {successMsg && (
+                  <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3.5 text-xs text-emerald-300">
+                    <CheckCircle2 className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                    <span>{successMsg}</span>
+                  </div>
+                )}
+
+                {/* ==================================
+                    FORM
+                ================================== */}
+
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-5"
                 >
 
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {/* Email */}
 
-                </button>
+                  <div>
+
+                    <label className="block mb-2 text-xs font-medium text-slate-300">
+                      Work Email Address
+                    </label>
+
+                    <div className="relative">
+
+                      <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="name@company.com"
+                        required
+                        className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                      />
+
+                    </div>
+
+                  </div>
+
+                  {/* Password */}
+
+                  <div>
+
+                    <div className="flex items-center justify-between mb-2">
+
+                      <label className="block text-xs font-medium text-slate-300">
+                        Password
+                      </label>
+
+                      <Link
+                        to="/forgot-password"
+                        className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                      >
+                        Forgot password?
+                      </Link>
+
+                    </div>
+
+                    <div className="relative">
+
+                      <Lock className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+
+                      <input
+                        type={
+                          showPassword
+                            ? "text"
+                            : "password"
+                        }
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="••••••••"
+                        required
+                        className="w-full rounded-xl border border-white/10 bg-[#081a36]/80 py-3 pl-10 pr-11 text-sm text-white placeholder:text-slate-600 outline-none transition-all focus:border-blue-500/60 focus:bg-[#0a1d3b] focus:ring-2 focus:ring-blue-500/10"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowPassword(!showPassword)
+                        }
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                        aria-label="Toggle password visibility"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                  {/* Remember */}
+
+                  <div className="flex items-center">
+
+                    <input
+                      id="rememberMe"
+                      name="rememberMe"
+                      type="checkbox"
+                      checked={formData.rememberMe}
+                      onChange={handleChange}
+                      className="h-4 w-4 rounded border-white/20 bg-[#081a36] text-blue-600 focus:ring-blue-500 focus:ring-offset-0"
+                    />
+
+                    <label
+                      htmlFor="rememberMe"
+                      className="ml-2 cursor-pointer text-xs text-slate-400"
+                    >
+                      Remember me on this device
+                    </label>
+
+                  </div>
+
+                  {/* Submit */}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-violet-600 to-purple-600 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/20 transition-all hover:-translate-y-0.5 hover:shadow-violet-600/30 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+
+                    <span className="relative flex items-center justify-center gap-2">
+
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span>Signing In...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Sign In</span>
+                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </>
+                      )}
+
+                    </span>
+
+                  </button>
+
+                </form>
+
+                {/* ==================================
+                    QUICK LOGIN
+                ================================== */}
+
+                <div className="mt-7 border-t border-white/10 pt-6">
+
+                  <div className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+
+                    <UserCheck className="h-3.5 w-3.5 text-violet-400" />
+
+                    <span>Demo Accounts</span>
+
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleQuickLogin(
+                          "admin@vendorvault.io"
+                        )
+                      }
+                      className="rounded-lg border border-white/10 bg-white/[0.025] px-3 py-2 text-left text-[11px] font-medium text-slate-400 transition-all hover:border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-300"
+                    >
+                      👑 Super Admin
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleQuickLogin(
+                          "compliance@vendorvault.io"
+                        )
+                      }
+                      className="rounded-lg border border-white/10 bg-white/[0.025] px-3 py-2 text-left text-[11px] font-medium text-slate-400 transition-all hover:border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-300"
+                    >
+                      🛡️ Compliance Officer
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleQuickLogin(
+                          "vendor@apexlogistics.com"
+                        )
+                      }
+                      className="rounded-lg border border-white/10 bg-white/[0.025] px-3 py-2 text-left text-[11px] font-medium text-slate-400 transition-all hover:border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-300"
+                    >
+                      🚚 Vendor Portal
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleQuickLogin(
+                          "auditor@deloitte.com"
+                        )
+                      }
+                      className="rounded-lg border border-white/10 bg-white/[0.025] px-3 py-2 text-left text-[11px] font-medium text-slate-400 transition-all hover:border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-300"
+                    >
+                      📋 Auditor
+                    </button>
+
+                  </div>
+
+                </div>
+
+                {/* ==================================
+                    REGISTER
+                ================================== */}
+
+                <div className="mt-6 border-t border-white/10 pt-5 text-center text-xs text-slate-500">
+
+                  Don't have an organization account yet?{" "}
+
+                  <Link
+                    to="/register"
+                    className="font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    Register Organization
+                  </Link>
+
+                </div>
+
+              </div>
+
+              {/* Footer */}
+
+              <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-slate-600">
+
+                <ShieldCheck className="h-3.5 w-3.5" />
+
+                Secure vendor compliance management
 
               </div>
 
             </div>
-
-            {/* ======================================
-                REMEMBER ME
-            ====================================== */}
-
-            <div className="flex items-center">
-
-              <input
-                id="rememberMe"
-                name="rememberMe"
-                type="checkbox"
-                checked={formData.rememberMe}
-                onChange={handleChange}
-                className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800"
-              />
-
-              <label
-                htmlFor="rememberMe"
-                className="ml-2 block text-xs text-slate-600 dark:text-slate-400 cursor-pointer"
-              >
-                Remember me on this device
-              </label>
-
-            </div>
-
-            {/* ======================================
-                SUBMIT BUTTON
-            ====================================== */}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/25 hover:bg-indigo-500 disabled:opacity-60 transition-all"
-            >
-
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Signing In...</span>
-                </>
-              ) : (
-                <>
-                  <span>Sign In</span>
-                  <ArrowRight className="h-4 w-4" />
-                </>
-              )}
-
-            </button>
-
-          </form>
-
-          {/* ==========================================
-              QUICK ROLE FILLERS
-          ========================================== */}
-
-          <div className="mt-6 border-t border-slate-100 pt-5 dark:border-slate-800">
-
-            <div className="flex items-center gap-1.5 mb-2.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-
-              <UserCheck className="h-3.5 w-3.5 text-indigo-500" />
-
-              <span>
-                Quick Test Logins (Demo):
-              </span>
-
-            </div>
-
-            <div className="grid grid-cols-2 gap-1.5">
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickLogin(
-                    "admin@vendorvault.io"
-                  )
-                }
-                className="px-2 py-1.5 rounded-lg bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-[10px] font-medium text-slate-700 hover:text-indigo-600 dark:bg-slate-800/60 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors text-left truncate"
-              >
-                👑 Super Admin
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickLogin(
-                    "compliance@vendorvault.io"
-                  )
-                }
-                className="px-2 py-1.5 rounded-lg bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-[10px] font-medium text-slate-700 hover:text-indigo-600 dark:bg-slate-800/60 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors text-left truncate"
-              >
-                🛡️ Compliance Officer
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickLogin(
-                    "vendor@apexlogistics.com"
-                  )
-                }
-                className="px-2 py-1.5 rounded-lg bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-[10px] font-medium text-slate-700 hover:text-indigo-600 dark:bg-slate-800/60 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors text-left truncate"
-              >
-                🚚 Vendor Portal
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleQuickLogin(
-                    "auditor@deloitte.com"
-                  )
-                }
-                className="px-2 py-1.5 rounded-lg bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-[10px] font-medium text-slate-700 hover:text-indigo-600 dark:bg-slate-800/60 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors text-left truncate"
-              >
-                📋 Auditor (Read-Only)
-              </button>
-
-            </div>
-
-          </div>
-
-          {/* ==========================================
-              REGISTRATION
-          ========================================== */}
-
-          <div className="mt-6 border-t border-slate-100 pt-4 text-center text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
-
-            Don't have an organization account yet?{" "}
-
-            <Link
-              to="/register"
-              className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
-            >
-              Register Organization
-            </Link>
 
           </div>
 
         </div>
 
       </div>
-
     </div>
   );
 }

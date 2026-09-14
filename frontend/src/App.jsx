@@ -6,7 +6,6 @@ import PublicRoute from "./Component/PublicRoute";
 import PublicLayout from "./layout/PublicLayout";
 import SuperAdminLayout from "./layout/SuperAdminLayout";
 
-import LandingPage from "./pages/public/LandingPage";
 import RegisterPage from "./pages/public/RegisterPage";
 import LoginPage from "./pages/public/LoginPage";
 import RegisterOrganization from "./pages/RegisterOrganization";
