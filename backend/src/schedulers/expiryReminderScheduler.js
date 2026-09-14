@@ -23,7 +23,7 @@ const startExpiryReminderScheduler = async () => {
         // Daily expiry reminder scan
         // 0 0 * * * = Every day at 12:00 AM
         cron.schedule(
-            "0 0 * * *",
+            "* * * * *",
             async () => {
 
                 console.log(

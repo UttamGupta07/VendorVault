@@ -34,6 +34,7 @@ import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorDocuments from "./pages/vendor/VendorDocuments";
 import VendorNotifications from "./pages/vendor/VendorNotifications";
 import VendorProfile from "./pages/vendor/VendorProfile";
+import AdminProfile from "./pages/superAdminPages/AdminProfile";
 
 const App = () => {
   return (
@@ -137,6 +138,11 @@ const App = () => {
             <Route
               path="/super-admin/settings"
               element={<div>Settings</div>}
+            />
+
+            <Route
+              path="/super-admin/profile"
+              element={<AdminProfile/>}
             />
 
           </Route>

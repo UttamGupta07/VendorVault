@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom"
 import {
   Menu,
   Bell,
@@ -38,6 +39,9 @@ const VendorNavbar = ({ setSidebarOpen }) => {
         <div className="flex items-center gap-4">
 
           {/* Notification */}
+          <Link
+          to="/vendor/notifications"
+          >
           <button className="relative p-2 rounded-lg hover:bg-gray-100">
 
             <Bell size={20} />
@@ -45,6 +49,7 @@ const VendorNavbar = ({ setSidebarOpen }) => {
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
 
           </button>
+          </Link>
 
           <div className="h-8 w-px bg-gray-200" />
 
