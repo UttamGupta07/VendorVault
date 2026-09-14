@@ -1,8 +1,7 @@
- const fs = require("fs");
- const os = require("os");
+const fs = require("fs");
+const os = require("os");
 const axios = require("axios");
 const path = require("path");
-
 
 const cloudinary = require("../config/cloudinary");
 const VendorDocument = require("../models/VendorDocument");
@@ -10,9 +9,14 @@ const {
   extractDocumentData,
 } = require("../services/geminiExtractionServices");
 
+
+// =====================================================
+// Upload / Replace Vendor Document
+// =====================================================
+
 const uploadVendorDocument = async (req, res) => {
   let uploadedFilePath = null;
-  let document = null;
+  let cloudinaryPublicId = null;
 
   try {
     // -----------------------------------------
@@ -40,7 +44,8 @@ const uploadVendorDocument = async (req, res) => {
     if (!serviceTypeId || !documentTypeId) {
       return res.status(400).json({
         success: false,
-        message: "serviceTypeId and documentTypeId are required",
+        message:
+          "serviceTypeId and documentTypeId are required",
       });
     }
 
@@ -52,90 +57,62 @@ const uploadVendorDocument = async (req, res) => {
     const organizationId = req.user.organizationId;
 
     // -----------------------------------------
-    // 4. Upload file to Cloudinary
+    // 4. Find existing document
     // -----------------------------------------
 
-    const cloudinaryResult = await cloudinary.uploader.upload(
-      uploadedFilePath,
-      {
-        folder: `vendorvault/${organizationId}/documents`,
-        resource_type: "raw",
-      }
-    );
-
-    // -----------------------------------------
-    // 5. Save document in MongoDB
-    // -----------------------------------------
-
-    document = await VendorDocument.create({
+    const existingDocument = await VendorDocument.findOne({
       vendorId,
       organizationId,
       serviceTypeId,
       documentTypeId,
-
-      originalFileName: req.file.originalname,
-
-      fileUrl: cloudinaryResult.secure_url,
-
-      cloudinaryPublicId: cloudinaryResult.public_id,
-
-      mimeType: req.file.mimetype,
-
-      fileSize: req.file.size,
-
-      // Extraction has not started yet
-      extractionStatus: "PROCESSING",
-
-      extractedData: {},
-
-      status: "PENDING_REVIEW",
-
-      version: 1,
     });
 
     // -----------------------------------------
-    // 6. Extract data using Gemini
+    // 5. Determine version
     // -----------------------------------------
 
-    console.log(
-      `Starting Gemini extraction for document: ${document._id}`
-    );
+    const newVersion = existingDocument
+      ? (existingDocument.version || 1) + 1
+      : 1;
+
+    // -----------------------------------------
+    // 6. Upload NEW file to Cloudinary
+    // -----------------------------------------
+
+    const cloudinaryResult =
+      await cloudinary.uploader.upload(
+        uploadedFilePath,
+        {
+          folder: `vendorvault/${organizationId}/documents`,
+          resource_type: "raw",
+        }
+      );
+
+    cloudinaryPublicId =
+      cloudinaryResult.public_id;
+
+    // -----------------------------------------
+    // 7. Extract data BEFORE deleting old document
+    // -----------------------------------------
+
+    let extractedData = {};
+    let extractionStatus = "PROCESSING";
 
     try {
-      const extractedData = await extractDocumentData(
+      console.log(
+        "Starting Gemini extraction for new document..."
+      );
+
+      extractedData = await extractDocumentData(
         uploadedFilePath
       );
 
-      console.log("Extracted data:");
-      console.log(extractedData);
-
-      // -----------------------------------------
-      // 7. Save extracted data
-      // -----------------------------------------
-
-      document.extractedData = extractedData;
-
-      document.extractionStatus = "COMPLETED";
-
-      // -----------------------------------------
-      // 8. Save common expiryDate separately
-      // -----------------------------------------
-
-      if (extractedData.expiryDate) {
-        const expiryDate = new Date(
-          extractedData.expiryDate
-        );
-
-        if (!isNaN(expiryDate.getTime())) {
-          document.expiryDate = expiryDate;
-        }
-      }
-
-      await document.save();
-
       console.log(
-        `Gemini extraction completed for document: ${document._id}`
+        "Extracted data:",
+        extractedData
       );
+
+      extractionStatus = "COMPLETED";
 
     } catch (extractionError) {
       console.error(
@@ -144,16 +121,106 @@ const uploadVendorDocument = async (req, res) => {
       );
 
       // -----------------------------------------
-      // Extraction failed
+      // Delete newly uploaded Cloudinary file
+      // because replacement failed
       // -----------------------------------------
 
-      document.extractionStatus = "FAILED";
+      try {
+        await cloudinary.uploader.destroy(
+          cloudinaryPublicId,
+          {
+            resource_type: "raw",
+          }
+        );
+      } catch (cloudinaryDeleteError) {
+        console.error(
+          "Failed to delete new Cloudinary file:",
+          cloudinaryDeleteError.message
+        );
+      }
 
-      await document.save();
+      return res.status(500).json({
+        success: false,
+        message:
+          "Document uploaded but data extraction failed. Existing document was kept.",
+        extractionStatus: "FAILED",
+      });
     }
 
     // -----------------------------------------
-    // 9. Delete temporary local file
+    // 8. Prepare expiry date
+    // -----------------------------------------
+
+    let expiryDate = undefined;
+
+    if (extractedData?.expiryDate) {
+      const parsedExpiryDate = new Date(
+        extractedData.expiryDate
+      );
+
+      if (!isNaN(parsedExpiryDate.getTime())) {
+        expiryDate = parsedExpiryDate;
+      }
+    }
+
+    // -----------------------------------------
+    // 9. Delete OLD MongoDB document
+    // -----------------------------------------
+
+    if (existingDocument) {
+      await VendorDocument.deleteOne({
+        _id: existingDocument._id,
+      });
+
+      console.log(
+        `Old document deleted: ${existingDocument._id}`
+      );
+    }
+
+    // -----------------------------------------
+    // 10. Create COMPLETELY NEW document
+    // -----------------------------------------
+
+    const document =
+      await VendorDocument.create({
+        vendorId,
+        organizationId,
+        serviceTypeId,
+        documentTypeId,
+
+        originalFileName:
+          req.file.originalname,
+
+        fileUrl:
+          cloudinaryResult.secure_url,
+
+        cloudinaryPublicId:
+          cloudinaryResult.public_id,
+
+        mimeType:
+          req.file.mimetype,
+
+        fileSize:
+          req.file.size,
+
+        extractionStatus,
+
+        extractedData,
+
+        expiryDate,
+
+        // Every replacement requires fresh review
+        status: "PENDING_REVIEW",
+
+        version: newVersion,
+      });
+
+    console.log(
+      `New document created: ${document._id}, version: ${newVersion}`
+    );
+
+    // -----------------------------------------
+    // 11. Delete temporary local file
     // -----------------------------------------
 
     fs.unlink(uploadedFilePath, (err) => {
@@ -168,27 +235,57 @@ const uploadVendorDocument = async (req, res) => {
     uploadedFilePath = null;
 
     // -----------------------------------------
-    // 10. Send response
+    // 12. Delete OLD Cloudinary file
+    // -----------------------------------------
+
+    if (existingDocument?.cloudinaryPublicId) {
+      try {
+        await cloudinary.uploader.destroy(
+          existingDocument.cloudinaryPublicId,
+          {
+            resource_type: "raw",
+          }
+        );
+
+        console.log(
+          `Old Cloudinary file deleted: ${existingDocument.cloudinaryPublicId}`
+        );
+
+      } catch (cloudinaryDeleteError) {
+        // Do not fail the upload if old Cloudinary
+        // deletion fails
+        console.error(
+          "Failed to delete old Cloudinary file:",
+          cloudinaryDeleteError.message
+        );
+      }
+    }
+
+    // -----------------------------------------
+    // 13. Send response
     // -----------------------------------------
 
     return res.status(201).json({
       success: true,
 
-      message:
-        document.extractionStatus === "COMPLETED"
-          ? "Document uploaded and data extracted successfully"
-          : "Document uploaded successfully but data extraction failed",
+      message: existingDocument
+        ? "Document replaced and data extracted successfully"
+        : "Document uploaded and data extracted successfully",
 
       document: {
         id: document._id,
 
-        fileName: document.originalFileName,
+        fileName:
+          document.originalFileName,
 
-        fileUrl: document.fileUrl,
+        fileUrl:
+          document.fileUrl,
 
-        mimeType: document.mimeType,
+        mimeType:
+          document.mimeType,
 
-        fileSize: document.fileSize,
+        fileSize:
+          document.fileSize,
 
         extractionStatus:
           document.extractionStatus,
@@ -199,9 +296,14 @@ const uploadVendorDocument = async (req, res) => {
         expiryDate:
           document.expiryDate,
 
-        status: document.status,
+        status:
+          document.status,
 
-        createdAt: document.createdAt,
+        version:
+          document.version,
+
+        createdAt:
+          document.createdAt,
       },
     });
 
@@ -212,7 +314,7 @@ const uploadVendorDocument = async (req, res) => {
     );
 
     // -----------------------------------------
-    // Delete temporary file if something failed
+    // Delete temporary file
     // -----------------------------------------
 
     if (uploadedFilePath) {
@@ -226,6 +328,27 @@ const uploadVendorDocument = async (req, res) => {
       });
     }
 
+    // -----------------------------------------
+    // Delete newly uploaded Cloudinary file
+    // if something failed after upload
+    // -----------------------------------------
+
+    if (cloudinaryPublicId) {
+      try {
+        await cloudinary.uploader.destroy(
+          cloudinaryPublicId,
+          {
+            resource_type: "raw",
+          }
+        );
+      } catch (cloudinaryDeleteError) {
+        console.error(
+          "Failed to delete Cloudinary file:",
+          cloudinaryDeleteError.message
+        );
+      }
+    }
+
     return res.status(500).json({
       success: false,
       message: "Failed to upload document",
@@ -233,6 +356,11 @@ const uploadVendorDocument = async (req, res) => {
     });
   }
 };
+
+
+// =====================================================
+// Get Pending Review Documents
+// =====================================================
 
 const getPendingReviewDocuments = async (req, res) => {
   try {
@@ -243,16 +371,28 @@ const getPendingReviewDocuments = async (req, res) => {
       extractionStatus: "COMPLETED",
       status: "PENDING_REVIEW",
     })
-      .populate("vendorId", "name email companyName")
-      .populate("documentTypeId", "name")
-      .populate("serviceTypeId", "name")
-      .sort({ createdAt: -1 });
+      .populate(
+        "vendorId",
+        "name email companyName"
+      )
+      .populate(
+        "documentTypeId",
+        "name"
+      )
+      .populate(
+        "serviceTypeId",
+        "name"
+      )
+      .sort({
+        createdAt: -1,
+      });
 
     return res.status(200).json({
       success: true,
       count: documents.length,
       documents,
     });
+
   } catch (error) {
     console.error(
       "Get pending review documents error:",
@@ -267,19 +407,33 @@ const getPendingReviewDocuments = async (req, res) => {
   }
 };
 
-// Get single document for Compliance Officer review
+
+// =====================================================
+// Get Single Document For Compliance Officer Review
+// =====================================================
+
 const getDocumentForReview = async (req, res) => {
   try {
     const { id } = req.params;
     const organizationId = req.user.organizationId;
 
-    const document = await VendorDocument.findOne({
-      _id: id,
-      organizationId,
-    })
-      .populate("vendorId", "name email")
-      .populate("documentTypeId", "name description")
-      .populate("serviceTypeId", "name description");
+    const document =
+      await VendorDocument.findOne({
+        _id: id,
+        organizationId,
+      })
+        .populate(
+          "vendorId",
+          "name email"
+        )
+        .populate(
+          "documentTypeId",
+          "name description"
+        )
+        .populate(
+          "serviceTypeId",
+          "name description"
+        );
 
     if (!document) {
       return res.status(404).json({
@@ -292,6 +446,7 @@ const getDocumentForReview = async (req, res) => {
       success: true,
       document,
     });
+
   } catch (error) {
     console.error(
       "Get document for review error:",
@@ -307,14 +462,23 @@ const getDocumentForReview = async (req, res) => {
 };
 
 
-// Approve or reject document
+// =====================================================
+// Approve / Reject Document
+// =====================================================
+
 const reviewDocument = async (req, res) => {
   try {
     const { id } = req.params;
-    const { action, rejectionReason } = req.body;
+    const {
+      action,
+      rejectionReason,
+    } = req.body;
 
-    const organizationId = req.user.organizationId;
-    const complianceOfficerId = req.user.userId;
+    const organizationId =
+      req.user.organizationId;
+
+    const complianceOfficerId =
+      req.user.userId;
 
     // -----------------------------------------
     // Validate action
@@ -327,7 +491,9 @@ const reviewDocument = async (req, res) => {
       });
     }
 
-    if (!["APPROVE", "REJECT"].includes(action)) {
+    if (
+      !["APPROVE", "REJECT"].includes(action)
+    ) {
       return res.status(400).json({
         success: false,
         message:
@@ -355,10 +521,11 @@ const reviewDocument = async (req, res) => {
     // Find document
     // -----------------------------------------
 
-    const document = await VendorDocument.findOne({
-      _id: id,
-      organizationId,
-    });
+    const document =
+      await VendorDocument.findOne({
+        _id: id,
+        organizationId,
+      });
 
     if (!document) {
       return res.status(404).json({
@@ -371,7 +538,10 @@ const reviewDocument = async (req, res) => {
     // Make sure extraction is completed
     // -----------------------------------------
 
-    if (document.extractionStatus !== "COMPLETED") {
+    if (
+      document.extractionStatus !==
+      "COMPLETED"
+    ) {
       return res.status(400).json({
         success: false,
         message:
@@ -402,13 +572,16 @@ const reviewDocument = async (req, res) => {
     // Review information
     // -----------------------------------------
 
-    document.reviewedBy = complianceOfficerId;
+    document.reviewedBy =
+      complianceOfficerId;
+
     document.reviewedAt = new Date();
 
     await document.save();
 
     return res.status(200).json({
       success: true,
+
       message:
         action === "APPROVE"
           ? "Document approved successfully"
@@ -417,12 +590,15 @@ const reviewDocument = async (req, res) => {
       document: {
         id: document._id,
         status: document.status,
-        reviewedBy: document.reviewedBy,
-        reviewedAt: document.reviewedAt,
+        reviewedBy:
+          document.reviewedBy,
+        reviewedAt:
+          document.reviewedAt,
         rejectionReason:
           document.rejectionReason,
       },
     });
+
   } catch (error) {
     console.error(
       "Review document error:",
@@ -437,26 +613,51 @@ const reviewDocument = async (req, res) => {
   }
 };
 
+
+// =====================================================
+// Get All Documents
+// =====================================================
+
 const getAllDocuments = async (req, res) => {
   try {
-    const organizationId = req.user.organizationId;
+    const organizationId =
+      req.user.organizationId;
 
-    const documents = await VendorDocument.find({
-      organizationId,
-    })
-      .populate("vendorId", "name email companyName")
-      .populate("documentTypeId", "name description")
-      .populate("serviceTypeId", "name description")
-      .populate("reviewedBy", "name email")
-      .sort({ createdAt: -1 });
+    const documents =
+      await VendorDocument.find({
+        organizationId,
+      })
+        .populate(
+          "vendorId",
+          "name email companyName"
+        )
+        .populate(
+          "documentTypeId",
+          "name description"
+        )
+        .populate(
+          "serviceTypeId",
+          "name description"
+        )
+        .populate(
+          "reviewedBy",
+          "name email"
+        )
+        .sort({
+          createdAt: -1,
+        });
 
     return res.status(200).json({
       success: true,
       count: documents.length,
       documents,
     });
+
   } catch (error) {
-    console.error("Get all documents error:", error);
+    console.error(
+      "Get all documents error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -465,24 +666,32 @@ const getAllDocuments = async (req, res) => {
     });
   }
 };
- 
 
 
-const retryDocumentExtraction = async (req, res) => {
+// =====================================================
+// Retry Document Extraction
+// =====================================================
+
+const retryDocumentExtraction = async (
+  req,
+  res
+) => {
   let temporaryFilePath = null;
 
   try {
     const { id } = req.params;
-    const organizationId = req.user.organizationId;
+    const organizationId =
+      req.user.organizationId;
 
     // -----------------------------------------
     // 1. Find document
     // -----------------------------------------
 
-    const document = await VendorDocument.findOne({
-      _id: id,
-      organizationId,
-    });
+    const document =
+      await VendorDocument.findOne({
+        _id: id,
+        organizationId,
+      });
 
     if (!document) {
       return res.status(404).json({
@@ -498,7 +707,8 @@ const retryDocumentExtraction = async (req, res) => {
     if (!document.fileUrl) {
       return res.status(400).json({
         success: false,
-        message: "Document file is not available",
+        message:
+          "Document file is not available",
       });
     }
 
@@ -506,7 +716,10 @@ const retryDocumentExtraction = async (req, res) => {
     // 3. Only retry failed extraction
     // -----------------------------------------
 
-    if (document.extractionStatus !== "FAILED") {
+    if (
+      document.extractionStatus !==
+      "FAILED"
+    ) {
       return res.status(400).json({
         success: false,
         message:
@@ -518,14 +731,17 @@ const retryDocumentExtraction = async (req, res) => {
     // 4. Mark extraction as processing
     // -----------------------------------------
 
-    document.extractionStatus = "PROCESSING";
+    document.extractionStatus =
+      "PROCESSING";
+
     await document.save();
 
     // -----------------------------------------
     // 5. Create temporary file
     // -----------------------------------------
 
-    const tempFileName = `vendor-document-${Date.now()}.pdf`;
+    const tempFileName =
+      `vendor-document-${Date.now()}.pdf`;
 
     temporaryFilePath = path.join(
       os.tmpdir(),
@@ -536,9 +752,12 @@ const retryDocumentExtraction = async (req, res) => {
     // 6. Download PDF from Cloudinary
     // -----------------------------------------
 
-    const response = await axios.get(document.fileUrl, {
-      responseType: "arraybuffer",
-    });
+    const response = await axios.get(
+      document.fileUrl,
+      {
+        responseType: "arraybuffer",
+      }
+    );
 
     fs.writeFileSync(
       temporaryFilePath,
@@ -553,9 +772,10 @@ const retryDocumentExtraction = async (req, res) => {
       `Retrying Gemini extraction for document: ${document._id}`
     );
 
-    const extractedData = await extractDocumentData(
-      temporaryFilePath
-    );
+    const extractedData =
+      await extractDocumentData(
+        temporaryFilePath
+      );
 
     console.log(
       "Retry extraction result:",
@@ -566,9 +786,11 @@ const retryDocumentExtraction = async (req, res) => {
     // 8. Save extracted data
     // -----------------------------------------
 
-    document.extractedData = extractedData || {};
+    document.extractedData =
+      extractedData || {};
 
-    document.extractionStatus = "COMPLETED";
+    document.extractionStatus =
+      "COMPLETED";
 
     // -----------------------------------------
     // 9. Save expiry date
@@ -579,8 +801,13 @@ const retryDocumentExtraction = async (req, res) => {
         extractedData.expiryDate
       );
 
-      if (!isNaN(expiryDate.getTime())) {
-        document.expiryDate = expiryDate;
+      if (
+        !isNaN(
+          expiryDate.getTime()
+        )
+      ) {
+        document.expiryDate =
+          expiryDate;
       }
     }
 
@@ -591,14 +818,17 @@ const retryDocumentExtraction = async (req, res) => {
     // -----------------------------------------
 
     if (temporaryFilePath) {
-      fs.unlink(temporaryFilePath, (err) => {
-        if (err) {
-          console.error(
-            "Failed to delete temporary file:",
-            err.message
-          );
+      fs.unlink(
+        temporaryFilePath,
+        (err) => {
+          if (err) {
+            console.error(
+              "Failed to delete temporary file:",
+              err.message
+            );
+          }
         }
-      });
+      );
     }
 
     temporaryFilePath = null;
@@ -611,17 +841,27 @@ const retryDocumentExtraction = async (req, res) => {
       success: true,
       message:
         "Document details extracted successfully",
+
       document: {
         id: document._id,
+
         extractionStatus:
           document.extractionStatus,
+
         extractedData:
           document.extractedData,
+
         expiryDate:
           document.expiryDate,
-        status: document.status,
+
+        status:
+          document.status,
+
+        version:
+          document.version,
       },
     });
+
   } catch (error) {
     console.error(
       "Retry document extraction error:",
@@ -637,12 +877,14 @@ const retryDocumentExtraction = async (req, res) => {
         await VendorDocument.findOneAndUpdate(
           {
             _id: req.params.id,
-            organizationId: req.user.organizationId,
+            organizationId:
+              req.user.organizationId,
           },
           {
             extractionStatus: "FAILED",
           }
         );
+
       } catch (updateError) {
         console.error(
           "Failed to update extraction status:",
@@ -656,14 +898,17 @@ const retryDocumentExtraction = async (req, res) => {
     // -----------------------------------------
 
     if (temporaryFilePath) {
-      fs.unlink(temporaryFilePath, (err) => {
-        if (err) {
-          console.error(
-            "Failed to delete temporary file:",
-            err.message
-          );
+      fs.unlink(
+        temporaryFilePath,
+        (err) => {
+          if (err) {
+            console.error(
+              "Failed to delete temporary file:",
+              err.message
+            );
+          }
         }
-      });
+      );
     }
 
     return res.status(500).json({
@@ -675,6 +920,11 @@ const retryDocumentExtraction = async (req, res) => {
   }
 };
 
+
+// =====================================================
+// Exports
+// =====================================================
+
 module.exports = {
   uploadVendorDocument,
   getPendingReviewDocuments,
@@ -683,3 +933,4 @@ module.exports = {
   getAllDocuments,
   retryDocumentExtraction,
 };
+
