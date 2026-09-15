@@ -17,7 +17,7 @@ const authorizePermissions = (...requiredPermissions) => {
 
       // Super Admin always has full access.
       // This prevents accidentally locking
-      // yourself out of Roles & Permissions.
+     
       if (req.user.role === "SUPER_ADMIN") {
         return next();
       }

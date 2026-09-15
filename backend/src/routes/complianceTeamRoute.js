@@ -9,6 +9,7 @@ const {
 
 const router = express.Router();
 
+// View Compliance Team.
 router.get(
     "/",
     protect,

@@ -1,4 +1,3 @@
-
 const express = require("express");
 
 const router = express.Router();
@@ -21,6 +20,7 @@ const protect = require("../middleware/authMiddleware");
 // VENDOR REGISTRATION
 // Only authenticated Super Admin / Compliance Officer
 // ==========================================
+
 router.post(
   "/register",
   protect,
@@ -30,6 +30,7 @@ router.post(
 // ==========================================
 // VENDOR LOGIN
 // ==========================================
+
 router.post(
   "/login",
   loginVendor
@@ -38,18 +39,24 @@ router.post(
 // ==========================================
 // GET CURRENT VENDOR
 // ==========================================
+
 router.get(
   "/me",
   protect,
   getCurrentVendor
 );
+
 router.get(
   "/dashboard",
   protect,
   getVendorDashboard
 );
-router.get("/documents/requirements", protect, getVendorDocumentRequirements);
- 
+
+router.get(
+  "/documents/requirements",
+  protect,
+  getVendorDocumentRequirements
+);
 
 const authorizeRoles = require("../middleware/authorizeRoles");
 
@@ -62,11 +69,16 @@ router.get(
   ),
   getAllVendors
 );
+
 router.get(
   "/:vendorId",
   protect,
-  authorizeRoles("SUPER_ADMIN", "COMPLIANCE_OFFICER","VENDOR"),
+  authorizeRoles(
+    "SUPER_ADMIN",
+    "COMPLIANCE_OFFICER",
+    "VENDOR"
+  ),
   getVendorById
 );
-module.exports = router;
 
+module.exports = router;

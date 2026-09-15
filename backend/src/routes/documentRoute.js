@@ -1,12 +1,10 @@
 const express = require("express");
-
 const router = express.Router();
 
 const upload = require("../middleware/upload");
 
-const
-  authorizeRoles
-    = require("../middleware/authorizeRoles");
+const authorizeRoles = require("../middleware/authorizeRoles");
+const protect = require("../middleware/authMiddleware");
 
 const {
   uploadVendorDocument,
@@ -16,9 +14,6 @@ const {
   getAllDocuments,
   retryDocumentExtraction,
 } = require("../controller/documentController");
-
-const protect = require("../middleware/authMiddleware");
-
 
 // ==========================================
 // Vendor uploads document
@@ -30,7 +25,6 @@ router.post(
   upload.single("document"),
   uploadVendorDocument
 );
-
 
 // ==========================================
 // Compliance Officer
@@ -47,9 +41,9 @@ router.get(
 router.get(
   "/",
   protect,
-  authorizeRoles("COMPLIANCE_OFFICER"),getAllDocuments
+  authorizeRoles("COMPLIANCE_OFFICER"),
+  getAllDocuments
 );
-
 
 // ==========================================
 // Compliance Officer
@@ -62,14 +56,13 @@ router.post(
   authorizeRoles("COMPLIANCE_OFFICER"),
   retryDocumentExtraction
 );
+
 router.get(
   "/:id",
   protect,
   authorizeRoles("COMPLIANCE_OFFICER"),
   getDocumentForReview
 );
-
-
 
 // ==========================================
 // Compliance Officer
@@ -83,5 +76,4 @@ router.put(
   reviewDocument
 );
 
-
-module.exports = router; 
+module.exports = router;

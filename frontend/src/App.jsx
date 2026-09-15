@@ -19,7 +19,7 @@ import ComplianceTeam from "./pages/superAdminPages/ComplianceTeam";
 
 import ComplianceOfficerLayout from "./layout/ComplianceOfficerLayout";
 import ComplianceDashboard from "./pages/compliance/ComplianceDashboard";
-import RolesPermissions from "./pages/superAdminPages/RolesPermissions";
+
 import DocumentTypes from "./pages/superAdminPages/DocumentTypes";
 import ServiceTypes from "./pages/superAdminPages/ServiceTypes";
 import VendorManagement from "./pages/compliance/VendorManagement";
@@ -28,6 +28,7 @@ import VendorDetail from "./pages/compliance/vendor/VendorDetail";
 import DocumentReview from "./pages/compliance/DocumentReview";
 import Compliance from "./pages/compliance/Compliance";
 import ReportsAnalytics from "./pages/superAdminPages/ReportsAnalytics";
+import ActivityLogs from "./pages/superAdminPages/ActivityLogs";
 
 
 import VendorLayout from "./layout/VendorLayout";
@@ -35,6 +36,7 @@ import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorDocuments from "./pages/vendor/VendorDocuments";
 import VendorNotifications from "./pages/vendor/VendorNotifications";
 import VendorProfile from "./pages/vendor/VendorProfile";
+
 
 const App = () => {
   return (
@@ -95,10 +97,7 @@ const App = () => {
               element={<Users />}
             />
 
-            <Route
-              path="/super-admin/roles"
-              element={<RolesPermissions />}
-            />
+           
 
             <Route
               path="/super-admin/vendors"
@@ -132,7 +131,7 @@ const App = () => {
 
             <Route
               path="/super-admin/activity-logs"
-              element={<div>Activity Logs</div>}
+              element={<ActivityLogs />}
             />
 
             <Route
@@ -170,8 +169,8 @@ const App = () => {
             <Route path="/vendor/dashboard" element={<VendorDashboard />} />
             <Route path="/vendor/documents" element={<VendorDocuments />} />
             <Route path="/vendor/requests" element={<div>Vendor Requests</div>} />
-            <Route path="/vendor/notifications" element={<VendorNotifications/>} />
-            <Route path="/vendor/profile" element={<VendorProfile/>} />
+            <Route path="/vendor/notifications" element={<VendorNotifications />} />
+            <Route path="/vendor/profile" element={<VendorProfile />} />
           </Route>
 
         </Route>

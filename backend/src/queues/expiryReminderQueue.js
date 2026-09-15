@@ -3,6 +3,19 @@ const redis = require("../config/redis");
 
 const expiryReminderQueue = new Queue("expiry-reminder", {
     connection: redis,
+    defaultJobOptions: {
+        attempts: 3,
+        backoff: {
+            type: "exponential",
+            delay: 5 * 60 * 1000,
+        },
+        removeOnComplete: {
+            age: 60 * 60 * 24,
+        },
+        removeOnFail: {
+            age: 60 * 60 * 24 * 7,
+        },
+    },
 });
 
 expiryReminderQueue.on("error", (error) => {

@@ -211,43 +211,43 @@ const SuperAdminDashboard = () => {
     donutGradient = `conic-gradient(${parts.join(", ")})`;
   }
 
-  // =========================
-  // NOTIFICATIONS
-  // =========================
-  const notifications = dashboard?.notifications || [];
+  // // =========================
+  // // NOTIFICATIONS
+  // // =========================
+  // const notifications = dashboard?.notifications || [];
 
-  const getNotificationIcon = (notification) => {
-    if (notification.reminderType === "1_DAY") {
-      return XCircle;
-    }
+  // const getNotificationIcon = (notification) => {
+  //   if (notification.reminderType === "1_DAY") {
+  //     return XCircle;
+  //   }
 
-    if (notification.reminderType === "7_DAY") {
-      return AlertTriangle;
-    }
+  //   if (notification.reminderType === "7_DAY") {
+  //     return AlertTriangle;
+  //   }
 
-    return Clock;
-  };
+  //   return Clock;
+  // };
 
-  const getNotificationStyle = (notification) => {
-    if (notification.reminderType === "1_DAY") {
-      return {
-        bg: "bg-red-100",
-        color: "text-red-500",
-      };
-    }
+  // const getNotificationStyle = (notification) => {
+  //   if (notification.reminderType === "1_DAY") {
+  //     return {
+  //       bg: "bg-red-100",
+  //       color: "text-red-500",
+  //     };
+  //   }
 
-    if (notification.reminderType === "7_DAY") {
-      return {
-        bg: "bg-orange-100",
-        color: "text-orange-500",
-      };
-    }
+  //   if (notification.reminderType === "7_DAY") {
+  //     return {
+  //       bg: "bg-orange-100",
+  //       color: "text-orange-500",
+  //     };
+  //   }
 
-    return {
-      bg: "bg-blue-100",
-      color: "text-blue-500",
-    };
-  };
+  //   return {
+  //     bg: "bg-blue-100",
+  //     color: "text-blue-500",
+  //   };
+  // };
 
   const formatTime = (date) => {
     if (!date) return "";
@@ -548,110 +548,7 @@ const SuperAdminDashboard = () => {
 
       <section className="mt-6 grid grid-cols-1 gap-6 2xl:grid-cols-[0.9fr_1.1fr]">
 
-        {/* =================================================
-            RECENT ALERTS
-        ================================================= */}
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900">
-                Recent System Alerts
-              </h3>
-
-              <p className="mt-1 text-xs text-slate-400">
-                Latest document expiry notifications
-              </p>
-            </div>
-
-            <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600">
-              {notifications.length}
-            </span>
-          </div>
-
-          <div className="mt-5 space-y-3">
-
-            {notifications.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center">
-                <CheckCircle
-                  size={28}
-                  className="mx-auto text-green-500"
-                />
-
-                <p className="mt-2 text-sm font-medium text-slate-700">
-                  No recent alerts
-                </p>
-
-                <p className="mt-1 text-xs text-slate-400">
-                  Everything looks good right now.
-                </p>
-              </div>
-            ) : (
-              notifications.map((notification) => {
-                const Icon =
-                  getNotificationIcon(notification);
-
-                const style =
-                  getNotificationStyle(notification);
-
-                return (
-                  <div
-                    key={notification._id}
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      rounded-xl
-                      border
-                      border-slate-100
-                      p-3
-                    "
-                  >
-                    <div
-                      className={`
-                        flex
-                        h-10
-                        w-10
-                        shrink-0
-                        items-center
-                        justify-center
-                        rounded-xl
-                        ${style.bg}
-                      `}
-                    >
-                      <Icon
-                        size={19}
-                        className={style.color}
-                      />
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-slate-800">
-                        {notification.title}
-                      </p>
-
-                      <p className="mt-1 truncate text-xs text-slate-500">
-                        {notification.message}
-                      </p>
-
-                      <p className="mt-1 text-xs text-slate-400">
-                        {notification.vendorId?.companyName ||
-                          notification.vendorId?.name ||
-                          "Vendor"}
-                      </p>
-                    </div>
-
-                    <span className="whitespace-nowrap text-xs text-slate-400">
-                      {formatTime(notification.createdAt)}
-                    </span>
-                  </div>
-                );
-              })
-            )}
-
-          </div>
-        </div>
+        
 
         {/* =================================================
             RECENT VENDORS

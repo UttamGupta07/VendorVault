@@ -13,10 +13,10 @@ const authorizeRoles = require("../middleware/authorizeRoles");
 
 const router = express.Router();
 
-// All routes require authentication 
+// All routes require authentication
 router.use(protect);
 
-// Only SUPER_ADMIN can manage service types
+// Only SUPER_ADMIN and COMPLIANCE_OFFICER can manage service types
 router.use(authorizeRoles("SUPER_ADMIN", "COMPLIANCE_OFFICER"));
 
 router.post("/", createServiceType);

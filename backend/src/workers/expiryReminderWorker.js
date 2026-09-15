@@ -172,40 +172,72 @@ const startWorker = async () => {
                 let title;
                 let message;
 
+                // =====================================================
+                // Prepare email title and message according to reminder type
+                // =====================================================
 
+                // Document will expire in 15 days
                 if (reminderType === "15_DAY") {
 
-                    title =
-                        "Document Expiry Reminder";
+                    title = "Document Expiry Reminder - 15 Days";
 
                     message =
-                        `${document.originalFileName} will expire in 15 days. Please upload an updated document.`;
-                }
+                        `Your document "${document.documentName || "document"}" ` +
+                        `will expire in 15 days. Please upload a valid document ` +
+                        `before the expiry date.`;
 
+                    // Document will expire in 7 days
+                } else if (reminderType === "7_DAY") {
 
-                if (reminderType === "7_DAY") {
-
-                    title =
-                        "Document Expiry Reminder";
-
-                    message =
-                        `${document.originalFileName} will expire in 7 days. Please upload an updated document.`;
-                }
-
-
-                if (reminderType === "1_DAY") {
-
-                    title =
-                        "Document Expiry Reminder";
+                    title = "Document Expiry Reminder - 7 Days";
 
                     message =
-                        `${document.originalFileName} will expire tomorrow. Please upload an updated document.`;
-                }
+                        `Your document "${document.documentName || "document"}" ` +
+                        `will expire in 7 days. Please upload a valid document ` +
+                        `before the expiry date.`;
 
+                    // Document will expire tomorrow
+                } else if (reminderType === "1_DAY") {
 
-                // Invalid reminder type
+                    title = "Document Expiry Reminder - 1 Day";
 
-                if (!title || !message) {
+                    message =
+                        `Your document "${document.documentName || "document"}" ` +
+                        `will expire tomorrow. Please upload a valid document ` +
+                        `before the expiry date.`;
+
+                    // Document expired 1 day ago
+                } else if (reminderType === "EXPIRED_1_DAY") {
+
+                    title = "Document Expired - 1 Day";
+
+                    message =
+                        `Your document "${document.documentName || "document"}" ` +
+                        `expired 1 day ago. Please upload a valid replacement document ` +
+                        `as soon as possible.`;
+
+                    // Document expired 3 days ago
+                } else if (reminderType === "EXPIRED_3_DAY") {
+
+                    title = "Document Expired - 3 Days";
+
+                    message =
+                        `Your document "${document.documentName || "document"}" ` +
+                        `has been expired for 3 days. Please upload a valid replacement ` +
+                        `document immediately.`;
+
+                    // Document expired 7 days ago
+                } else if (reminderType === "EXPIRED_7_DAY") {
+
+                    title = "Document Expired - 7 Days";
+
+                    message =
+                        `Your document "${document.documentName || "document"}" ` +
+                        `has been expired for 7 days. This is the final expiry reminder. ` +
+                        `Please upload a valid replacement document immediately.`;
+
+                    // Unknown reminder type
+                } else {
 
                     console.log(
                         `Invalid reminder type: ${reminderType}`

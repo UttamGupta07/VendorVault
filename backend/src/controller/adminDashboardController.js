@@ -1,10 +1,27 @@
 const Vendor = require("../models/Vendor");
 const VendorDocument = require("../models/VendorDocument");
 const User = require("../models/User");
-const Notification = require("../models/Notification");
+// const Notification = require("../models/Notification");
+
+
+
+
 
 const getSuperAdminDashboard = async (req, res) => {
+
     try {
+
+        // console.log("SUPER ADMIN USER:", req.user);
+        // console.log("ORGANIZATION ID:", req.user.organizationId);
+        const organizationId = req.user.organizationId;
+
+        if (!organizationId) {
+            return res.status(400).json({
+                success: false,
+                message: "Organization ID is missing",
+            });
+        }
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -14,6 +31,7 @@ const getSuperAdminDashboard = async (req, res) => {
         // =========================
         // BASIC COUNTS
         // =========================
+
         const [
             totalUsers,
             activeUsers,
@@ -29,25 +47,67 @@ const getSuperAdminDashboard = async (req, res) => {
             expiredDocuments,
             expiringSoon,
         ] = await Promise.all([
-            User.countDocuments(),
-            User.countDocuments({ isActive: true }),
+            User.countDocuments({
+                organizationId,
+            }),
 
-            Vendor.countDocuments(),
-            Vendor.countDocuments({ status: "active" }),
-            Vendor.countDocuments({ status: "pending" }),
-            Vendor.countDocuments({ status: "suspended" }),
-            Vendor.countDocuments({ status: "inactive" }),
+            User.countDocuments({
+                organizationId,
+                isActive: true,
+            }),
 
-            VendorDocument.countDocuments(),
-            VendorDocument.countDocuments({ status: "PENDING_REVIEW" }),
-            VendorDocument.countDocuments({ status: "APPROVED" }),
-            VendorDocument.countDocuments({ status: "REJECTED" }),
+            Vendor.countDocuments({
+                organizationId,
+            }),
 
-            VendorDocument.countDocuments({
-                expiryDate: { $lt: today },
+            Vendor.countDocuments({
+                organizationId,
+                status: "active",
+            }),
+
+            Vendor.countDocuments({
+                organizationId,
+                status: "pending",
+            }),
+
+            Vendor.countDocuments({
+                organizationId,
+                status: "suspended",
+            }),
+
+            Vendor.countDocuments({
+                organizationId,
+                status: "inactive",
             }),
 
             VendorDocument.countDocuments({
+                organizationId,
+            }),
+
+            VendorDocument.countDocuments({
+                organizationId,
+                status: "PENDING_REVIEW",
+            }),
+
+            VendorDocument.countDocuments({
+                organizationId,
+                status: "APPROVED",
+            }),
+
+            VendorDocument.countDocuments({
+                organizationId,
+                status: "REJECTED",
+            }),
+
+            VendorDocument.countDocuments({
+                organizationId,
+                expiryDate: {
+                    $lt: today,
+                },
+            }),
+
+            VendorDocument.countDocuments({
+                organizationId,
                 expiryDate: {
                     $gte: today,
                     $lte: thirtyDaysLater,
@@ -58,7 +118,13 @@ const getSuperAdminDashboard = async (req, res) => {
         // =========================
         // COMPLIANCE
         // =========================
+
         const complianceResult = await Vendor.aggregate([
+            {
+                $match: {
+                    organizationId,
+                },
+            },
             {
                 $group: {
                     _id: null,
@@ -71,32 +137,48 @@ const getSuperAdminDashboard = async (req, res) => {
 
         const averageComplianceScore =
             complianceResult.length > 0
-                ? Math.round(complianceResult[0].averageScore || 0)
+                ? Math.round(
+                    complianceResult[0].averageScore || 0
+                )
                 : 0;
 
-        const [compliantVendors, attentionVendors] =
-            await Promise.all([
-                Vendor.countDocuments({
-                    complianceScore: { $gte: 80 },
-                }),
-                Vendor.countDocuments({
-                    complianceScore: { $lt: 60 },
-                }),
-            ]);
+        const [
+            compliantVendors,
+            attentionVendors,
+        ] = await Promise.all([
+            Vendor.countDocuments({
+                organizationId,
+                complianceScore: {
+                    $gte: 80,
+                },
+            }),
+
+            Vendor.countDocuments({
+                organizationId,
+                complianceScore: {
+                    $lt: 60,
+                },
+            }),
+        ]);
 
         // =========================
         // EXPIRY OVERVIEW
         // =========================
+
         const [
             expiredCount,
             expiring30Count,
             expiring60Count,
         ] = await Promise.all([
             VendorDocument.countDocuments({
-                expiryDate: { $lt: today },
+                organizationId,
+                expiryDate: {
+                    $lt: today,
+                },
             }),
 
             VendorDocument.countDocuments({
+                organizationId,
                 expiryDate: {
                     $gte: today,
                     $lte: thirtyDaysLater,
@@ -104,6 +186,7 @@ const getSuperAdminDashboard = async (req, res) => {
             }),
 
             VendorDocument.countDocuments({
+                organizationId,
                 expiryDate: {
                     $gt: thirtyDaysLater,
                     $lte: new Date(
@@ -125,78 +208,141 @@ const getSuperAdminDashboard = async (req, res) => {
         // =========================
         // RECENT VENDORS
         // =========================
-        const vendors = await Vendor.find()
+
+        const vendors = await Vendor.find({
+            organizationId,
+        })
             .select(
                 "name companyName email status complianceScore createdAt"
             )
-            .sort({ createdAt: -1 })
+            .sort({
+                createdAt: -1,
+            })
             .limit(8)
             .lean();
 
         // =========================
         // RECENT NOTIFICATIONS
         // =========================
-        const notifications = await Notification.find()
-            .populate("vendorId", "name companyName")
-            .populate(
-                "documentId",
-                "originalFileName expiryDate"
-            )
-            .sort({ createdAt: -1 })
-            .limit(8)
-            .lean();
+
+        // Fetch only notifications belonging to the logged-in Super Admin's organization
+        // const notifications = await Notification.find({
+        //     organizationId,
+        // })
+        //     .populate(
+        //         "vendorId",
+        //         "name companyName"
+        //     )
+        //     .populate(
+        //         "documentId",
+        //         "originalFileName expiryDate"
+        //     )
+        //     .sort({
+        //         createdAt: -1,
+        //     })
+        //     .limit(8)
+        //     .lean();
 
         // =========================
         // RESPONSE
         // =========================
-        res.status(200).json({
+
+        return res.status(200).json({
             success: true,
 
             data: {
+                // =========================
+                // DASHBOARD STATS
+                // =========================
+
                 stats: {
                     users: totalUsers,
                     activeUsers,
+
                     vendors: totalVendors,
+
                     documents: totalDocuments,
-                    expiringSoon: expiringSoon,
+
+                    expiringSoon,
+
                     expired: expiredDocuments,
                 },
+
+                // =========================
+                // VENDOR DATA
+                // =========================
 
                 vendors: {
                     total: totalVendors,
+
                     active: activeVendors,
+
                     pending: pendingVendors,
+
                     suspended: suspendedVendors,
+
                     inactive: inactiveVendors,
+
                     compliant: compliantVendors,
+
                     needingAttention: attentionVendors,
+
                     recent: vendors,
                 },
 
+                // =========================
+                // DOCUMENT DATA
+                // =========================
+
                 documents: {
                     total: totalDocuments,
+
                     pendingReview: pendingDocuments,
+
                     approved: approvedDocuments,
+
                     rejected: rejectedDocuments,
+
                     expired: expiredDocuments,
+
                     expiringSoon,
                 },
 
+                // =========================
+                // EXPIRY OVERVIEW
+                // =========================
+
                 expiryOverview: {
                     expired: expiredCount,
+
                     expiring30Days: expiring30Count,
+
                     expiring60Days: expiring60Count,
+
                     valid: validDocuments,
+
                     total: totalDocuments,
                 },
 
+                // =========================
+                // COMPLIANCE
+                // =========================
+
                 compliance: {
-                    averageScore: averageComplianceScore,
+                    averageScore:
+                        averageComplianceScore,
+
                     compliant: compliantVendors,
-                    needingAttention: attentionVendors,
+
+                    needingAttention:
+                        attentionVendors,
                 },
 
-                notifications,
+                // =========================
+                // NOTIFICATIONS
+                // =========================
+
+                // notifications,
             },
         });
     } catch (error) {
@@ -205,9 +351,10 @@ const getSuperAdminDashboard = async (req, res) => {
             error.message
         );
 
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
-            message: "Failed to load Super Admin dashboard",
+            message:
+                "Failed to load Super Admin dashboard",
         });
     }
 };

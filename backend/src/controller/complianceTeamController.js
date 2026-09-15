@@ -3,11 +3,21 @@ const VendorDocument = require("../models/VendorDocument");
 
 const getComplianceTeam = async (req, res) => {
     try {
+        const organizationId = req.user.organizationId;
+
+        if (!organizationId) {
+            return res.status(400).json({
+                success: false,
+                message: "Organization ID is missing",
+            });
+        }
+
         // ==========================================
         // 1. GET ALL COMPLIANCE OFFICERS
         // ==========================================
 
         const officers = await User.find({
+            organizationId,
             role: "COMPLIANCE_OFFICER",
         })
             .select("name email isActive createdAt lastLoginAt")
@@ -21,6 +31,7 @@ const getComplianceTeam = async (req, res) => {
         const reviewStats = await VendorDocument.aggregate([
             {
                 $match: {
+                    organizationId,
                     reviewedBy: { $ne: null },
                     reviewedAt: { $ne: null },
                 },
@@ -28,11 +39,9 @@ const getComplianceTeam = async (req, res) => {
             {
                 $group: {
                     _id: "$reviewedBy",
-
                     totalReviewed: {
                         $sum: 1,
                     },
-
                     approved: {
                         $sum: {
                             $cond: [
@@ -42,7 +51,6 @@ const getComplianceTeam = async (req, res) => {
                             ],
                         },
                     },
-
                     rejected: {
                         $sum: {
                             $cond: [
@@ -52,11 +60,9 @@ const getComplianceTeam = async (req, res) => {
                             ],
                         },
                     },
-
                     vendors: {
                         $addToSet: "$vendorId",
                     },
-
                     lastActivityAt: {
                         $max: "$reviewedAt",
                     },
@@ -85,6 +91,7 @@ const getComplianceTeam = async (req, res) => {
         // ==========================================
 
         const activities = await VendorDocument.find({
+            organizationId,
             reviewedBy: { $ne: null },
             reviewedAt: { $ne: null },
         })
@@ -165,12 +172,17 @@ const getComplianceTeam = async (req, res) => {
             data: {
                 overview: {
                     totalOfficers: officers.length,
+
                     activeOfficers,
+
                     inactiveOfficers:
                         officers.length -
                         activeOfficers,
+
                     totalReviewed,
+
                     totalApproved,
+
                     totalRejected,
                 },
 
