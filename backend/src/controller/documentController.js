@@ -668,6 +668,210 @@ const getAllDocuments = async (req, res) => {
 };
 
 
+
+// =====================================================
+// Get Expiry Tracker Data
+// =====================================================
+
+const getExpiryTracker = async (req, res) => {
+  try {
+    const organizationId = req.user.organizationId;
+
+    // -------------------------------------------------
+    // Current date
+    // -------------------------------------------------
+
+    const now = new Date();
+
+    // Start of today
+    const today = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+
+    // Date boundaries
+    const sevenDays = new Date(today);
+    sevenDays.setDate(today.getDate() + 7);
+
+    const fifteenDays = new Date(today);
+    fifteenDays.setDate(today.getDate() + 15);
+
+    const thirtyDays = new Date(today);
+    thirtyDays.setDate(today.getDate() + 30);
+
+    // -------------------------------------------------
+    // Get documents
+    // -------------------------------------------------
+
+    const documents = await VendorDocument.find({
+      organizationId,
+      expiryDate: { $ne: null },
+    })
+      .populate(
+        "vendorId",
+        "name email companyName"
+      )
+      .populate(
+        "documentTypeId",
+        "name description"
+      )
+      .populate(
+        "serviceTypeId",
+        "name description"
+      )
+      .populate(
+        "reviewedBy",
+        "name email"
+      )
+      .sort({
+        expiryDate: 1,
+      });
+
+    // -------------------------------------------------
+    // Categorize documents
+    // -------------------------------------------------
+
+    const categorizedDocuments = documents.map((document) => {
+      const expiry = new Date(document.expiryDate);
+
+      // Difference in days
+      const difference =
+        expiry.getTime() - today.getTime();
+
+      const daysRemaining = Math.ceil(
+        difference / (1000 * 60 * 60 * 24)
+      );
+
+      let expiryStatus = "VALID";
+
+      if (expiry < today) {
+        expiryStatus = "EXPIRED";
+      } else if (expiry <= sevenDays) {
+        expiryStatus = "CRITICAL";
+      } else if (expiry <= fifteenDays) {
+        expiryStatus = "EXPIRING_15_DAYS";
+      } else if (expiry <= thirtyDays) {
+        expiryStatus = "EXPIRING_30_DAYS";
+      }
+
+      return {
+        id: document._id,
+
+        vendor: document.vendorId
+          ? {
+              id: document.vendorId._id,
+              name: document.vendorId.name,
+              email: document.vendorId.email,
+              companyName:
+                document.vendorId.companyName,
+            }
+          : null,
+
+        documentType:
+          document.documentTypeId
+            ? {
+                id: document.documentTypeId._id,
+                name: document.documentTypeId.name,
+              }
+            : null,
+
+        serviceType:
+          document.serviceTypeId
+            ? {
+                id: document.serviceTypeId._id,
+                name: document.serviceTypeId.name,
+              }
+            : null,
+
+        fileName:
+          document.originalFileName,
+
+        fileUrl:
+          document.fileUrl,
+
+        expiryDate:
+          document.expiryDate,
+
+        daysRemaining,
+
+        expiryStatus,
+
+        reviewStatus:
+          document.status,
+
+        extractionStatus:
+          document.extractionStatus,
+
+        rejectionReason:
+          document.rejectionReason,
+
+        reviewedAt:
+          document.reviewedAt,
+
+        createdAt:
+          document.createdAt,
+      };
+    });
+
+    // -------------------------------------------------
+    // Summary
+    // -------------------------------------------------
+
+    const summary = {
+      expired: categorizedDocuments.filter(
+        (doc) =>
+          doc.expiryStatus === "EXPIRED"
+      ).length,
+
+      expiring7Days: categorizedDocuments.filter(
+        (doc) =>
+          doc.expiryStatus === "CRITICAL"
+      ).length,
+
+      expiring15Days: categorizedDocuments.filter(
+        (doc) =>
+          doc.expiryStatus === "EXPIRING_15_DAYS"
+      ).length,
+
+      expiring30Days: categorizedDocuments.filter(
+        (doc) =>
+          doc.expiryStatus === "EXPIRING_30_DAYS"
+      ).length,
+
+      valid: categorizedDocuments.filter(
+        (doc) =>
+          doc.expiryStatus === "VALID"
+      ).length,
+
+      total: categorizedDocuments.length,
+    };
+
+    // -------------------------------------------------
+    // Response
+    // -------------------------------------------------
+
+    return res.status(200).json({
+      success: true,
+      summary,
+      count: categorizedDocuments.length,
+      documents: categorizedDocuments,
+    });
+  } catch (error) {
+    console.error(
+      "Get expiry tracker error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to fetch expiry tracker data",
+      error: error.message,
+    });
+  }
+};
+
 // =====================================================
 // Retry Document Extraction
 // =====================================================
@@ -932,5 +1136,6 @@ module.exports = {
   reviewDocument,
   getAllDocuments,
   retryDocumentExtraction,
+  getExpiryTracker,
 };
 

@@ -50,7 +50,7 @@ app.use(
   complianceRoute
 );
 app.use("/api/document-types",documentRoute)
-app.use("/api/service-types",serviceRoute); 
+app.use("/api/service-types",serviceRoute);  
 app.use("/api/documents",documentRoutes)
 app.use(
     "/api/admin/dashboard",
