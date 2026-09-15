@@ -183,7 +183,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
       setLoading(true);
 
       const response = await axiosInstance.post(
-        "/api/vendor/auth/register",
+        "/api/vendor/register",
         formData
       );
   

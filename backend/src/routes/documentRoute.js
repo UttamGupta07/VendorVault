@@ -15,6 +15,7 @@ const {
   reviewDocument,
   getAllDocuments,
   retryDocumentExtraction,
+  getExpiryTracker,
 } = require("../controller/documentController");
 
 const protect = require("../middleware/authMiddleware");
@@ -62,6 +63,13 @@ router.post(
   authorizeRoles("COMPLIANCE_OFFICER"),
   retryDocumentExtraction
 );
+router.get(
+  "/expiry-tracker",
+  protect,
+  authorizeRoles("COMPLIANCE_OFFICER"),
+  getExpiryTracker
+); 
+
 router.get(
   "/:id",
   protect,

@@ -27,6 +27,7 @@ import VendorDetail from "./pages/compliance/vendor/VendorDetail";
 import DocumentReview from "./pages/compliance/DocumentReview";
 import Compliance from "./pages/compliance/Compliance";
 import ReportsAnalytics from "./pages/superAdminPages/ReportsAnalytics";
+import ExpiryTracker from "./pages/compliance/ExpiryTracker";
 
 
 import VendorLayout from "./layout/VendorLayout";
@@ -145,6 +146,10 @@ const App = () => {
             <Route
               path="/compliance/vendors"
               element={<VendorManagement />}
+            />
+            <Route
+              path="/compliance/expiry"
+              element={<ExpiryTracker />}
             />
             <Route
               path="/compliance/vendors/:vendorId"
