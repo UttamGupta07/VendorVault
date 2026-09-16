@@ -1,7 +1,9 @@
 const bcrypt = require("bcryptjs");
 
 const User = require("../models/User");
-
+const {
+  createAuditLog,
+} = require("../services/auditLogService");
 // ======================================================
 // GET ALL USERS
 // GET /api/admin/users
@@ -225,6 +227,28 @@ const createUser = async (req, res) => {
       role,
     });
 
+
+    // Create an audit log for the newly created user.
+    // Create a specific audit log based on the created user's role.
+const auditAction =
+    user.role === "COMPLIANCE_OFFICER"
+        ? "CREATE_COMPLIANCE_OFFICER"
+        : user.role === "VENDOR"
+        ? "CREATE_VENDOR"
+        : "CREATE_USER";
+
+await createAuditLog({
+    organizationId: req.user.organizationId,
+    performedBy: req.user.userId,
+    action: auditAction,
+    targetType: "User",
+    targetId: user._id,
+    description: `${user.role.replace(/_/g, " ")} ${user.name} was created`,
+    metadata: {
+        role: user.role,
+        email: user.email,
+    },
+});
     // ----------------------------------------
     // Remove password from response
     // ----------------------------------------

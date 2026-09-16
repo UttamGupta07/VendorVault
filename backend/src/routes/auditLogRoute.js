@@ -11,6 +11,7 @@ router.get(
     "/",
     authMiddleware,
     (req, res, next) => {
+        // Only Super Admin can access audit logs.
         if (req.user.role !== "SUPER_ADMIN") {
             return res.status(403).json({
                 success: false,

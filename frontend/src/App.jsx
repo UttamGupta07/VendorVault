@@ -29,6 +29,7 @@ import DocumentReview from "./pages/compliance/DocumentReview";
 import Compliance from "./pages/compliance/Compliance";
 import ReportsAnalytics from "./pages/superAdminPages/ReportsAnalytics";
 import ActivityLogs from "./pages/superAdminPages/ActivityLogs";
+import Settings from "./pages/superAdminPages/Settings";
 
 
 import VendorLayout from "./layout/VendorLayout";
@@ -97,7 +98,7 @@ const App = () => {
               element={<Users />}
             />
 
-           
+
 
             <Route
               path="/super-admin/vendors"
@@ -136,7 +137,7 @@ const App = () => {
 
             <Route
               path="/super-admin/settings"
-              element={<div>Settings</div>}
+              element={<Settings />}
             />
 
           </Route>

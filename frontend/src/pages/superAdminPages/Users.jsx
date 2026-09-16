@@ -390,7 +390,7 @@ const Users = () => {
             User Management
           </h1>
 
-          <p classNaNe="mt-2 max-w-xl text-sm text-[#64748B]">
+          <p className="mt-2 max-w-xl text-sm text-[#64748B]">
             Manage administrators, compliance officers,
             auditors and vendors across the platform.
           </p>
