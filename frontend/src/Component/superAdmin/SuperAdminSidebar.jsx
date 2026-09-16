@@ -1,4 +1,4 @@
- import React from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 
 import {
@@ -18,53 +18,48 @@ import {
 } from "lucide-react";
 
 const SuperAdminSidebar = ({ open, setOpen }) => {
- const navItems = [
+  const navItems = [
     {
-        name: "Dashboard",
-        path: "/super-admin/dashboard",
-        icon: LayoutDashboard,
+      name: "Dashboard",
+      path: "/super-admin/dashboard",
+      icon: LayoutDashboard,
     },
     {
-        name: "Users",
-        path: "/super-admin/users",
-        icon: Users,
+      name: "Users",
+      path: "/super-admin/users",
+      icon: Users,
     },
     {
-        name: "Compliance Team",
-        path: "/super-admin/compliance-teams",
-        icon: UsersRound,
+      name: "Compliance Team",
+      path: "/super-admin/compliance-teams",
+      icon: UsersRound,
     },
     {
-        name: "Roles & Permissions",
-        path: "/super-admin/roles",
-        icon: ShieldCheck,
+      name: "Documents Overview",
+      path: "/super-admin/documents",
+      icon: FileText,
     },
     {
-        name: "Documents Overview",
-        path: "/super-admin/documents",
-        icon: FileText,
+      name: "Services",
+      path: "/super-admin/service",
+      icon: AlertTriangle,
     },
     {
-        name: "Services",
-        path: "/super-admin/service",
-        icon: AlertTriangle,
+      name: "Reports & Analytics",
+      path: "/super-admin/reports",
+      icon: BarChart3,
     },
     {
-        name: "Reports & Analytics",
-        path: "/super-admin/reports",
-        icon: BarChart3,
+      name: "Activity Logs",
+      path: "/super-admin/activity-logs",
+      icon: Activity,
     },
     {
-        name: "Activity Logs",
-        path: "/super-admin/activity-logs",
-        icon: Activity,
+      name: "Settings",
+      path: "/super-admin/settings",
+      icon: Settings,
     },
-    {
-        name: "Settings",
-        path: "/super-admin/settings",
-        icon: Settings,
-    },
-];
+  ];
 
   return (
     <>

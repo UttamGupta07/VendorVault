@@ -18,9 +18,15 @@ const notificationSchema = new mongoose.Schema(
 
         reminderType: {
             type: String,
-            enum: ["15_DAY", "7_DAY", "1_DAY","EXPIRED_3_DAY","EXPIRED_1_DAY","EXPIRED_7_DAY","EXPIRED_15_DAY"],
-            required: true,
-            index: true,
+            enum: [
+                "15_DAY",
+                "7_DAY",
+                "1_DAY",
+                "EXPIRED_1_DAY",
+                "EXPIRED_3_DAY",
+                "EXPIRED_7_DAY"
+            ],
+            required: true
         },
 
         title: {

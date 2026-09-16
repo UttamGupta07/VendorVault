@@ -1,17 +1,20 @@
 const express = require("express");
-const router = express.Router();
 
 const {
-    getAuditLogs,
-} = require("../controller/auditLogController");
+    getFailedReminderJobs,
+} = require("../controller/failedReminderController");
 
 const authMiddleware = require("../middleware/authMiddleware");
 
+const router = express.Router();
+
+// Only authenticated Super Admin users can view failed reminder jobs.
 router.get(
     "/",
     authMiddleware,
     (req, res, next) => {
-        // Only Super Admin can access audit logs.
+
+        // Check Super Admin permission.
         if (req.user.role !== "SUPER_ADMIN") {
             return res.status(403).json({
                 success: false,
@@ -21,7 +24,7 @@ router.get(
 
         next();
     },
-    getAuditLogs
+    getFailedReminderJobs
 );
 
 module.exports = router;

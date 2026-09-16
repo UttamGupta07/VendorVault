@@ -8,26 +8,64 @@ const {
     processExpiryReminders,
 } = require("../services/expiryReminderService");
 
-
 const startExpiryReminderScheduler = async () => {
     try {
 
+        // =====================================================
         // Connect scheduler with MongoDB
+        // =====================================================
+
         await connectdb();
 
         console.log(
             "Expiry scheduler MongoDB connection ready"
         );
 
+        // =====================================================
+        // Run reminder scan immediately when scheduler starts
+        // =====================================================
+        //
+        // This is useful for testing and also makes sure
+        // documents are not missed when the server starts.
+        //
 
-        // Daily expiry reminder scan
+        console.log(
+            "Starting expiry reminder scan..."
+        );
+
+        try {
+
+            await processExpiryReminders();
+
+            console.log(
+                "Expiry reminder scan completed."
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Expiry reminder scan failed:",
+                error.message
+            );
+        }
+
+        // =====================================================
+        // Schedule automatic expiry reminder scan
+        // =====================================================
+        //
+        // Testing:
+        // * * * * * = Every minute
+        //
+        // Production:
         // 0 0 * * * = Every day at 12:00 AM
+        //
+
         cron.schedule(
             "* * * * *",
             async () => {
 
                 console.log(
-                    "Starting daily expiry reminder scan..."
+                    "Starting scheduled expiry reminder scan..."
                 );
 
                 try {
@@ -35,20 +73,18 @@ const startExpiryReminderScheduler = async () => {
                     await processExpiryReminders();
 
                     console.log(
-                        "Daily expiry reminder scan completed."
+                        "Scheduled expiry reminder scan completed."
                     );
 
                 } catch (error) {
 
                     console.error(
-                        "Daily expiry reminder scan failed:",
+                        "Scheduled expiry reminder scan failed:",
                         error.message
                     );
-
                 }
             }
         );
-
 
         console.log(
             "Expiry Reminder Scheduler is running..."
@@ -64,6 +100,5 @@ const startExpiryReminderScheduler = async () => {
         process.exit(1);
     }
 };
-
 
 startExpiryReminderScheduler();

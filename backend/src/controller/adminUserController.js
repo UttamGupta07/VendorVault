@@ -1,7 +1,9 @@
 const bcrypt = require("bcryptjs");
 
 const User = require("../models/User");
-
+const {
+  createAuditLog,
+} = require("../services/auditLogService");
 // ======================================================
 // GET ALL USERS
 // GET /api/admin/users
@@ -11,7 +13,7 @@ const getUsers = async (req, res) => {
   try {
     const {
       page = 1,
-      limit = 1,
+      limit = 10,
       search = "",
       role = "All",
       status = "All",
@@ -62,7 +64,7 @@ const getUsers = async (req, res) => {
     const currentPage = Math.max(parseInt(page, 10) || 10, 1);
 
     const perPage = Math.min(
-      Math.max(parseInt(limit, 1) || 1, 1),
+      Math.max(parseInt(limit, 10) || 10, 1),
       100
     );
 
@@ -225,6 +227,28 @@ const createUser = async (req, res) => {
       role,
     });
 
+
+    // Create an audit log for the newly created user.
+    // Create a specific audit log based on the created user's role.
+const auditAction =
+    user.role === "COMPLIANCE_OFFICER"
+        ? "CREATE_COMPLIANCE_OFFICER"
+        : user.role === "VENDOR"
+        ? "CREATE_VENDOR"
+        : "CREATE_USER";
+
+await createAuditLog({
+    organizationId: req.user.organizationId,
+    performedBy: req.user.userId,
+    action: auditAction,
+    targetType: "User",
+    targetId: user._id,
+    description: `${user.role.replace(/_/g, " ")} ${user.name} was created`,
+    metadata: {
+        role: user.role,
+        email: user.email,
+    },
+});
     // ----------------------------------------
     // Remove password from response
     // ----------------------------------------
@@ -344,6 +368,7 @@ const updateUser = async (req, res) => {
 
       const emailExists = await User.findOne({
         email: normalizedEmail,
+        organizationId: req.user.organizationId,
         _id: { $ne: id },
       });
 

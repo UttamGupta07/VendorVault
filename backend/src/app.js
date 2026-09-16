@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./routes/authRoute");
 const adminUserRoutes=require("./routes/adminUserRoute")
-const rolePermissionRoutes = require("./routes/rolePermissionRoute");
+
 const documentRoute =require("./routes/documentTypeRoute");
 const serviceRoute=require("./routes/serviceTypeRoute");
 const documentRoutes=require("./routes/documentRoute");
@@ -16,6 +16,8 @@ const notificationRoutes = require("./routes/notificationRoute");
 const complianceTeamRoute = require("./routes/complianceTeamRoute");
 const adminReportRoute = require("./routes/adminReportRoute");
 const auditLogRoute = require("./routes/auditLogRoute");
+
+const failedReminderRoute = require("./routes/failedReminderRoute");
 
 const app = express();
 
@@ -41,10 +43,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/vendor", vendorAuthRoutes); 
 app.use("/api/admin/users",adminUserRoutes); 
-app.use(
-  "/api/admin/roles",
-  rolePermissionRoutes
-);
+
 app.use(
   "/api/compliance",
   complianceRoute
@@ -79,6 +78,11 @@ app.use("/api/admin/activity-logs", auditLogRoute);
 app.use(
   "/api/notifications",
   notificationRoutes
+);
+
+app.use(
+    "/api/admin/failed-reminders",
+    failedReminderRoute
 );
 
 module.exports = app;
