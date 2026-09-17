@@ -30,6 +30,7 @@ import ReportsAnalytics from "./pages/superAdminPages/ReportsAnalytics";
 import ActivityLogs from "./pages/superAdminPages/ActivityLogs";
 import Settings from "./pages/superAdminPages/Settings";
 import ExpiryTracker from "./pages/compliance/ExpiryTracker";
+import EmailDelivery from "./pages/compliance/EmailDelivery";
 
 
 import VendorLayout from "./layout/VendorLayout";
@@ -156,6 +157,10 @@ const App = () => {
             <Route
               path="/compliance/expiry"
               element={<ExpiryTracker />}
+            />
+            <Route
+              path="/compliance/email-delivery"
+              element={<EmailDelivery />}
             />
             <Route
               path="/compliance/vendors/:vendorId"

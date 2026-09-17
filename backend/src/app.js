@@ -16,6 +16,7 @@ const notificationRoutes = require("./routes/notificationRoute");
 const complianceTeamRoute = require("./routes/complianceTeamRoute");
 const adminReportRoute = require("./routes/adminReportRoute");
 const auditLogRoute = require("./routes/auditLogRoute");
+const emailDeliveryRoute =require("./routes/emailDeliveryRoute.js");
 
 const failedReminderRoute = require("./routes/failedReminderRoute");
 
@@ -39,7 +40,7 @@ app.use(cookieParser());
 // ==========================================
 // ROUTES
 // ==========================================
-
+app.use("/api/email-delivery", emailDeliveryRoute);
 app.use("/api/auth", authRoutes);
 app.use("/api/vendor", vendorAuthRoutes); 
 app.use("/api/admin/users",adminUserRoutes); 
@@ -84,5 +85,6 @@ app.use(
     "/api/admin/failed-reminders",
     failedReminderRoute
 );
+
 
 module.exports = app;

@@ -1,13 +1,15 @@
+
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+
 import {
   LayoutDashboard,
   Users,
   FileText,
   ShieldCheck,
   Clock3,
-  Bell,
+  Mail,
   BarChart3,
   ClipboardList,
   Settings,
@@ -22,7 +24,7 @@ const ComplianceSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       path: "/compliance/dashboard",
       icon: LayoutDashboard,
     },
-    {  
+    {
       name: "Vendors",
       path: "/compliance/vendors",
       icon: Users,
@@ -43,10 +45,9 @@ const ComplianceSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon: Clock3,
     },
     {
-      name: "Alerts",
-      path: "/compliance/alerts",
-      icon: Bell,
-      badge: 8,
+      name: "Email Delivery & Monitoring",
+      path: "/compliance/email-delivery",
+      icon: Mail,
     },
   ];
 
@@ -67,7 +68,8 @@ const ComplianceSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon: Settings,
     },
   ];
-  const {logout}=useAuth();
+
+  const { logout } = useAuth();
 
   return (
     <>
@@ -130,6 +132,7 @@ const ComplianceSidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto px-4 py-6">
+
           {/* Main Menu */}
           <div>
             <p className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
@@ -179,12 +182,6 @@ const ComplianceSidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
                           <span>{item.name}</span>
                         </div>
-
-                        {item.badge && (
-                          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
-                            {item.badge}
-                          </span>
-                        )}
                       </>
                     )}
                   </NavLink>
@@ -281,7 +278,9 @@ const ComplianceSidebar = ({ sidebarOpen, setSidebarOpen }) => {
               hover:bg-red-50
               hover:text-red-600
             "
-            onClick={()=>{logout()}}
+            onClick={() => {
+              logout();
+            }}
           >
             <LogOut size={18} />
 

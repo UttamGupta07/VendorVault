@@ -1,15 +1,10 @@
-const VendorDocument = require("../models/VendorDocument");
-
+ const VendorDocument = require("../models/VendorDocument");
 const expiryReminderQueue = require("../queues/expiryReminderQueue");
 
 // =====================================================
 // Get the start of a particular day
 // =====================================================
-//
-// Example:
-// Target date = 18 September
-// Start = 18 September 00:00:00
-//
+
 const startOfDay = (date) => {
     const result = new Date(date);
 
@@ -21,10 +16,7 @@ const startOfDay = (date) => {
 // =====================================================
 // Get the start of the next day
 // =====================================================
-//
-// Example:
-// 18 September → 19 September 00:00:00
-//
+
 const startOfNextDay = (date) => {
     const result = startOfDay(date);
 
@@ -43,24 +35,27 @@ const startOfNextDay = (date) => {
 // 7  → 7 days remaining
 // 1  → 1 day remaining
 //
-const findDocumentsExpiringIn = async (daysBeforeExpiry) => {
+// =====================================================
 
-    // Get today's date
+const findDocumentsExpiringIn = async (
+    daysBeforeExpiry
+) => {
+    // Today's date
     const today = new Date();
 
-    // Calculate the target expiry date
+    // Calculate target expiry date
     const targetDate = new Date(today);
 
     targetDate.setDate(
         targetDate.getDate() + daysBeforeExpiry
     );
 
-    // Get start and end of the target date
+    // Start and end of target date
     const startDate = startOfDay(targetDate);
 
     const endDate = startOfNextDay(targetDate);
 
-    // Find documents expiring on the target date
+    // Find documents expiring on target date
     const documents = await VendorDocument.find({
         expiryDate: {
             $gte: startDate,
@@ -81,24 +76,28 @@ const findDocumentsExpiringIn = async (daysBeforeExpiry) => {
 // 3 → expired 3 days ago
 // 7 → expired 7 days ago
 //
-const findDocumentsExpiredFor = async (daysAfterExpiry) => {
+// =====================================================
 
-    // Get today's date
+const findDocumentsExpiredFor = async (
+    daysAfterExpiry
+) => {
+    // Today's date
     const today = new Date();
 
-    // Calculate the date on which the document expired
+    // Calculate target expiry date
     const targetDate = new Date(today);
 
     targetDate.setDate(
         targetDate.getDate() - daysAfterExpiry
     );
 
-    // Get start and end of the expiry date
+    // Start and end of expiry date
     const startDate = startOfDay(targetDate);
 
     const endDate = startOfNextDay(targetDate);
 
-    // Find documents whose expiry date matches the target date
+    // Find documents whose expiry date
+    // matches target date
     const documents = await VendorDocument.find({
         expiryDate: {
             $gte: startDate,
@@ -110,70 +109,78 @@ const findDocumentsExpiredFor = async (daysAfterExpiry) => {
 };
 
 // =====================================================
-// Add a reminder job to BullMQ
+// Add Reminder Job to BullMQ
 // =====================================================
 //
-// reminderType:
+// IMPORTANT:
 //
-// 15_DAY
-// 7_DAY
-// 1_DAY
-// EXPIRED_1_DAY
-// EXPIRED_3_DAY
-// EXPIRED_7_DAY
+// The worker itself handles the 3 email attempts.
 //
+// Therefore we DO NOT use:
+//
+// attempts: 3
+//
+// here.
+//
+// Otherwise BullMQ could execute the whole worker
+// multiple times and cause unwanted duplicate
+// processing.
+//
+// =====================================================
+
 const addReminderJob = async (
     document,
     reminderType
 ) => {
+    // =================================================
+    // Unique Job ID
+    // =================================================
+    //
+    // Example:
+    //
+    // 68abc123_7_DAY
+    //
+    // This prevents duplicate jobs for the same
+    // document + reminder type.
+    //
+    const jobId =
+        `${document._id}_${reminderType}`;
 
-    // Create a unique job ID.
-    //
-    // This prevents the same document from getting
-    // the same reminder job multiple times.
-    //
-    const jobId = `${document._id}_${reminderType}`;
+    // =================================================
+    // Add job
+    // =================================================
 
     await expiryReminderQueue.add(
         "document-expiry-reminder",
         {
-            documentId: document._id.toString(),
+            documentId:
+                document._id.toString(),
 
-            vendorId: document.vendorId.toString(),
+            vendorId:
+                document.vendorId.toString(),
 
             reminderType,
         },
         {
             jobId,
 
-            // Try sending the reminder email up to 3 times.
+            // =================================================
+            // IMPORTANT
+            // =================================================
             //
-            // If the email fails, BullMQ will retry the job.
-            attempts: 3,
+            // Do not put attempts: 3 here.
+            //
+            // The worker handles exactly 3 email attempts.
+            //
+            // =================================================
 
-            // Use exponential backoff between retries.
-            //
-            // First retry  -> 5 minutes
-            // Second retry -> 10 minutes
-            //
-            backoff: {
-                type: "exponential",
-                delay: 5 * 60 * 1000,
-            },
-
-            // Keep completed jobs in Redis for 24 hours.
-            //
-            // Successful jobs are not needed forever.
-            //
+            // Keep completed jobs in Redis for 24 hours
             removeOnComplete: {
                 age: 60 * 60 * 24,
             },
 
-            // Keep failed jobs in Redis for 7 days.
-            //
-            // This allows the Super Admin to inspect
-            // failed reminder jobs from Activity Logs.
-            //
+            // Keep failed infrastructure jobs in Redis
+            // for 7 days.
             removeOnFail: {
                 age: 60 * 60 * 24 * 7,
             },
@@ -181,28 +188,35 @@ const addReminderJob = async (
     );
 
     console.log(
-        `Reminder job added: ${jobId}`
+        `📋 Reminder job added: ${jobId}`
     );
 };
 
 // =====================================================
-// Find expiry reminders and add them to the queue
+// Process Expiry Reminders
 // =====================================================
 
 const processExpiryReminders = async () => {
-
     try {
+        console.log("");
+        console.log(
+            "============================================"
+        );
+        console.log(
+            "🔍 STARTING EXPIRY REMINDER SCAN"
+        );
+        console.log(
+            "============================================"
+        );
 
         // =================================================
-        // 1. Find documents expiring in 15 days
+        // 1. Documents expiring in 15 days
         // =================================================
 
         const documents15Days =
             await findDocumentsExpiringIn(15);
 
-        // Add each document to the BullMQ queue
         for (const document of documents15Days) {
-
             await addReminderJob(
                 document,
                 "15_DAY"
@@ -210,15 +224,13 @@ const processExpiryReminders = async () => {
         }
 
         // =================================================
-        // 2. Find documents expiring in 7 days
+        // 2. Documents expiring in 7 days
         // =================================================
 
         const documents7Days =
             await findDocumentsExpiringIn(7);
 
-        // Add each document to the BullMQ queue
         for (const document of documents7Days) {
-
             await addReminderJob(
                 document,
                 "7_DAY"
@@ -226,15 +238,13 @@ const processExpiryReminders = async () => {
         }
 
         // =================================================
-        // 3. Find documents expiring in 1 day
+        // 3. Documents expiring in 1 day
         // =================================================
 
         const documents1Day =
             await findDocumentsExpiringIn(1);
 
-        // Add each document to the BullMQ queue
         for (const document of documents1Day) {
-
             await addReminderJob(
                 document,
                 "1_DAY"
@@ -242,17 +252,15 @@ const processExpiryReminders = async () => {
         }
 
         // =================================================
-        // 4. Find documents expired 1 day ago
+        // 4. Documents expired 1 day ago
         // =================================================
-        //
-        // This reminder is sent one day after
-        // the document has expired.
-        //
+
         const documentsExpired1Day =
             await findDocumentsExpiredFor(1);
 
-        for (const document of documentsExpired1Day) {
-
+        for (
+            const document of documentsExpired1Day
+        ) {
             await addReminderJob(
                 document,
                 "EXPIRED_1_DAY"
@@ -260,17 +268,15 @@ const processExpiryReminders = async () => {
         }
 
         // =================================================
-        // 5. Find documents expired 3 days ago
+        // 5. Documents expired 3 days ago
         // =================================================
-        //
-        // This reminder is sent three days after
-        // the document has expired.
-        //
+
         const documentsExpired3Days =
             await findDocumentsExpiredFor(3);
 
-        for (const document of documentsExpired3Days) {
-
+        for (
+            const document of documentsExpired3Days
+        ) {
             await addReminderJob(
                 document,
                 "EXPIRED_3_DAY"
@@ -278,17 +284,15 @@ const processExpiryReminders = async () => {
         }
 
         // =================================================
-        // 6. Find documents expired 7 days ago
+        // 6. Documents expired 7 days ago
         // =================================================
-        //
-        // This is the final expired reminder.
-        // No reminder will be scheduled after this.
-        //
+
         const documentsExpired7Days =
             await findDocumentsExpiredFor(7);
 
-        for (const document of documentsExpired7Days) {
-
+        for (
+            const document of documentsExpired7Days
+        ) {
             await addReminderJob(
                 document,
                 "EXPIRED_7_DAY"
@@ -296,11 +300,18 @@ const processExpiryReminders = async () => {
         }
 
         // =================================================
-        // Log reminder scan summary
+        // Scan Summary
         // =================================================
 
+        console.log("");
         console.log(
-            "Expiry reminder scan completed."
+            "============================================"
+        );
+        console.log(
+            "✅ EXPIRY REMINDER SCAN COMPLETED"
+        );
+        console.log(
+            "============================================"
         );
 
         console.log(
@@ -327,39 +338,36 @@ const processExpiryReminders = async () => {
             `Expired 7-day reminders: ${documentsExpired7Days.length}`
         );
 
+        console.log(
+            "============================================"
+        );
+        console.log("");
+
         return {
-
             documents15Days,
-
             documents7Days,
-
             documents1Day,
-
             documentsExpired1Day,
-
             documentsExpired3Days,
-
             documentsExpired7Days,
         };
-
     } catch (error) {
-
         console.error(
-            "Process expiry reminders error:",
+            "❌ Process expiry reminders error:",
             error.message
         );
 
-        // Throw the error so the scheduler knows
-        // that the reminder scan failed.
+        // Let scheduler know the scan failed
         throw error;
     }
 };
 
+// =====================================================
+// Export
+// =====================================================
+
 module.exports = {
-
     findDocumentsExpiringIn,
-
     findDocumentsExpiredFor,
-
     processExpiryReminders,
 };
