@@ -1,10 +1,12 @@
- const express = require("express");
-
+const express = require("express");
 const {
   registerOrganization,
   loginUser,
   getMe,
   logoutUser,
+  changePassword,
+  updateProfile,
+  updateOrganization,
 } = require("../controller/authController");
 
 const protect = require("../middleware/authMiddleware");
@@ -19,4 +21,13 @@ router.post("/logout", logoutUser);
 
 router.get("/me", protect, getMe);
 
-module.exports = router;    
+// Change password for the currently logged-in user
+router.put("/change-password", protect, changePassword);
+
+// Update profile of the currently logged-in user
+router.put("/profile", protect, updateProfile);
+
+// Update organization of the currently logged-in user's organization
+router.put("/organization", protect, updateOrganization);
+
+module.exports = router;

@@ -571,9 +571,268 @@ const logoutUser = async (req, res) => {
   }
 };
 
+
+
+const changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    // Validate required fields
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Old password and new password are required",
+      });
+    }
+
+    // Prevent using the same password
+    if (oldPassword === newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be different from old password",
+      });
+    }
+
+    // Find the currently logged-in user
+    const user = await User.findById(req.user.userId).select("+password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Verify old password
+    const isPasswordCorrect = await bcrypt.compare(
+      oldPassword,
+      user.password
+    );
+
+    if (!isPasswordCorrect) {
+      return res.status(401).json({
+        success: false,
+        message: "Old password is incorrect",
+      });
+    }
+
+    // Hash the new password before saving
+    user.password = await bcrypt.hash(newPassword, 10);
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.error("Change password error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+
+// Update profile of the currently logged-in user
+const updateProfile = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({
+        success: false,
+        message: "Name and email are required",
+      });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "User account is inactive",
+      });
+    }
+
+    // Check whether another user already has this email
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+      _id: { $ne: user._id },
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "User with this email already exists",
+      });
+    }
+
+    user.name = name.trim();
+    user.email = normalizedEmail;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        organizationId: user.organizationId,
+        isActive: user.isActive,
+        isEmailVerified: user.isEmailVerified,
+      },
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+
+// Update organization of the currently logged-in user
+const updateOrganization = async (req, res) => {
+  try {
+    const {
+      name,
+      officialEmail,
+      phone,
+      industry,
+      companySize,
+      country,
+      state,
+      city,
+      website,
+    } = req.body;
+
+    if (
+      !name ||
+      !officialEmail ||
+      !phone ||
+      !industry ||
+      !companySize ||
+      !country ||
+      !state ||
+      !city
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required organization fields",
+      });
+    }
+
+    const normalizedOfficialEmail = officialEmail.toLowerCase().trim();
+
+    // Get organization only through the logged-in user's organizationId
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "User account is inactive",
+      });
+    }
+
+    const organization = await Organization.findById(
+      user.organizationId
+    );
+
+    if (!organization) {
+      return res.status(404).json({
+        success: false,
+        message: "Organization not found",
+      });
+    }
+
+    if (!organization.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Organization account is inactive",
+      });
+    }
+
+    // Check official email against other organizations
+    const existingOrganization = await Organization.findOne({
+      officialEmail: normalizedOfficialEmail,
+      _id: { $ne: organization._id },
+    });
+
+    if (existingOrganization) {
+      return res.status(409).json({
+        success: false,
+        message: "Organization with this official email already exists",
+      });
+    }
+
+    organization.name = name.trim();
+    organization.officialEmail = normalizedOfficialEmail;
+    organization.phone = phone.trim();
+    organization.industry = industry.trim();
+    organization.companySize = companySize;
+    organization.country = country.trim();
+    organization.state = state.trim();
+    organization.city = city.trim();
+    organization.website = website ? website.trim() : "";
+
+    await organization.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Organization updated successfully",
+      organization: {
+        id: organization._id,
+        name: organization.name,
+        officialEmail: organization.officialEmail,
+        phone: organization.phone,
+        industry: organization.industry,
+        companySize: organization.companySize,
+        country: organization.country,
+        state: organization.state,
+        city: organization.city,
+        website: organization.website,
+        isActive: organization.isActive,
+      },
+    });
+  } catch (error) {
+    console.error("Update organization error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
 module.exports = {
   registerOrganization,
   loginUser,
   getMe,
   logoutUser,
+  changePassword,
+  updateProfile,
+  updateOrganization,
 };
