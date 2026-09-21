@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      select: false, 
+      select: false,
     },
 
     role: {
@@ -47,7 +47,15 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
 
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
+    },
     lastLoginAt: {
       type: Date,
     },

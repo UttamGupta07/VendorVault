@@ -7,6 +7,8 @@ const {
   changePassword,
   updateProfile,
   updateOrganization,
+  forgotPassword,
+  resetPassword,
 } = require("../controller/authController");
 
 const protect = require("../middleware/authMiddleware");
@@ -29,5 +31,17 @@ router.put("/profile", protect, updateProfile);
 
 // Update organization of the currently logged-in user's organization
 router.put("/organization", protect, updateOrganization);
+
+// forget password routes 
+
+router.post(
+  "/forgot-password",
+  forgotPassword
+);
+
+router.post(
+  "/reset-password",
+  resetPassword
+);
 
 module.exports = router;
