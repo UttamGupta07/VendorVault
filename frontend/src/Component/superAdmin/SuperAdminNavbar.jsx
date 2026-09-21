@@ -3,6 +3,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import NotificationBell from "../NotificationBell";
 
 import { useNavigate } from "react-router-dom";
 
@@ -321,6 +322,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
           </button>
 
           {/* ================= NOTIFICATION PANEL ================= */}
+          <NotificationBell/>
 
           {showNotifications && (
             <div

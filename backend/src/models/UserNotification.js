@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const userNotificationSchema = new mongoose.Schema(
   {
-    // Organization to which this notification belongs.
+    // Organization to which this notification belongs.a
     // This keeps notifications isolated between organizations.
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,

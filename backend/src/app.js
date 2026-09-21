@@ -19,6 +19,7 @@ const auditLogRoute = require("./routes/auditLogRoute");
 const emailDeliveryRoute =require("./routes/emailDeliveryRoute.js");
 
 const failedReminderRoute = require("./routes/failedReminderRoute");
+const userNotificationRoutes = require("./routes/userNotificationRoute.js");
 
 const app = express();
 
@@ -68,6 +69,7 @@ app.use(
 app.use("/api/admin/reports", adminReportRoute);
 
 app.use("/api/admin/activity-logs", auditLogRoute);
+
 // ==========================================
 // EXPORT
 // ==========================================
@@ -80,6 +82,7 @@ app.use(
   "/api/notifications",
   notificationRoutes
 );
+app.use("/api/user-notifications", userNotificationRoutes);
 
 app.use(
     "/api/admin/failed-reminders",

@@ -31,6 +31,7 @@ import ActivityLogs from "./pages/superAdminPages/ActivityLogs";
 import Settings from "./pages/superAdminPages/Settings";
 import ExpiryTracker from "./pages/compliance/ExpiryTracker";
 import EmailDelivery from "./pages/compliance/EmailDelivery";
+import AuditLogs from "./pages/compliance/AuditLogs";
 
 
 import VendorLayout from "./layout/VendorLayout";
@@ -154,14 +155,7 @@ const App = () => {
               path="/compliance/vendors"
               element={<VendorManagement />}
             />
-            <Route
-              path="/compliance/expiry"
-              element={<ExpiryTracker />}
-            />
-            <Route
-              path="/compliance/email-delivery"
-              element={<EmailDelivery />}
-            />
+          
             <Route
               path="/compliance/vendors/:vendorId"
               element={<VendorDetail />}
@@ -177,6 +171,18 @@ const App = () => {
             <Route
               path="/compliance"
               element={<Compliance />}
+            />
+              <Route
+              path="/compliance/expiry"
+              element={<ExpiryTracker />}
+            />
+            <Route
+              path="/compliance/email-delivery"
+              element={<EmailDelivery />}
+            />
+            <Route
+              path="/compliance/audit-logs"
+              element={<AuditLogs />}
             />
 
 

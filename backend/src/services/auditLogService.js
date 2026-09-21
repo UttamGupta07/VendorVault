@@ -1,8 +1,10 @@
-const AuditLog = require("../models/AuditLog");
+ const AuditLog = require("../models/AuditLog");
 
 const createAuditLog = async ({
     organizationId,
-    performedBy,
+    actorType,
+    performedBy = null,
+    performedByVendor = null,
     action,
     targetType,
     targetId = null,
@@ -10,19 +12,48 @@ const createAuditLog = async ({
     metadata = {},
 }) => {
     try {
-        if (!organizationId || !performedBy) {
+        if (!organizationId || !actorType || !action || !targetType || !description) {
             console.error("Audit log data missing:", {
                 organizationId,
+                actorType,
                 performedBy,
+                performedByVendor,
                 action,
+                targetType,
             });
+
+            return null;
+        }
+
+        // USER must have performedBy
+        if (actorType === "USER" && !performedBy) {
+            console.error(
+                "Audit log requires performedBy for USER actor"
+            );
+
+            return null;
+        }
+
+        // VENDOR must have performedByVendor
+        if (actorType === "VENDOR" && !performedByVendor) {
+            console.error(
+                "Audit log requires performedByVendor for VENDOR actor"
+            );
 
             return null;
         }
 
         const auditLog = await AuditLog.create({
             organizationId,
-            performedBy,
+            actorType,
+            performedBy:
+                actorType === "USER"
+                    ? performedBy
+                    : null,
+            performedByVendor:
+                actorType === "VENDOR"
+                    ? performedByVendor
+                    : null,
             action,
             targetType,
             targetId,
@@ -30,11 +61,18 @@ const createAuditLog = async ({
             metadata,
         });
 
-        console.log("Audit log created:", auditLog._id);
+        console.log(
+            "Audit log created:",
+            auditLog._id
+        );
 
         return auditLog;
     } catch (error) {
-        console.error("Create audit log error:", error);
+        console.error(
+            "Create audit log error:",
+            error
+        );
+
         throw error;
     }
 };

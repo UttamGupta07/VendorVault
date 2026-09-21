@@ -3,9 +3,11 @@ const router = express.Router();
 
 const {
     getAuditLogs,
+    getAuditLogsForCompliance,
 } = require("../controller/auditLogController");
 
 const authMiddleware = require("../middleware/authMiddleware");
+const authorizeRoles = require("../middleware/authorizeRoles");
 
 router.get(
     "/",
@@ -22,6 +24,12 @@ router.get(
         next();
     },
     getAuditLogs
+);
+router.get(
+    "/compliance-audit-logs",
+    authMiddleware,
+    authorizeRoles("COMPLIANCE_OFFICER"),
+    getAuditLogsForCompliance
 );
 
 module.exports = router;

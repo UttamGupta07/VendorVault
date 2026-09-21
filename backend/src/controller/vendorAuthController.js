@@ -6,8 +6,16 @@ const ServiceType=require("../models/ServiceType")
 
 const generateToken = require("../utills/generatetoken");
 const setAuthCookie = require("../utills/setAuthCookie");
+const { createAuditLog } = require("../services/auditLogService");
+const {
+  notifyUsersByRole,
+} = require("../services/notificationService");
 
 // ============================================================
+// Vendor Registration
+// ============================================================
+
+ // ============================================================
 // Vendor Registration
 // ============================================================
 
@@ -23,7 +31,10 @@ const registerVendor = async (req, res) => {
       address,
     } = req.body;
 
+    // ========================================================
     // Validate required fields
+    // ========================================================
+
     if (
       !name ||
       !companyName ||
@@ -38,7 +49,11 @@ const registerVendor = async (req, res) => {
       });
     }
 
-    // Only Super Admin and Compliance Officer can register vendors
+    // ========================================================
+    // Only Super Admin and Compliance Officer can register
+    // vendors
+    // ========================================================
+
     if (
       req.user.role !== "SUPER_ADMIN" &&
       req.user.role !== "COMPLIANCE_OFFICER"
@@ -49,9 +64,25 @@ const registerVendor = async (req, res) => {
       });
     }
 
+    // ========================================================
+    // Organization ID
+    // ========================================================
+
+    const organizationId = req.user.organizationId;
+
+    if (!organizationId) {
+      return res.status(400).json({
+        success: false,
+        message: "Organization ID is missing",
+      });
+    }
+
+    // ========================================================
     // Check duplicate vendor email within organization
+    // ========================================================
+
     const existingVendor = await Vendor.findOne({
-      organizationId: req.user.organizationId,
+      organizationId,
       email: email.toLowerCase().trim(),
     });
 
@@ -62,12 +93,18 @@ const registerVendor = async (req, res) => {
       });
     }
 
+    // ========================================================
     // Hash password
+    // ========================================================
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // ========================================================
     // Create vendor
+    // ========================================================
+
     const vendor = await Vendor.create({
-      organizationId: req.user.organizationId,
+      organizationId,
       name: name.trim(),
       companyName: companyName.trim(),
       email: email.toLowerCase().trim(),
@@ -79,6 +116,65 @@ const registerVendor = async (req, res) => {
       status: "active",
       createdBy: req.user.userId,
     });
+
+    // ========================================================
+    // CREATE NOTIFICATION
+    // New Vendor Added -> Super Admin
+    // ========================================================
+
+    try {
+      await notifyUsersByRole({
+        organizationId,
+        roles: ["SUPER_ADMIN"],
+        type: "VENDOR_CREATED",
+        title: "New Vendor Added",
+        message: `${vendor.companyName} has been added to your organization.`,
+        relatedId: vendor._id,
+        relatedType: "Vendor",
+        metadata: {
+          vendorId: vendor._id,
+          vendorName: vendor.companyName,
+          vendorEmail: vendor.email,
+        },
+      });
+    } catch (notificationError) {
+      // Notification failure should NOT
+      // make vendor registration fail.
+      console.error(
+        "Vendor notification error:",
+        notificationError
+      );
+    }
+
+    // ========================================================
+    // CREATE AUDIT LOG
+    // ========================================================
+
+    await createAuditLog({
+      organizationId,
+
+      actorType: "USER",
+
+      performedBy: req.user.userId,
+      performedByVendor: null,
+
+      action: "VENDOR_CREATED",
+      targetType: "Vendor",
+      targetId: vendor._id,
+
+      description: `Vendor "${vendor.companyName}" was registered`,
+
+      metadata: {
+        vendorName: vendor.name,
+        companyName: vendor.companyName,
+        email: vendor.email,
+        serviceTypeId: vendor.serviceTypeId,
+      },
+    });
+
+    // ========================================================
+    // RESPONSE
+    // ========================================================
 
     return res.status(201).json({
       success: true,
@@ -107,7 +203,6 @@ const registerVendor = async (req, res) => {
     });
   }
 };
-
 // ============================================================
 // Vendor Login
 // ============================================================

@@ -5,6 +5,7 @@ import {
   Bell,
   ChevronDown,
 } from "lucide-react";
+import NotificationBell from "../NotificationBell";
 
 const ComplianceNavbar = ({ setSidebarOpen }) => {
   return (
@@ -86,7 +87,7 @@ const ComplianceNavbar = ({ setSidebarOpen }) => {
             hover:bg-slate-50
           "
         >
-          <Bell size={19} />
+          <NotificationBell/>
 
           <span
             className="

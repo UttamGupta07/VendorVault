@@ -1,50 +1,63 @@
-const mongoose = require("mongoose");
+ const mongoose = require("mongoose");
 
 const auditLogSchema = new mongoose.Schema(
     {
-        // Organization to which this audit log belongs.
-        // This keeps audit logs isolated between organizations.
+        // Organization to which this audit log belongs
         organizationId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Organization",
             required: true,
         },
 
-        // Action performed by the user.
+        // Type of actor who performed the action
+        actorType: {
+            type: String,
+            enum: ["USER", "VENDOR"],
+            required: true,
+        },
+
+        // Staff user who performed the action
+        performedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null,
+        },
+
+        // Vendor who performed the action
+        performedByVendor: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Vendor",
+            default: null,
+        },
+
+        // Action performed
         action: {
             type: String,
             required: true,
             trim: true,
         },
 
-        // User who performed the action.
-        performedBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-        },
-
-        // Type of entity affected by the action.
+        // Type of entity affected
         targetType: {
             type: String,
             required: true,
             trim: true,
         },
 
-        // ID of the affected entity.
+        // ID of affected entity
         targetId: {
             type: mongoose.Schema.Types.ObjectId,
             default: null,
         },
 
-        // Human-readable description of the action.
+        // Human-readable description
         description: {
             type: String,
             required: true,
             trim: true,
         },
 
-        // Additional information related to the action.
+        // Additional information
         metadata: {
             type: mongoose.Schema.Types.Mixed,
             default: {},
@@ -55,21 +68,41 @@ const auditLogSchema = new mongoose.Schema(
     }
 );
 
-// Index for fetching latest logs quickly.
-auditLogSchema.index({ createdAt: -1 });
+// Latest logs
+auditLogSchema.index({
+    createdAt: -1,
+});
 
-// Index for filtering logs by organization.
-auditLogSchema.index({ organizationId: 1 });
-
-// Index for filtering logs by action.
-auditLogSchema.index({ action: 1 });
-
-// Index for finding logs performed by a specific user.
-auditLogSchema.index({ performedBy: 1 });
-
-// Compound index for organization-wise latest logs.
+// Organization filtering
 auditLogSchema.index({
     organizationId: 1,
+});
+
+// Action filtering
+auditLogSchema.index({
+    action: 1,
+});
+
+// User filtering
+auditLogSchema.index({
+    performedBy: 1,
+});
+
+// Vendor filtering
+auditLogSchema.index({
+    performedByVendor: 1,
+});
+
+// Organization latest logs
+auditLogSchema.index({
+    organizationId: 1,
+    createdAt: -1,
+});
+
+// Organization + action + date
+auditLogSchema.index({
+    organizationId: 1,
+    action: 1,
     createdAt: -1,
 });
 
