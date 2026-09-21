@@ -13,7 +13,6 @@ const {
   reviewDocument,
   getAllDocuments,
   retryDocumentExtraction,
-  getVendorExpiryDocuments,
   getExpiryTracker,
 } = require("../controller/documentController");
 
@@ -39,15 +38,6 @@ router.get(
   authorizeRoles("COMPLIANCE_OFFICER"),
   getPendingReviewDocuments
 );
-
-router.get(
-  "/vendor/expiry",
-  protect,
-  authorizeRoles("VENDOR"),
-  getVendorExpiryDocuments
-);
-
-
 
 router.get(
   "/",

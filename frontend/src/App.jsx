@@ -41,7 +41,6 @@ import VendorNotifications from "./pages/vendor/VendorNotifications";
 import VendorProfile from "./pages/vendor/VendorProfile";
 
 import AdminProfile from "./pages/superAdminPages/AdminProfile";
-import VendorExpiryRenewals from "./pages/vendor/VendorExpiryRenewals";
 
 const App = () => {
   return (
@@ -191,7 +190,7 @@ const App = () => {
           <Route element={<VendorLayout />}>
             <Route path="/vendor/dashboard" element={<VendorDashboard />} />
             <Route path="/vendor/documents" element={<VendorDocuments />} />
-            <Route path="/vendor/expiry" element={<VendorExpiryRenewals/>}/>
+            <Route path="/vendor/requests" element={<div>Vendor Requests</div>} />
             <Route path="/vendor/notifications" element={<VendorNotifications />} />
             <Route path="/vendor/profile" element={<VendorProfile />} />
           </Route>

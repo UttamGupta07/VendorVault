@@ -28,8 +28,8 @@ const VendorSidebar = ({ sidebarOpen, setSidebarOpen }) => {
       icon: FileText,
     },
     {
-      name: "Expiry and Renewals",
-      path: "/vendor/expiry",
+      name: "Requests",
+      path: "/vendor/requests",
       icon: ClipboardList,
     },
     {
