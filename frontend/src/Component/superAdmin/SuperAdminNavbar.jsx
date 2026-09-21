@@ -17,11 +17,13 @@ import {
   CheckCircle,
   User,
   LogOut,
-  // Moon,
-  // Sun,
 } from "lucide-react";
 
-import { getSuperAdminDashboard } from "../../api/adminDashboardApi";
+import {
+  getUserNotifications,
+  markUserNotificationAsRead,
+} from "../../api/userNotificationApi";
+
 import { useAuth } from "../../context/AuthContext";
 
 const SuperAdminNavbar = ({ setOpen }) => {
@@ -47,7 +49,11 @@ const SuperAdminNavbar = ({ setOpen }) => {
   });
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
+    document.documentElement.classList.toggle(
+      "dark",
+      darkMode
+    );
+
     localStorage.setItem(
       "theme",
       darkMode ? "dark" : "light"
@@ -59,18 +65,15 @@ const SuperAdminNavbar = ({ setOpen }) => {
   };
 
   // =========================
-  // LOAD NOTIFICATIONS
+  // LOAD USER NOTIFICATIONS
   // =========================
 
   const loadNotifications = async () => {
     try {
-      const response =
-        await getSuperAdminDashboard();
+      const response = await getUserNotifications();
 
       if (response?.success) {
-        setNotifications(
-          response?.data?.notifications || []
-        );
+        setNotifications(response.notifications || []);
       }
     } catch (error) {
       console.error(
@@ -124,22 +127,71 @@ const SuperAdminNavbar = ({ setOpen }) => {
   // =========================
 
   const getIcon = (type) => {
-    if (type === "1_DAY") return XCircle;
-    if (type === "7_DAY") return AlertTriangle;
+    if (
+      type === "1_DAY" ||
+      type === "FINAL_REMINDER"
+    ) {
+      return XCircle;
+    }
+
+    if (
+      type === "7_DAY" ||
+      type === "WARNING"
+    ) {
+      return AlertTriangle;
+    }
 
     return Clock;
   };
 
   const getIconStyle = (type) => {
-    if (type === "1_DAY") {
+    if (
+      type === "1_DAY" ||
+      type === "FINAL_REMINDER"
+    ) {
       return "bg-[#DCD3E0] text-[#3A3550] dark:bg-gray-700 dark:text-gray-200";
     }
 
-    if (type === "7_DAY") {
+    if (
+      type === "7_DAY" ||
+      type === "WARNING"
+    ) {
       return "bg-[#B7AFC9] text-[#585272] dark:bg-gray-700 dark:text-gray-200";
     }
 
     return "bg-[#DCD3E0] text-[#585272] dark:bg-gray-700 dark:text-gray-200";
+  };
+
+  // =========================
+  // MARK NOTIFICATION AS READ
+  // =========================
+
+  const handleNotificationClick = async (notification) => {
+    if (notification.isRead) {
+      return;
+    }
+
+    try {
+      await markUserNotificationAsRead(
+        notification._id
+      );
+
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item._id === notification._id
+            ? {
+                ...item,
+                isRead: true,
+              }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error(
+        "Mark notification as read error:",
+        error.message
+      );
+    }
   };
 
   // =========================
@@ -411,14 +463,20 @@ const SuperAdminNavbar = ({ setOpen }) => {
                   notifications.map(
                     (notification) => {
                       const Icon = getIcon(
-                        notification.reminderType
+                        notification.type
                       );
 
                       return (
                         <div
                           key={notification._id}
+                          onClick={() =>
+                            handleNotificationClick(
+                              notification
+                            )
+                          }
                           className={`
                             flex
+                            cursor-pointer
                             gap-3
                             border-b
                             border-[#DCD3E0]
@@ -447,7 +505,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
                               justify-center
                               rounded-xl
                               ${getIconStyle(
-                                notification.reminderType
+                                notification.type
                               )}
                             `}
                           >
@@ -486,12 +544,8 @@ const SuperAdminNavbar = ({ setOpen }) => {
                             <div className="mt-2 flex items-center justify-between gap-2">
 
                               <span className="truncate text-xs font-medium text-[#8A82A6] dark:text-gray-400">
-                                {notification.vendorId
-                                  ?.companyName ||
-                                  notification
-                                    .vendorId
-                                    ?.name ||
-                                  "Vendor"}
+                                {notification.relatedType ||
+                                  "System"}
                               </span>
 
                               <span className="whitespace-nowrap text-[11px] text-[#B7AFC9] dark:text-gray-500">
@@ -515,35 +569,9 @@ const SuperAdminNavbar = ({ setOpen }) => {
           )}
         </div>
 
-        {/* ================= THEME TOGGLE =================
+        {/* ================= THEME TOGGLE ================= */}
 
-        <button
-          type="button"
-          onClick={toggleDarkMode}
-          title={
-            darkMode
-              ? "Switch to light mode"
-              : "Switch to dark mode"
-          }
-          aria-label={
-            darkMode
-              ? "Switch to light mode"
-              : "Switch to dark mode"
-          }
-          className="
-            rounded-xl
-            p-2.5
-            transition
-            hover:bg-[#DCD3E0]
-            dark:hover:bg-gray-700
-          "
-        >
-          {darkMode ? (
-            <Sun size={21} />
-          ) : (
-            <Moon size={21} />
-          )}
-        </button> */}
+        {/* Theme toggle intentionally disabled */}
 
         {/* ================= DIVIDER ================= */}
 
@@ -656,6 +684,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
                   dark:border-gray-700
                 "
               >
+
                 <div className="flex items-center gap-3">
 
                   <div
@@ -677,6 +706,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
                   </div>
 
                   <div className="min-w-0">
+
                     <p className="truncate text-sm font-semibold dark:text-gray-100">
                       {user?.name ||
                         "Super Admin"}
@@ -686,6 +716,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
                       {user?.email ||
                         "Admin Account"}
                     </p>
+
                   </div>
 
                 </div>
@@ -707,6 +738,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
                 >
                   SUPER ADMIN
                 </span>
+
               </div>
 
               {/* Profile Button */}

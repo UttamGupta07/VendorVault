@@ -19,6 +19,8 @@ const auditLogRoute = require("./routes/auditLogRoute");
 const emailDeliveryRoute =require("./routes/emailDeliveryRoute.js");
 
 const failedReminderRoute = require("./routes/failedReminderRoute");
+const userNotificationRoute = require("./routes/userNotificationRoute");
+
 
 const app = express();
 
@@ -85,6 +87,8 @@ app.use(
     "/api/admin/failed-reminders",
     failedReminderRoute
 );
+
+app.use("/api/user-notifications", userNotificationRoute);
 
 
 module.exports = app;

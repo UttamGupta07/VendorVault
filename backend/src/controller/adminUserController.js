@@ -1,9 +1,15 @@
 const bcrypt = require("bcryptjs");
 
 const User = require("../models/User");
+
 const {
   createAuditLog,
 } = require("../services/auditLogService");
+
+const {
+  createUserNotification,
+} = require("../services/userNotificationService");
+
 // ======================================================
 // GET ALL USERS
 // GET /api/admin/users
@@ -21,15 +27,10 @@ const getUsers = async (req, res) => {
 
     const organizationId = req.user.organizationId;
 
-    // ----------------------------------------
-    // Build query
-    // ----------------------------------------
-
     const query = {
       organizationId,
     };
 
-    // Search by name or email
     if (search.trim()) {
       query.$or = [
         {
@@ -47,21 +48,18 @@ const getUsers = async (req, res) => {
       ];
     }
 
-    // Filter by role
     if (role !== "All") {
       query.role = role;
     }
 
-    // Filter by active/inactive status
     if (status !== "All") {
       query.isActive = status === "Active";
     }
 
-    // ----------------------------------------
-    // Pagination
-    // ----------------------------------------
-
-    const currentPage = Math.max(parseInt(page, 10) || 10, 1);
+    const currentPage = Math.max(
+      parseInt(page, 10) || 1,
+      1
+    );
 
     const perPage = Math.min(
       Math.max(parseInt(limit, 10) || 10, 1),
@@ -69,10 +67,6 @@ const getUsers = async (req, res) => {
     );
 
     const skip = (currentPage - 1) * perPage;
-
-    // ----------------------------------------
-    // Get users
-    // ----------------------------------------
 
     const [users, totalUsers] = await Promise.all([
       User.find(query)
@@ -84,7 +78,9 @@ const getUsers = async (req, res) => {
       User.countDocuments(query),
     ]);
 
-    const totalPages = Math.ceil(totalUsers / perPage);
+    const totalPages = Math.ceil(
+      totalUsers / perPage
+    );
 
     return res.status(200).json({
       success: true,
@@ -164,7 +160,8 @@ const createUser = async (req, res) => {
     if (!name || !email || !password || !role) {
       return res.status(400).json({
         success: false,
-        message: "Name, email, password and role are required",
+        message:
+          "Name, email, password and role are required",
       });
     }
 
@@ -189,20 +186,26 @@ const createUser = async (req, res) => {
     // Normalize email
     // ----------------------------------------
 
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = email
+      .toLowerCase()
+      .trim();
 
     // ----------------------------------------
     // Check existing user
+    // IMPORTANT:
+    // Check only inside same organization
     // ----------------------------------------
 
     const existingUser = await User.findOne({
       email: normalizedEmail,
+      organizationId: req.user.organizationId,
     });
 
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: "User with this email already exists",
+        message:
+          "User with this email already exists",
       });
     }
 
@@ -210,13 +213,15 @@ const createUser = async (req, res) => {
     // Hash password
     // ----------------------------------------
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(
+      password,
+      10
+    );
 
     // ----------------------------------------
     // Create user
-    // IMPORTANT:
     // organizationId comes from authenticated
-    // SUPER_ADMIN, not from req.body
+    // SUPER_ADMIN
     // ----------------------------------------
 
     const user = await User.create({
@@ -227,33 +232,67 @@ const createUser = async (req, res) => {
       role,
     });
 
+    // ==================================================
+    // AUDIT LOG
+    // ==================================================
 
-    // Create an audit log for the newly created user.
-    // Create a specific audit log based on the created user's role.
-const auditAction =
-    user.role === "COMPLIANCE_OFFICER"
+    const auditAction =
+      user.role === "COMPLIANCE_OFFICER"
         ? "CREATE_COMPLIANCE_OFFICER"
-        : user.role === "VENDOR"
-        ? "CREATE_VENDOR"
         : "CREATE_USER";
 
-await createAuditLog({
-    organizationId: req.user.organizationId,
-    performedBy: req.user.userId,
-    action: auditAction,
-    targetType: "User",
-    targetId: user._id,
-    description: `${user.role.replace(/_/g, " ")} ${user.name} was created`,
-    metadata: {
+    await createAuditLog({
+      organizationId: req.user.organizationId,
+      performedBy: req.user.userId,
+      action: auditAction,
+      targetType: "User",
+      targetId: user._id,
+      description: `${user.role.replace(
+        /_/g,
+        " "
+      )} ${user.name} was created`,
+      metadata: {
         role: user.role,
         email: user.email,
-    },
-});
+      },
+    });
+
+    // ==================================================
+    // NOTIFICATION
+    // ==================================================
+    // When Super Admin creates a Compliance Officer,
+    // notify that newly created Compliance Officer.
+
+    if (user.role === "COMPLIANCE_OFFICER") {
+      await createUserNotification({
+        organizationId: req.user.organizationId,
+
+        recipientUserId: user._id,
+
+        type: "COMPLIANCE_OFFICER_CREATED",
+
+        title: "Welcome to VendorVault",
+
+        message:
+          "Your Compliance Officer account has been created by the Super Admin.",
+
+        relatedId: user._id,
+
+        relatedType: "User",
+
+        metadata: {
+          role: user.role,
+          createdBy: req.user.userId,
+        },
+      });
+    }
+
     // ----------------------------------------
     // Remove password from response
     // ----------------------------------------
 
     const userResponse = user.toObject();
+
     delete userResponse.password;
 
     return res.status(201).json({
@@ -287,10 +326,6 @@ const updateUser = async (req, res) => {
       role,
     } = req.body;
 
-    // ----------------------------------------
-    // Find user inside same organization
-    // ----------------------------------------
-
     const user = await User.findOne({
       _id: id,
       organizationId: req.user.organizationId,
@@ -304,33 +339,36 @@ const updateUser = async (req, res) => {
     }
 
     // ----------------------------------------
-    // Prevent SUPER_ADMIN from accidentally
-    // changing their own role
+    // Prevent changing own SUPER_ADMIN role
     // ----------------------------------------
 
     if (
-      user._id.toString() === req.user.userId.toString() &&
+      user._id.toString() ===
+        req.user.userId.toString() &&
       role &&
       role !== "SUPER_ADMIN"
     ) {
       return res.status(400).json({
         success: false,
-        message: "You cannot change your own SUPER_ADMIN role",
+        message:
+          "You cannot change your own SUPER_ADMIN role",
       });
     }
 
     // ----------------------------------------
-    // Validate role if provided
+    // Validate role
     // ----------------------------------------
 
     const allowedRoles = [
       "SUPER_ADMIN",
       "COMPLIANCE_OFFICER",
       "AUDITOR",
-      "VENDOR",
     ];
 
-    if (role && !allowedRoles.includes(role)) {
+    if (
+      role &&
+      !allowedRoles.includes(role)
+    ) {
       return res.status(400).json({
         success: false,
         message: "Invalid role",
@@ -357,7 +395,9 @@ const updateUser = async (req, res) => {
     // ----------------------------------------
 
     if (email !== undefined) {
-      const normalizedEmail = email.toLowerCase().trim();
+      const normalizedEmail = email
+        .toLowerCase()
+        .trim();
 
       if (!normalizedEmail) {
         return res.status(400).json({
@@ -368,20 +408,21 @@ const updateUser = async (req, res) => {
 
       const emailExists = await User.findOne({
         email: normalizedEmail,
-        organizationId: req.user.organizationId,
+        organizationId:
+          req.user.organizationId,
         _id: { $ne: id },
       });
 
       if (emailExists) {
         return res.status(409).json({
           success: false,
-          message: "Email is already being used by another user",
+          message:
+            "Email is already being used by another user",
         });
       }
 
       user.email = normalizedEmail;
 
-      // Email should be verified again after changing it
       user.isEmailVerified = false;
     }
 
@@ -394,27 +435,33 @@ const updateUser = async (req, res) => {
     }
 
     // ----------------------------------------
-    // Update password if provided
+    // Update password
     // ----------------------------------------
 
-    if (password !== undefined && password.trim()) {
+    if (
+      password !== undefined &&
+      password.trim()
+    ) {
       if (password.length < 6) {
         return res.status(400).json({
           success: false,
-          message: "Password must be at least 6 characters",
+          message:
+            "Password must be at least 6 characters",
         });
       }
 
-      user.password = await bcrypt.hash(password, 10);
+      user.password =
+        await bcrypt.hash(password, 10);
     }
 
     await user.save();
 
     // ----------------------------------------
-    // Remove password from response
+    // Remove password
     // ----------------------------------------
 
     const userResponse = user.toObject();
+
     delete userResponse.password;
 
     return res.status(200).json({
@@ -443,13 +490,16 @@ const toggleUserStatus = async (req, res) => {
 
     // ----------------------------------------
     // Prevent SUPER_ADMIN from deactivating
-    // their own account
+    // own account
     // ----------------------------------------
 
-    if (id === req.user.userId.toString()) {
+    if (
+      id === req.user.userId.toString()
+    ) {
       return res.status(400).json({
         success: false,
-        message: "You cannot deactivate your own account",
+        message:
+          "You cannot deactivate your own account",
       });
     }
 
@@ -469,10 +519,36 @@ const toggleUserStatus = async (req, res) => {
       });
     }
 
+    // ----------------------------------------
     // Toggle status
+    // ----------------------------------------
+
     user.isActive = !user.isActive;
 
     await user.save();
+
+    // ----------------------------------------
+    // Audit log
+    // ----------------------------------------
+
+    await createAuditLog({
+      organizationId: req.user.organizationId,
+      performedBy: req.user.userId,
+      action: user.isActive
+        ? "ACTIVATE_USER"
+        : "DEACTIVATE_USER",
+      targetType: "User",
+      targetId: user._id,
+      description: `${user.name} was ${
+        user.isActive
+          ? "activated"
+          : "deactivated"
+      }`,
+      metadata: {
+        role: user.role,
+        isActive: user.isActive,
+      },
+    });
 
     return res.status(200).json({
       success: true,
@@ -486,12 +562,16 @@ const toggleUserStatus = async (req, res) => {
         role: user.role,
         organizationId: user.organizationId,
         isActive: user.isActive,
-        isEmailVerified: user.isEmailVerified,
+        isEmailVerified:
+          user.isEmailVerified,
         lastLoginAt: user.lastLoginAt,
       },
     });
   } catch (error) {
-    console.error("Toggle user status error:", error);
+    console.error(
+      "Toggle user status error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -513,10 +593,13 @@ const deleteUser = async (req, res) => {
     // Prevent deleting own account
     // ----------------------------------------
 
-    if (id === req.user.userId.toString()) {
+    if (
+      id === req.user.userId.toString()
+    ) {
       return res.status(400).json({
         success: false,
-        message: "You cannot delete your own account",
+        message:
+          "You cannot delete your own account",
       });
     }
 
@@ -536,6 +619,26 @@ const deleteUser = async (req, res) => {
       });
     }
 
+    // ----------------------------------------
+    // Audit before deleting
+    // ----------------------------------------
+
+    await createAuditLog({
+      organizationId: req.user.organizationId,
+      performedBy: req.user.userId,
+      action: "DELETE_USER",
+      targetType: "User",
+      targetId: user._id,
+      description: `${user.role.replace(
+        /_/g,
+        " "
+      )} ${user.name} was deleted`,
+      metadata: {
+        role: user.role,
+        email: user.email,
+      },
+    });
+
     await User.deleteOne({
       _id: id,
       organizationId: req.user.organizationId,
@@ -546,7 +649,10 @@ const deleteUser = async (req, res) => {
       message: "User deleted successfully",
     });
   } catch (error) {
-    console.error("Delete user error:", error);
+    console.error(
+      "Delete user error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
