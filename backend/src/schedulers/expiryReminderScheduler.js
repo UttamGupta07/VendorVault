@@ -28,18 +28,18 @@ const startExpiryReminderScheduler = async () => {
         //     "Starting expiry reminder scan..."
         // );
 
-        // try {
-        //     await processExpiryReminders();
+        try {
+            await processExpiryReminders();
 
-        //     console.log(
-        //         "Expiry reminder scan completed."
-        //     );
-        // } catch (error) {
-        //     console.error(
-        //         "Expiry reminder scan failed:",
-        //         error.message
-        //     );
-        // }
+            console.log(
+                "Expiry reminder scan completed."
+            );
+        } catch (error) {
+            console.error(
+                "Expiry reminder scan failed:",
+                error.message
+            );
+        }
 
         // =====================================================
         // Schedule automatic expiry reminder scan

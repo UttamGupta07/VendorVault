@@ -18,20 +18,14 @@ import {
   CheckCircle,
   User,
   LogOut,
-  // Moon,
-  // Sun,
 } from "lucide-react";
-
-import { getSuperAdminDashboard } from "../../api/adminDashboardApi";
 import { useAuth } from "../../context/AuthContext";
 
 const SuperAdminNavbar = ({ setOpen }) => {
-  const [notifications, setNotifications] = useState([]);
+  
   const navigate = useNavigate();
 
-  const [showNotifications, setShowNotifications] =
-    useState(false);
-
+ 
   const [showProfile, setShowProfile] =
     useState(false);
 
@@ -48,7 +42,11 @@ const SuperAdminNavbar = ({ setOpen }) => {
   });
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
+    document.documentElement.classList.toggle(
+      "dark",
+      darkMode
+    );
+
     localStorage.setItem(
       "theme",
       darkMode ? "dark" : "light"
@@ -60,30 +58,12 @@ const SuperAdminNavbar = ({ setOpen }) => {
   };
 
   // =========================
-  // LOAD NOTIFICATIONS
+  // LOAD USER NOTIFICATIONS
   // =========================
 
-  const loadNotifications = async () => {
-    try {
-      const response =
-        await getSuperAdminDashboard();
+ 
 
-      if (response?.success) {
-        setNotifications(
-          response?.data?.notifications || []
-        );
-      }
-    } catch (error) {
-      console.error(
-        "Notification loading error:",
-        error.message
-      );
-    }
-  };
-
-  useEffect(() => {
-    loadNotifications();
-  }, []);
+  
 
   // =========================
   // CLOSE PROFILE DROPDOWN
@@ -113,34 +93,35 @@ const SuperAdminNavbar = ({ setOpen }) => {
   }, []);
 
   // =========================
-  // UNREAD COUNT
+  // MARK NOTIFICATION AS READ
   // =========================
 
-  const unreadCount = notifications.filter(
-    (notification) => !notification.isRead
-  ).length;
-
-  // =========================
-  // NOTIFICATION ICON
-  // =========================
-
-  const getIcon = (type) => {
-    if (type === "1_DAY") return XCircle;
-    if (type === "7_DAY") return AlertTriangle;
-
-    return Clock;
-  };
-
-  const getIconStyle = (type) => {
-    if (type === "1_DAY") {
-      return "bg-[#DCD3E0] text-[#3A3550] dark:bg-gray-700 dark:text-gray-200";
+  const handleNotificationClick = async (notification) => {
+    if (notification.isRead) {
+      return;
     }
 
-    if (type === "7_DAY") {
-      return "bg-[#B7AFC9] text-[#585272] dark:bg-gray-700 dark:text-gray-200";
-    }
+    try {
+      await markUserNotificationAsRead(
+        notification._id
+      );
 
-    return "bg-[#DCD3E0] text-[#585272] dark:bg-gray-700 dark:text-gray-200";
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item._id === notification._id
+            ? {
+              ...item,
+              isRead: true,
+            }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error(
+        "Mark notification as read error:",
+        error.message
+      );
+    }
   };
 
   // =========================
@@ -275,277 +256,15 @@ const SuperAdminNavbar = ({ setOpen }) => {
 
         {/* ================= NOTIFICATION ================= */}
 
-        <div className="relative">
+        
+          <NotificationBell />
 
-          <button
-            type="button"
-            onClick={() =>
-              setShowNotifications(
-                (prev) => !prev
-              )
-            }
-            className="
-              relative
-              rounded-xl
-              p-2.5
-              transition
-              hover:bg-[#DCD3E0]
-              dark:hover:bg-gray-700
-            "
-          >
-            <Bell size={21} />
+          
+    
 
-            {unreadCount > 0 && (
-              <span
-                className="
-                  absolute
-                  -right-0.5
-                  -top-0.5
-                  flex
-                  h-5
-                  min-w-5
-                  items-center
-                  justify-center
-                  rounded-full
-                  bg-[#585272]
-                  px-1
-                  text-[10px]
-                  font-bold
-                  text-[#F4EFF3]
-                "
-              >
-                {unreadCount > 99
-                  ? "99+"
-                  : unreadCount}
-              </span>
-            )}
-          </button>
+        {/* ================= THEME TOGGLE ================= */}
 
-          {/* ================= NOTIFICATION PANEL ================= */}
-          <NotificationBell/>
-
-          {showNotifications && (
-            <div
-              className="
-                absolute
-                right-0
-                top-14
-                z-50
-                w-[360px]
-                max-w-[calc(100vw-30px)]
-                overflow-hidden
-                rounded-2xl
-                border
-                border-[#DCD3E0]
-                bg-[#F4EFF3]
-                shadow-xl
-                dark:border-gray-700
-                dark:bg-gray-800
-              "
-            >
-
-              {/* Header */}
-
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  border-b
-                  border-[#DCD3E0]
-                  p-4
-                  dark:border-gray-700
-                "
-              >
-                <div>
-                  <h3 className="text-sm font-semibold dark:text-gray-100">
-                    Notifications
-                  </h3>
-
-                  <p className="mt-0.5 text-xs text-[#8A82A6] dark:text-gray-400">
-                    {unreadCount} unread notification
-                    {unreadCount !== 1
-                      ? "s"
-                      : ""}
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowNotifications(false)
-                  }
-                  className="
-                    rounded-lg
-                    p-1.5
-                    transition
-                    hover:bg-[#DCD3E0]
-                    hover:text-[#585272]
-                    dark:hover:bg-gray-700
-                  "
-                >
-                  <XCircle size={18} />
-                </button>
-              </div>
-
-              {/* Notification List */}
-
-              <div className="max-h-[400px] overflow-y-auto">
-
-                {notifications.length === 0 ? (
-                  <div className="p-8 text-center">
-
-                    <CheckCircle
-                      size={30}
-                      className="mx-auto text-[#585272] dark:text-gray-300"
-                    />
-
-                    <p className="mt-2 text-sm font-medium text-[#585272] dark:text-gray-200">
-                      No notifications
-                    </p>
-
-                    <p className="mt-1 text-xs text-[#B7AFC9] dark:text-gray-400">
-                      You're all caught up.
-                    </p>
-
-                  </div>
-                ) : (
-                  notifications.map(
-                    (notification) => {
-                      const Icon = getIcon(
-                        notification.reminderType
-                      );
-
-                      return (
-                        <div
-                          key={notification._id}
-                          className={`
-                            flex
-                            gap-3
-                            border-b
-                            border-[#DCD3E0]
-                            p-4
-                            transition
-                            hover:bg-[#DCD3E0]/50
-                            dark:border-gray-700
-                            dark:hover:bg-gray-700
-                            ${
-                              !notification.isRead
-                                ? "bg-[#DCD3E0]/40 dark:bg-gray-700/60"
-                                : ""
-                            }
-                          `}
-                        >
-
-                          {/* Icon */}
-
-                          <div
-                            className={`
-                              flex
-                              h-10
-                              w-10
-                              shrink-0
-                              items-center
-                              justify-center
-                              rounded-xl
-                              ${getIconStyle(
-                                notification.reminderType
-                              )}
-                            `}
-                          >
-                            <Icon size={18} />
-                          </div>
-
-                          {/* Content */}
-
-                          <div className="min-w-0 flex-1">
-
-                            <div className="flex items-start justify-between gap-2">
-
-                              <p className="text-sm font-semibold text-[#3A3550] dark:text-gray-100">
-                                {notification.title}
-                              </p>
-
-                              {!notification.isRead && (
-                                <span
-                                  className="
-                                    mt-1
-                                    h-2
-                                    w-2
-                                    shrink-0
-                                    rounded-full
-                                    bg-[#585272]
-                                  "
-                                />
-                              )}
-
-                            </div>
-
-                            <p className="mt-1 text-xs leading-5 text-[#585272] dark:text-gray-300">
-                              {notification.message}
-                            </p>
-
-                            <div className="mt-2 flex items-center justify-between gap-2">
-
-                              <span className="truncate text-xs font-medium text-[#8A82A6] dark:text-gray-400">
-                                {notification.vendorId
-                                  ?.companyName ||
-                                  notification
-                                    .vendorId
-                                    ?.name ||
-                                  "Vendor"}
-                              </span>
-
-                              <span className="whitespace-nowrap text-[11px] text-[#B7AFC9] dark:text-gray-500">
-                                {formatTime(
-                                  notification.createdAt
-                                )}
-                              </span>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-                      );
-                    }
-                  )
-                )}
-
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ================= THEME TOGGLE =================
-
-        <button
-          type="button"
-          onClick={toggleDarkMode}
-          title={
-            darkMode
-              ? "Switch to light mode"
-              : "Switch to dark mode"
-          }
-          aria-label={
-            darkMode
-              ? "Switch to light mode"
-              : "Switch to dark mode"
-          }
-          className="
-            rounded-xl
-            p-2.5
-            transition
-            hover:bg-[#DCD3E0]
-            dark:hover:bg-gray-700
-          "
-        >
-          {darkMode ? (
-            <Sun size={21} />
-          ) : (
-            <Moon size={21} />
-          )}
-        </button> */}
+        {/* Theme toggle intentionally disabled */}
 
         {/* ================= DIVIDER ================= */}
 
@@ -616,10 +335,9 @@ const SuperAdminNavbar = ({ setOpen }) => {
                 duration-200
                 dark:text-gray-400
                 sm:block
-                ${
-                  showProfile
-                    ? "rotate-180"
-                    : ""
+                ${showProfile
+                  ? "rotate-180"
+                  : ""
                 }
               `}
             />
@@ -658,6 +376,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
                   dark:border-gray-700
                 "
               >
+
                 <div className="flex items-center gap-3">
 
                   <div
@@ -679,6 +398,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
                   </div>
 
                   <div className="min-w-0">
+
                     <p className="truncate text-sm font-semibold dark:text-gray-100">
                       {user?.name ||
                         "Super Admin"}
@@ -688,6 +408,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
                       {user?.email ||
                         "Admin Account"}
                     </p>
+
                   </div>
 
                 </div>
@@ -709,6 +430,7 @@ const SuperAdminNavbar = ({ setOpen }) => {
                 >
                   SUPER ADMIN
                 </span>
+
               </div>
 
               {/* Profile Button */}

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+// import NotificationBell from "../../Component/NotificationBell";
+
 import {
   Users,
   Truck,
@@ -277,6 +279,7 @@ const SuperAdminDashboard = () => {
             Here's what's happening across the platform.
           </p>
         </div>
+        {/* <NotificationBell /> */}
 
         <button
           onClick={loadDashboard}
