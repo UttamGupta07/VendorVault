@@ -1,9 +1,16 @@
  const bcrypt = require("bcryptjs");
+ const crypto = require("crypto");
 const Organization = require("../models/Organization");
 const User = require("../models/User");
 const Vendor = require("../models/Vendor");
 const generateToken = require("../utills/generatetoken");
 const setAuthCookie = require("../utills/setAuthCookie");
+
+const {
+  sendPasswordResetEmail,
+  sendPasswordResetConfirmationEmail,
+} = require("../services/ForgetEmailService");
+
 const registerOrganization = async (req, res) => {
   try {
     const {
@@ -827,6 +834,322 @@ const updateOrganization = async (req, res) => {
     });
   }
 };
+
+const forgotPassword = async (req, res) => {
+  try {
+    console.log("🔥 FORGOT PASSWORD CONTROLLER HIT");
+
+    const { email } = req.body;
+
+    console.log("📧 Email received:", email);
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const normalizedEmail = email
+      .trim()
+      .toLowerCase();
+
+    // ==========================================
+    // 1. CHECK USER COLLECTION
+    // ==========================================
+
+    let account = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    let accountType = "USER";
+
+    console.log(
+      "👤 User found:",
+      account ? account.email : "NO USER"
+    );
+
+    // ==========================================
+    // 2. IF USER NOT FOUND, CHECK VENDOR
+    // ==========================================
+
+    if (!account) {
+      account = await Vendor.findOne({
+        email: normalizedEmail,
+      }).select("+password");
+
+      accountType = "VENDOR";
+
+      console.log(
+        "🏢 Vendor found:",
+        account ? account.email : "NO VENDOR"
+      );
+    }
+
+    // ==========================================
+    // 3. NO ACCOUNT FOUND
+    // ==========================================
+
+    if (!account) {
+      return res.status(200).json({
+        success: true,
+        message:
+          "If an account exists with this email, a password reset link has been sent.",
+      });
+    }
+
+    console.log(
+      `✅ Account found: ${account.email} (${accountType})`
+    );
+
+    // ==========================================
+    // 4. GENERATE RESET TOKEN
+    // ==========================================
+
+    const resetToken = crypto
+      .randomBytes(32)
+      .toString("hex");
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    account.resetPasswordToken = hashedToken;
+
+    account.resetPasswordExpires =
+      Date.now() + 15 * 60 * 1000;
+
+    await account.save({
+      validateBeforeSave: false,
+    });
+
+    console.log("🔐 Reset token saved");
+
+    // ==========================================
+    // 5. CREATE RESET URL
+    // ==========================================
+
+    const resetUrl =
+      `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+    console.log("🔗 Reset URL:", resetUrl);
+
+    // ==========================================
+    // 6. SEND EMAIL
+    // ==========================================
+
+    console.log(
+      "📨 Calling sendPasswordResetEmail..."
+    );
+
+    await sendPasswordResetEmail(
+      account.email,
+      account.name,
+      resetUrl
+    );
+
+    console.log(
+      "✅ sendPasswordResetEmail completed"
+    );
+
+    // ==========================================
+    // 7. RESPONSE
+    // ==========================================
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "If an account exists with this email, a password reset link has been sent.",
+    });
+  } catch (error) {
+    console.error(
+      "❌ Forgot password error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Something went wrong. Please try again later.",
+    });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const {
+      token,
+      password,
+      confirmPassword,
+    } = req.body;
+
+    console.log("🔥 RESET PASSWORD CONTROLLER HIT");
+
+    // ==========================================
+    // 1. VALIDATE INPUT
+    // ==========================================
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "Reset token is required",
+      });
+    }
+
+    if (!password || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password and confirm password are required",
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Passwords do not match",
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must be at least 8 characters long",
+      });
+    }
+
+    // ==========================================
+    // 2. HASH TOKEN
+    // ==========================================
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    console.log("🔐 Token hashed");
+
+    // ==========================================
+    // 3. CHECK USER COLLECTION
+    // ==========================================
+
+    let account = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: {
+        $gt: Date.now(),
+      },
+    }).select("+password");
+
+    let accountType = "USER";
+
+    console.log(
+      "👤 User account:",
+      account ? account.email : "NOT FOUND"
+    );
+
+    // ==========================================
+    // 4. IF USER NOT FOUND, CHECK VENDOR
+    // ==========================================
+
+    if (!account) {
+      account = await Vendor.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpires: {
+          $gt: Date.now(),
+        },
+      }).select("+password");
+
+      accountType = "VENDOR";
+
+      console.log(
+        "🏢 Vendor account:",
+        account ? account.email : "NOT FOUND"
+      );
+    }
+
+    // ==========================================
+    // 5. TOKEN INVALID / EXPIRED
+    // ==========================================
+
+    if (!account) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Reset link is invalid or has expired",
+      });
+    }
+
+    console.log(
+      `✅ Reset account found: ${account.email} (${accountType})`
+    );
+
+    // ==========================================
+    // 6. HASH NEW PASSWORD
+    // ==========================================
+
+    const hashedPassword = await bcrypt.hash(
+      password,
+      12
+    );
+
+    account.password = hashedPassword;
+
+    // ==========================================
+    // 7. CLEAR RESET TOKEN
+    // ==========================================
+
+    account.resetPasswordToken = null;
+    account.resetPasswordExpires = null;
+
+    await account.save();
+
+    console.log("🔑 Password updated successfully");
+
+    // ==========================================
+    // 8. SEND CONFIRMATION EMAIL
+    // ==========================================
+
+    try {
+      await sendPasswordResetConfirmationEmail(
+        account.email,
+        account.name
+      );
+
+      console.log(
+        "📨 Password confirmation email sent"
+      );
+    } catch (emailError) {
+      console.error(
+        "⚠️ Confirmation email error:",
+        emailError
+      );
+    }
+
+    // ==========================================
+    // 9. SUCCESS RESPONSE
+    // ==========================================
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+    });
+  } catch (error) {
+    console.error(
+      "❌ Reset password error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Something went wrong. Please try again later.",
+    });
+  }
+};
+
+
 module.exports = {
   registerOrganization,
   loginUser,
@@ -835,4 +1158,6 @@ module.exports = {
   changePassword,
   updateProfile,
   updateOrganization,
+  forgotPassword,
+  resetPassword,
 };

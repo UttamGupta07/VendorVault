@@ -84,6 +84,15 @@ const vendorSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

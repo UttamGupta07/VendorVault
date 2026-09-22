@@ -41,6 +41,8 @@ import VendorNotifications from "./pages/vendor/VendorNotifications";
 import VendorProfile from "./pages/vendor/VendorProfile";
 
 import AdminProfile from "./pages/superAdminPages/AdminProfile";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 const App = () => {
   return (
@@ -73,6 +75,16 @@ const App = () => {
               path="/login"
               element={<LoginPage />}
             />
+
+            <Route
+                path="/forgot-password"
+                element={<ForgotPassword />}
+              />
+
+              <Route
+                path="/reset-password"
+                element={<ResetPassword />}
+              />
 
           </Route>
         </Route>
