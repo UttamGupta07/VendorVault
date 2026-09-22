@@ -1,6 +1,10 @@
 const ServiceType = require("../models/ServiceType");
 const DocumentType = require("../models/DocumentType");
 
+const {
+  notifyUsersByRole,
+} = require("../services/notificationService");
+
 // =====================================================
 // CREATE SERVICE TYPE
 // SUPER ADMIN ONLY
@@ -16,8 +20,10 @@ const createServiceType = async (req, res) => {
 
     const organizationId = req.user.organizationId;
 
- 
+    // -------------------------------------------------
     // Validate name
+    // -------------------------------------------------
+
     if (!name || !name.trim()) {
       return res.status(400).json({
         success: false,
@@ -25,7 +31,10 @@ const createServiceType = async (req, res) => {
       });
     }
 
+    // -------------------------------------------------
     // Check duplicate service type
+    // -------------------------------------------------
+
     const existingServiceType = await ServiceType.findOne({
       organizationId,
       name: name.trim(),
@@ -38,7 +47,10 @@ const createServiceType = async (req, res) => {
       });
     }
 
+    // -------------------------------------------------
     // Validate requiredDocuments
+    // -------------------------------------------------
+
     if (!Array.isArray(requiredDocuments)) {
       return res.status(400).json({
         success: false,
@@ -46,14 +58,22 @@ const createServiceType = async (req, res) => {
       });
     }
 
+    // -------------------------------------------------
     // Extract document IDs
+    // -------------------------------------------------
+
     const documentIds = requiredDocuments.map(
       (doc) => doc.documentTypeId
     );
 
+    // -------------------------------------------------
     // Check duplicate document IDs
+    // -------------------------------------------------
+
     const uniqueDocumentIds = [
-      ...new Set(documentIds.map((id) => id.toString())),
+      ...new Set(
+        documentIds.map((id) => id.toString())
+      ),
     ];
 
     if (uniqueDocumentIds.length !== documentIds.length) {
@@ -63,7 +83,10 @@ const createServiceType = async (req, res) => {
       });
     }
 
+    // -------------------------------------------------
     // Verify all documents belong to this organization
+    // -------------------------------------------------
+
     if (documentIds.length > 0) {
       const documents = await DocumentType.find({
         _id: { $in: documentIds },
@@ -80,6 +103,10 @@ const createServiceType = async (req, res) => {
       }
     }
 
+    // -------------------------------------------------
+    // Create service type
+    // -------------------------------------------------
+
     const serviceType = await ServiceType.create({
       organizationId,
       name: name.trim(),
@@ -87,7 +114,43 @@ const createServiceType = async (req, res) => {
       requiredDocuments,
     });
 
+    // -------------------------------------------------
+    // Notify all Compliance Officers
+    // -------------------------------------------------
+
+    try {
+      await notifyUsersByRole({
+        organizationId,
+        roles: ["COMPLIANCE_OFFICER"],
+
+        type: "SERVICE_TYPE_CREATED",
+
+        title: "New Service Type Created",
+
+        message: `A new service type "${serviceType.name}" has been created by the Super Admin.`,
+
+        relatedId: serviceType._id,
+
+        relatedType: "SERVICE_TYPE",
+
+        metadata: {
+          serviceTypeId: serviceType._id,
+          serviceTypeName: serviceType.name,
+        },
+      });
+    } catch (notificationError) {
+      // Do not fail service type creation if
+      // notification creation fails.
+      console.error(
+        "Service type created successfully, but notification creation failed:",
+        notificationError
+      );
+    }
+
+    // -------------------------------------------------
     // Populate documents before sending response
+    // -------------------------------------------------
+
     await serviceType.populate(
       "requiredDocuments.documentTypeId"
     );
@@ -98,7 +161,10 @@ const createServiceType = async (req, res) => {
       serviceType,
     });
   } catch (error) {
-    console.error("Create service type error:", error);
+    console.error(
+      "Create service type error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -115,8 +181,6 @@ const createServiceType = async (req, res) => {
 
 const getServiceTypes = async (req, res) => {
   try {
-    
-
     const organizationId = req.user.organizationId;
 
     const serviceTypes = await ServiceType.find({
@@ -134,7 +198,10 @@ const getServiceTypes = async (req, res) => {
       serviceTypes,
     });
   } catch (error) {
-    console.error("Get service types error:", error);
+    console.error(
+      "Get service types error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -151,8 +218,6 @@ const getServiceTypes = async (req, res) => {
 
 const getServiceTypeById = async (req, res) => {
   try {
-     
-
     const organizationId = req.user.organizationId;
 
     const serviceType = await ServiceType.findOne({
@@ -175,7 +240,10 @@ const getServiceTypeById = async (req, res) => {
       serviceType,
     });
   } catch (error) {
-    console.error("Get service type error:", error);
+    console.error(
+      "Get service type error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -192,7 +260,6 @@ const getServiceTypeById = async (req, res) => {
 
 const updateServiceType = async (req, res) => {
   try {
-     
     const organizationId = req.user.organizationId;
 
     const {
@@ -214,11 +281,14 @@ const updateServiceType = async (req, res) => {
       });
     }
 
-    // -----------------------------------------
+    // -------------------------------------------------
     // Update name
-    // -----------------------------------------
+    // -------------------------------------------------
 
-    if (name && name.trim() !== serviceType.name) {
+    if (
+      name &&
+      name.trim() !== serviceType.name
+    ) {
       const duplicate = await ServiceType.findOne({
         organizationId,
         name: name.trim(),
@@ -236,23 +306,24 @@ const updateServiceType = async (req, res) => {
       serviceType.name = name.trim();
     }
 
-    // -----------------------------------------
+    // -------------------------------------------------
     // Update description
-    // -----------------------------------------
+    // -------------------------------------------------
 
     if (description !== undefined) {
       serviceType.description = description.trim();
     }
 
-    // -----------------------------------------
+    // -------------------------------------------------
     // Update required documents
-    // -----------------------------------------
+    // -------------------------------------------------
 
     if (requiredDocuments !== undefined) {
       if (!Array.isArray(requiredDocuments)) {
         return res.status(400).json({
           success: false,
-          message: "requiredDocuments must be an array",
+          message:
+            "requiredDocuments must be an array",
         });
       }
 
@@ -260,19 +331,23 @@ const updateServiceType = async (req, res) => {
         (doc) => doc.documentTypeId
       );
 
-      // Check duplicates
       const uniqueDocumentIds = [
-        ...new Set(documentIds.map((id) => id.toString())),
+        ...new Set(
+          documentIds.map((id) => id.toString())
+        ),
       ];
 
-      if (uniqueDocumentIds.length !== documentIds.length) {
+      if (
+        uniqueDocumentIds.length !==
+        documentIds.length
+      ) {
         return res.status(400).json({
           success: false,
-          message: "Duplicate documents are not allowed",
+          message:
+            "Duplicate documents are not allowed",
         });
       }
 
-      // Verify documents belong to organization
       if (documentIds.length > 0) {
         const documents = await DocumentType.find({
           _id: { $in: documentIds },
@@ -280,7 +355,10 @@ const updateServiceType = async (req, res) => {
           isActive: true,
         });
 
-        if (documents.length !== documentIds.length) {
+        if (
+          documents.length !==
+          documentIds.length
+        ) {
           return res.status(400).json({
             success: false,
             message:
@@ -289,12 +367,13 @@ const updateServiceType = async (req, res) => {
         }
       }
 
-      serviceType.requiredDocuments = requiredDocuments;
+      serviceType.requiredDocuments =
+        requiredDocuments;
     }
 
-    // -----------------------------------------
+    // -------------------------------------------------
     // Update active status
-    // -----------------------------------------
+    // -------------------------------------------------
 
     if (isActive !== undefined) {
       serviceType.isActive = isActive;
@@ -312,7 +391,10 @@ const updateServiceType = async (req, res) => {
       serviceType,
     });
   } catch (error) {
-    console.error("Update service type error:", error);
+    console.error(
+      "Update service type error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -329,8 +411,6 @@ const updateServiceType = async (req, res) => {
 
 const deleteServiceType = async (req, res) => {
   try {
-     
-
     const organizationId = req.user.organizationId;
 
     const serviceType = await ServiceType.findOne({
@@ -354,7 +434,10 @@ const deleteServiceType = async (req, res) => {
       message: "Service type deleted successfully",
     });
   } catch (error) {
-    console.error("Delete service type error:", error);
+    console.error(
+      "Delete service type error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,

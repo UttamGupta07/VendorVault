@@ -1,6 +1,10 @@
 const DocumentType = require("../models/DocumentType");
 const ServiceType = require("../models/ServiceType");
 
+const {
+  notifyUsersByRole,
+} = require("../services/notificationService");
+
 // =====================================================
 // CREATE DOCUMENT TYPE
 // SUPER ADMIN ONLY
@@ -8,12 +12,18 @@ const ServiceType = require("../models/ServiceType");
 
 const createDocumentType = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const {
+      name,
+      description,
+    } = req.body;
 
-    const organizationId = req.user.organizationId;
+    const organizationId =
+      req.user.organizationId;
 
-
+    // -------------------------------------------------
     // Validate name
+    // -------------------------------------------------
+
     if (!name || !name.trim()) {
       return res.status(400).json({
         success: false,
@@ -21,11 +31,15 @@ const createDocumentType = async (req, res) => {
       });
     }
 
+    // -------------------------------------------------
     // Check duplicate
-    const existingDocument = await DocumentType.findOne({
-      organizationId,
-      name: name.trim(),
-    });
+    // -------------------------------------------------
+
+    const existingDocument =
+      await DocumentType.findOne({
+        organizationId,
+        name: name.trim(),
+      });
 
     if (existingDocument) {
       return res.status(409).json({
@@ -34,11 +48,50 @@ const createDocumentType = async (req, res) => {
       });
     }
 
-    const documentType = await DocumentType.create({
-      organizationId,
-      name: name.trim(),
-      description: description?.trim() || "",
-    });
+    // -------------------------------------------------
+    // Create document type
+    // -------------------------------------------------
+
+    const documentType =
+      await DocumentType.create({
+        organizationId,
+        name: name.trim(),
+        description:
+          description?.trim() || "",
+      });
+
+    // -------------------------------------------------
+    // Notify all Compliance Officers
+    // -------------------------------------------------
+
+    try {
+      await notifyUsersByRole({
+        organizationId,
+        roles: ["COMPLIANCE_OFFICER"],
+
+        type: "DOCUMENT_TYPE_CREATED",
+
+        title: "New Document Type Created",
+
+        message: `A new document type "${documentType.name}" has been created by the Super Admin.`,
+
+        relatedId: documentType._id,
+
+        relatedType: "DOCUMENT_TYPE",
+
+        metadata: {
+          documentTypeId: documentType._id,
+          documentTypeName: documentType.name,
+        },
+      });
+    } catch (notificationError) {
+      // Do not fail document type creation if
+      // notification creation fails.
+      console.error(
+        "Document type created successfully, but notification creation failed:",
+        notificationError
+      );
+    }
 
     return res.status(201).json({
       success: true,
@@ -46,7 +99,10 @@ const createDocumentType = async (req, res) => {
       documentType,
     });
   } catch (error) {
-    console.error("Create document type error:", error);
+    console.error(
+      "Create document type error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -63,13 +119,13 @@ const createDocumentType = async (req, res) => {
 
 const getDocumentTypes = async (req, res) => {
   try {
-    
+    const organizationId =
+      req.user.organizationId;
 
-    const organizationId = req.user.organizationId;
-
-    const documentTypes = await DocumentType.find({
-      organizationId,
-    }).sort({ createdAt: -1 });
+    const documentTypes =
+      await DocumentType.find({
+        organizationId,
+      }).sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
@@ -77,7 +133,10 @@ const getDocumentTypes = async (req, res) => {
       documentTypes,
     });
   } catch (error) {
-    console.error("Get document types error:", error);
+    console.error(
+      "Get document types error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -94,14 +153,14 @@ const getDocumentTypes = async (req, res) => {
 
 const getDocumentTypeById = async (req, res) => {
   try {
-     
+    const organizationId =
+      req.user.organizationId;
 
-    const organizationId = req.user.organizationId;
-
-    const documentType = await DocumentType.findOne({
-      _id: req.params.id,
-      organizationId,
-    });
+    const documentType =
+      await DocumentType.findOne({
+        _id: req.params.id,
+        organizationId,
+      });
 
     if (!documentType) {
       return res.status(404).json({
@@ -115,7 +174,10 @@ const getDocumentTypeById = async (req, res) => {
       documentType,
     });
   } catch (error) {
-    console.error("Get document type error:", error);
+    console.error(
+      "Get document type error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -132,16 +194,20 @@ const getDocumentTypeById = async (req, res) => {
 
 const updateDocumentType = async (req, res) => {
   try {
-    
+    const organizationId =
+      req.user.organizationId;
 
-    const organizationId = req.user.organizationId;
+    const {
+      name,
+      description,
+      isActive,
+    } = req.body;
 
-    const { name, description, isActive } = req.body;
-
-    const documentType = await DocumentType.findOne({
-      _id: req.params.id,
-      organizationId,
-    });
+    const documentType =
+      await DocumentType.findOne({
+        _id: req.params.id,
+        organizationId,
+      });
 
     if (!documentType) {
       return res.status(404).json({
@@ -150,27 +216,44 @@ const updateDocumentType = async (req, res) => {
       });
     }
 
+    // -------------------------------------------------
     // Check duplicate name
-    if (name && name.trim() !== documentType.name) {
-      const duplicate = await DocumentType.findOne({
-        organizationId,
-        name: name.trim(),
-        _id: { $ne: req.params.id },
-      });
+    // -------------------------------------------------
+
+    if (
+      name &&
+      name.trim() !== documentType.name
+    ) {
+      const duplicate =
+        await DocumentType.findOne({
+          organizationId,
+          name: name.trim(),
+          _id: { $ne: req.params.id },
+        });
 
       if (duplicate) {
         return res.status(409).json({
           success: false,
-          message: "Another document type with this name already exists",
+          message:
+            "Another document type with this name already exists",
         });
       }
 
       documentType.name = name.trim();
     }
 
+    // -------------------------------------------------
+    // Update description
+    // -------------------------------------------------
+
     if (description !== undefined) {
-      documentType.description = description.trim();
+      documentType.description =
+        description.trim();
     }
+
+    // -------------------------------------------------
+    // Update active status
+    // -------------------------------------------------
 
     if (isActive !== undefined) {
       documentType.isActive = isActive;
@@ -184,7 +267,10 @@ const updateDocumentType = async (req, res) => {
       documentType,
     });
   } catch (error) {
-    console.error("Update document type error:", error);
+    console.error(
+      "Update document type error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
@@ -201,13 +287,14 @@ const updateDocumentType = async (req, res) => {
 
 const deleteDocumentType = async (req, res) => {
   try {
-   
-    const organizationId = req.user.organizationId;
+    const organizationId =
+      req.user.organizationId;
 
-    const documentType = await DocumentType.findOne({
-      _id: req.params.id,
-      organizationId,
-    });
+    const documentType =
+      await DocumentType.findOne({
+        _id: req.params.id,
+        organizationId,
+      });
 
     if (!documentType) {
       return res.status(404).json({
@@ -216,12 +303,17 @@ const deleteDocumentType = async (req, res) => {
       });
     }
 
-    // Check whether this document is being used
+    // -------------------------------------------------
+    // Check whether this document type is being used
     // by any service type
-    const usedByService = await ServiceType.findOne({
-      organizationId,
-      "requiredDocuments.documentTypeId": documentType._id,
-    });
+    // -------------------------------------------------
+
+    const usedByService =
+      await ServiceType.findOne({
+        organizationId,
+        "requiredDocuments.documentTypeId":
+          documentType._id,
+      });
 
     if (usedByService) {
       return res.status(400).json({
@@ -230,6 +322,10 @@ const deleteDocumentType = async (req, res) => {
           "Cannot delete this document type because it is being used by a service type",
       });
     }
+
+    // -------------------------------------------------
+    // Delete document type
+    // -------------------------------------------------
 
     await DocumentType.deleteOne({
       _id: documentType._id,
@@ -240,7 +336,10 @@ const deleteDocumentType = async (req, res) => {
       message: "Document type deleted successfully",
     });
   } catch (error) {
-    console.error("Delete document type error:", error);
+    console.error(
+      "Delete document type error:",
+      error
+    );
 
     return res.status(500).json({
       success: false,

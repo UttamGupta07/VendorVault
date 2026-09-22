@@ -1,5 +1,6 @@
 const AuditLog = require("../models/AuditLog");
 const User = require("../models/User");
+const mongoose = require("mongoose");
 
 const getAuditLogs = async (req, res) => {
     try {
@@ -108,25 +109,95 @@ const getAuditLogs = async (req, res) => {
         });
     }
 };
- const getAuditLogsForCompliance = async (req, res) => {
-    try {
-        const organizationId = req.user.organizationId;
+ 
 
-        // -------------------------------------------------
-        // Pagination
-        // -------------------------------------------------
-        const page = Math.max(parseInt(req.query.page) || 1, 1);
+const getAuditLogsForCompliance = async (req, res) => {
+    try {
+        // =====================================================
+        // 1. Validate authenticated user
+        // =====================================================
+
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication required",
+            });
+        }
+
+        // IMPORTANT:
+        // Your JWT contains:
+        // {
+        //     userId,
+        //     organizationId,
+        //     role
+        // }
+        //
+        // Therefore use req.user.userId, NOT req.user._id.
+
+        const currentUserId = req.user.userId;
+        const organizationId = req.user.organizationId;
+        const role = req.user.role;
+
+        // =====================================================
+        // 2. Validate authentication data
+        // =====================================================
+
+        if (!currentUserId || !organizationId || !role) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid authentication data",
+            });
+        }
+
+        // =====================================================
+        // 3. Only Compliance Officers can access this endpoint
+        // =====================================================
+
+        if (role !== "COMPLIANCE_OFFICER") {
+            return res.status(403).json({
+                success: false,
+                message:
+                    "Only Compliance Officers can access these audit logs",
+            });
+        }
+
+        // =====================================================
+        // 4. Validate MongoDB ObjectIds
+        // =====================================================
+
+        if (
+            !mongoose.Types.ObjectId.isValid(currentUserId) ||
+            !mongoose.Types.ObjectId.isValid(organizationId)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid user or organization ID",
+            });
+        }
+
+        // =====================================================
+        // 5. Pagination
+        // =====================================================
+
+        const page = Math.max(
+            parseInt(req.query.page, 10) || 1,
+            1
+        );
 
         const limit = Math.min(
-            Math.max(parseInt(req.query.limit) || 10, 1),
+            Math.max(
+                parseInt(req.query.limit, 10) || 10,
+                1
+            ),
             100
         );
 
         const skip = (page - 1) * limit;
 
-        // -------------------------------------------------
-        // Filters
-        // -------------------------------------------------
+        // =====================================================
+        // 6. Filters
+        // =====================================================
+
         const {
             search = "",
             action = "ALL",
@@ -136,239 +207,343 @@ const getAuditLogs = async (req, res) => {
             endDate,
         } = req.query;
 
-        // -------------------------------------------------
-        // Find Compliance Officers belonging to
-        // the current organization
-        // -------------------------------------------------
-        const complianceOfficers = await User.find({
-            organizationId,
-            role: "COMPLIANCE_OFFICER",
-        }).select("_id");
-
-        const complianceOfficerIds = complianceOfficers.map(
-            (user) => user._id
-        );
-
-        // -------------------------------------------------
-        // Base query
+        // =====================================================
+        // 7. BASE QUERY
         //
-        // USER logs -> only COMPLIANCE_OFFICER
-        // VENDOR logs -> allowed
+        // This is the most important part.
         //
-        // Therefore SUPER_ADMIN and AUDITOR logs are
-        // automatically excluded.
-        // -------------------------------------------------
+        // It ensures that the logged-in Compliance Officer
+        // can see ONLY audits performed by themselves.
+        // =====================================================
+
         const query = {
-            organizationId,
+            organizationId:
+                new mongoose.Types.ObjectId(
+                    organizationId
+                ),
 
-            $or: [
-                {
-                    actorType: "USER",
-                    performedBy: {
-                        $in: complianceOfficerIds,
-                    },
-                },
-                {
-                    actorType: "VENDOR",
-                },
-            ],
+            actorType: "USER",
+
+            performedBy:
+                new mongoose.Types.ObjectId(
+                    currentUserId
+                ),
         };
 
-        // -------------------------------------------------
-        // Action filter
-        // -------------------------------------------------
-        if (action && action !== "ALL") {
+        // =====================================================
+        // 8. Action filter
+        // =====================================================
+
+        if (
+            action &&
+            action !== "ALL"
+        ) {
             query.action = action;
         }
 
-        // -------------------------------------------------
-        // Actor filter
-        // -------------------------------------------------
-        if (actorType && actorType !== "ALL") {
-            if (actorType === "USER") {
-                query.$or = [
-                    {
-                        actorType: "USER",
-                        performedBy: {
-                            $in: complianceOfficerIds,
-                        },
-                    },
-                ];
-            }
+        // =====================================================
+        // 9. Actor type filter
+        //
+        // This endpoint is specifically for Compliance
+        // Officer audit logs, so only USER is valid.
+        // =====================================================
 
-            if (actorType === "VENDOR") {
-                query.$or = [
-                    {
-                        actorType: "VENDOR",
-                    },
-                ];
-            }
+        if (
+            actorType &&
+            actorType !== "ALL" &&
+            actorType !== "USER"
+        ) {
+            return res.status(200).json({
+                success: true,
+
+                message:
+                    "Compliance audit logs fetched successfully",
+
+                data: [],
+
+                pagination: {
+                    currentPage: page,
+                    totalPages: 0,
+                    totalLogs: 0,
+                    limit,
+                    hasNextPage: false,
+                    hasPreviousPage: page > 1,
+                },
+            });
         }
 
-        // -------------------------------------------------
-        // Date filters
-        // -------------------------------------------------
-        if (dateRange !== "ALL") {
-            const now = new Date();
+        // =====================================================
+        // 10. Date filtering
+        //
+        // If custom startDate/endDate are provided,
+        // they take priority over dateRange.
+        // =====================================================
 
-            let fromDate = null;
+        let dateFilter = null;
 
-            if (dateRange === "TODAY") {
-                fromDate = new Date();
-
-                fromDate.setHours(0, 0, 0, 0);
-            }
-
-            if (dateRange === "7_DAYS") {
-                fromDate = new Date(
-                    now.getTime() -
-                        7 * 24 * 60 * 60 * 1000
-                );
-            }
-
-            if (dateRange === "30_DAYS") {
-                fromDate = new Date(
-                    now.getTime() -
-                        30 * 24 * 60 * 60 * 1000
-                );
-            }
-
-            if (fromDate) {
-                query.createdAt = {
-                    $gte: fromDate,
-                    $lte: now,
-                };
-            }
-        }
-
-        // -------------------------------------------------
+        // -----------------------------------------------------
         // Custom date range
-        // -------------------------------------------------
+        // -----------------------------------------------------
+
         if (startDate || endDate) {
-            query.createdAt = {};
+            dateFilter = {};
 
             if (startDate) {
                 const start = new Date(startDate);
 
-                start.setHours(0, 0, 0, 0);
+                if (Number.isNaN(start.getTime())) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Invalid startDate",
+                    });
+                }
 
-                query.createdAt.$gte = start;
+                start.setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                );
+
+                dateFilter.$gte = start;
             }
 
             if (endDate) {
                 const end = new Date(endDate);
 
-                end.setHours(23, 59, 59, 999);
+                if (Number.isNaN(end.getTime())) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Invalid endDate",
+                    });
+                }
 
-                query.createdAt.$lte = end;
+                end.setHours(
+                    23,
+                    59,
+                    59,
+                    999
+                );
+
+                dateFilter.$lte = end;
             }
         }
 
-        // -------------------------------------------------
-        // Search
-        // -------------------------------------------------
-        if (search.trim()) {
+        // -----------------------------------------------------
+        // Predefined date range
+        // -----------------------------------------------------
+
+        else if (
+            dateRange &&
+            dateRange !== "ALL"
+        ) {
+            const now = new Date();
+
+            let fromDate = null;
+
+            switch (dateRange) {
+                case "TODAY": {
+                    fromDate = new Date(now);
+
+                    fromDate.setHours(
+                        0,
+                        0,
+                        0,
+                        0
+                    );
+
+                    break;
+                }
+
+                case "7_DAYS": {
+                    fromDate = new Date(
+                        now.getTime() -
+                            7 *
+                                24 *
+                                60 *
+                                60 *
+                                1000
+                    );
+
+                    break;
+                }
+
+                case "30_DAYS": {
+                    fromDate = new Date(
+                        now.getTime() -
+                            30 *
+                                24 *
+                                60 *
+                                60 *
+                                1000
+                    );
+
+                    break;
+                }
+
+                default: {
+                    return res.status(400).json({
+                        success: false,
+                        message:
+                            "Invalid dateRange. Allowed values are ALL, TODAY, 7_DAYS, or 30_DAYS",
+                    });
+                }
+            }
+
+            dateFilter = {
+                $gte: fromDate,
+                $lte: now,
+            };
+        }
+
+        // Apply date filter
+        if (dateFilter) {
+            query.createdAt = dateFilter;
+        }
+
+        // =====================================================
+        // 11. Search filter
+        // =====================================================
+
+        const trimmedSearch =
+            typeof search === "string"
+                ? search.trim()
+                : "";
+
+        if (trimmedSearch) {
+            // Escape regex special characters
+            // to safely handle user input.
+            const escapedSearch =
+                trimmedSearch.replace(
+                    /[.*+?^${}()|[\]\\]/g,
+                    "\\$&"
+                );
+
             const searchRegex = new RegExp(
-                search
-                    .trim()
-                    .replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+                escapedSearch,
                 "i"
             );
 
-            query.$and = [
+            query.$or = [
                 {
-                    $or: [
-                        {
-                            description: searchRegex,
-                        },
-                        {
-                            action: searchRegex,
-                        },
-                        {
-                            targetType: searchRegex,
-                        },
-                    ],
+                    description: searchRegex,
+                },
+                {
+                    action: searchRegex,
+                },
+                {
+                    targetType: searchRegex,
                 },
             ];
         }
 
-        // -------------------------------------------------
-        // Fetch audit logs
-        // -------------------------------------------------
-        const [auditLogs, totalLogs] = await Promise.all([
-            AuditLog.find(query)
-                .populate(
-                    "performedBy",
-                    "name email role"
-                )
-                .populate(
-                    "performedByVendor",
-                    "name email companyName role"
-                )
-                .sort({
-                    createdAt: -1,
-                })
-                .skip(skip)
-                .limit(limit)
-                .lean(),
+        // =====================================================
+        // 12. Fetch audit logs and total count
+        // =====================================================
 
-            AuditLog.countDocuments(query),
-        ]);
+        const [auditLogs, totalLogs] =
+            await Promise.all([
+                AuditLog.find(query)
+                    .populate(
+                        "performedBy",
+                        "name email role"
+                    )
+                    .populate(
+                        "performedByVendor",
+                        "name email companyName role"
+                    )
+                    .sort({
+                        createdAt: -1,
+                    })
+                    .skip(skip)
+                    .limit(limit)
+                    .lean(),
 
-        // -------------------------------------------------
-        // Format logs
-        // -------------------------------------------------
-        const formattedLogs = auditLogs.map((log) => {
-            const actor =
-                log.actorType === "VENDOR"
-                    ? log.performedByVendor
-                    : log.performedBy;
+                AuditLog.countDocuments(query),
+            ]);
 
-            return {
-                _id: log._id,
+        // =====================================================
+        // 13. Format audit logs
+        // =====================================================
 
-                action: log.action,
+        const formattedLogs = auditLogs.map(
+            (log) => {
+                const actor =
+                    log.actorType === "VENDOR"
+                        ? log.performedByVendor
+                        : log.performedBy;
 
-                actorType: log.actorType,
+                return {
+                    _id: log._id,
 
-                actor: actor
-                    ? {
-                          _id: actor._id,
+                    action: log.action,
 
-                          name:
-                              actor.name ||
-                              actor.companyName ||
-                              "Unknown",
+                    actorType:
+                        log.actorType,
 
-                          email: actor.email || "",
+                    actor: actor
+                        ? {
+                              _id:
+                                  actor._id,
 
-                          role: actor.role || null,
+                              name:
+                                  actor.name ||
+                                  actor.companyName ||
+                                  "Unknown",
 
-                          companyName:
-                              actor.companyName || null,
-                      }
-                    : null,
+                              email:
+                                  actor.email ||
+                                  "",
 
-                targetType: log.targetType,
+                              role:
+                                  actor.role ||
+                                  null,
 
-                targetId: log.targetId,
+                              companyName:
+                                  actor.companyName ||
+                                  null,
+                          }
+                        : null,
 
-                description: log.description,
+                    targetType:
+                        log.targetType ||
+                        null,
 
-                metadata: log.metadata || {},
+                    targetId:
+                        log.targetId ||
+                        null,
 
-                createdAt: log.createdAt,
+                    description:
+                        log.description ||
+                        "",
 
-                updatedAt: log.updatedAt,
-            };
-        });
+                    metadata:
+                        log.metadata ||
+                        {},
 
-        // -------------------------------------------------
-        // Pagination
-        // -------------------------------------------------
-        const totalPages = Math.ceil(
-            totalLogs / limit
+                    createdAt:
+                        log.createdAt,
+
+                    updatedAt:
+                        log.updatedAt,
+                };
+            }
         );
+
+        // =====================================================
+        // 14. Pagination information
+        // =====================================================
+
+        const totalPages =
+            totalLogs > 0
+                ? Math.ceil(
+                      totalLogs / limit
+                  )
+                : 0;
+
+        // =====================================================
+        // 15. Success response
+        // =====================================================
 
         return res.status(200).json({
             success: true,
@@ -406,10 +581,17 @@ const getAuditLogs = async (req, res) => {
             message:
                 "Failed to fetch compliance audit logs",
 
-            error: error.message,
+            // Don't expose internal error details
+            // in production.
+            ...(process.env.NODE_ENV !==
+                "production" && {
+                error: error.message,
+            }),
         });
     }
 };
+
+ 
 
 
 module.exports = {

@@ -59,6 +59,7 @@ const uploadVendorDocument = async (req, res) => {
     // 3. Get vendor information
     // -----------------------------------------
 
+    console.log(req.user);
     const vendorId = req.user.userId;
     const organizationId = req.user.organizationId;
 
