@@ -20,7 +20,7 @@ import {
 
 const ComplianceOfficer = () => {
   return (
-    <div className="min-h-screen bg-[#EDEAE0] text-[#1C2B3A]">
+    <div className="min-h-screen bg-blue-50 text-slate-900">
 
       {/* =====================================================
           HEADER
@@ -29,7 +29,7 @@ const ComplianceOfficer = () => {
       <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 
         <div>
-          <p className="mb-2 text-sm font-medium uppercase tracking-[0.18em] text-[#A8792C]">
+          <p className="mb-2 text-sm font-medium uppercase tracking-[0.18em] text-blue-700">
             Compliance Operations
           </p>
 
@@ -37,7 +37,7 @@ const ComplianceOfficer = () => {
             Compliance Dashboard
           </h1>
 
-          <p className="mt-2 text-sm text-[#54636F]">
+          <p className="mt-2 text-sm text-slate-500">
             Monitor vendor documents, compliance risks and upcoming
             expiries from one place.
           </p>
@@ -45,12 +45,12 @@ const ComplianceOfficer = () => {
 
         <div className="flex flex-wrap gap-3">
 
-          <button className="flex items-center gap-2 border border-[#C9C2AE] bg-[#F5F3EB] px-4 py-3 text-sm font-medium transition hover:bg-[#EDEAE0]">
+          <button className="flex items-center gap-2 border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium transition hover:bg-blue-50">
             <Upload size={17} />
             Upload Document
           </button>
 
-          <button className="flex items-center gap-2 bg-[#1C2B3A] px-4 py-3 text-sm font-semibold text-[#F5F3EB] transition hover:bg-[#A8792C]">
+          <button className="flex items-center gap-2 bg-[#071426] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#2563EB]">
             <Plus size={17} />
             Add Vendor
           </button>
@@ -67,12 +67,12 @@ const ComplianceOfficer = () => {
 
         {/* Score */}
 
-        <div className="border border-[#C9C2AE] bg-[#F5F3EB] p-6">
+        <div className="border border-slate-200 bg-slate-50 p-6">
 
           <div className="flex items-start justify-between">
 
             <div>
-              <p className="text-sm text-[#54636F]">
+              <p className="text-sm text-slate-500">
                 Overall Compliance
               </p>
 
@@ -80,25 +80,25 @@ const ComplianceOfficer = () => {
                 87%
               </h2>
 
-              <p className="mt-2 text-xs text-[#33604F]">
+              <p className="mt-2 text-xs text-emerald-700">
                 +4.2% from last month
               </p>
             </div>
 
-            <div className="bg-[#DCE8E1] p-3 text-[#33604F]">
+            <div className="bg-emerald-50 p-3 text-emerald-700">
               <ShieldCheck size={23} />
             </div>
 
           </div>
 
-          <div className="mt-6 h-2 bg-[#EDEAE0]">
+          <div className="mt-6 h-2 bg-blue-50">
             <div
-              className="h-full bg-[#33604F]"
+              className="h-full bg-[#059669]"
               style={{ width: "87%" }}
             />
           </div>
 
-          <div className="mt-3 flex justify-between text-xs text-[#54636F]">
+          <div className="mt-3 flex justify-between text-xs text-slate-500">
             <span>Current health</span>
             <span>Target 95%</span>
           </div>
@@ -108,12 +108,12 @@ const ComplianceOfficer = () => {
 
         {/* Vendor Compliance */}
 
-        <div className="border border-[#C9C2AE] bg-[#F5F3EB] p-6">
+        <div className="border border-slate-200 bg-slate-50 p-6">
 
           <div className="flex items-start justify-between">
 
             <div>
-              <p className="text-sm text-[#54636F]">
+              <p className="text-sm text-slate-500">
                 Compliant Vendors
               </p>
 
@@ -121,12 +121,12 @@ const ComplianceOfficer = () => {
                 126
               </h2>
 
-              <p className="mt-2 text-xs text-[#54636F]">
+              <p className="mt-2 text-xs text-slate-500">
                 out of 148 vendors
               </p>
             </div>
 
-            <div className="bg-[#DCE8E1] p-3 text-[#33604F]">
+            <div className="bg-emerald-50 p-3 text-emerald-700">
               <Store size={23} />
             </div>
 
@@ -134,9 +134,9 @@ const ComplianceOfficer = () => {
 
           <div className="mt-6 flex items-center gap-2">
 
-            <div className="h-2 flex-1 bg-[#EDEAE0]">
+            <div className="h-2 flex-1 bg-blue-50">
               <div
-                className="h-full bg-[#33604F]"
+                className="h-full bg-[#059669]"
                 style={{ width: "85%" }}
               />
             </div>
@@ -152,12 +152,12 @@ const ComplianceOfficer = () => {
 
         {/* Documents */}
 
-        <div className="border border-[#C9C2AE] bg-[#F5F3EB] p-6">
+        <div className="border border-slate-200 bg-slate-50 p-6">
 
           <div className="flex items-start justify-between">
 
             <div>
-              <p className="text-sm text-[#54636F]">
+              <p className="text-sm text-slate-500">
                 Total Documents
               </p>
 
@@ -165,12 +165,12 @@ const ComplianceOfficer = () => {
                 1,284
               </h2>
 
-              <p className="mt-2 text-xs text-[#54636F]">
+              <p className="mt-2 text-xs text-slate-500">
                 Across all vendors
               </p>
             </div>
 
-            <div className="bg-[#EDEAE0] p-3 text-[#A8792C]">
+            <div className="bg-blue-50 p-3 text-blue-700">
               <FileText size={23} />
             </div>
 
@@ -232,21 +232,21 @@ const ComplianceOfficer = () => {
             DOCUMENT EXPIRY
         ================================================= */}
 
-        <div className="xl:col-span-2 border border-[#C9C2AE] bg-[#F5F3EB]">
+        <div className="xl:col-span-2 border border-slate-200 bg-slate-50">
 
-          <div className="flex items-center justify-between border-b border-[#C9C2AE] px-6 py-5">
+          <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
 
             <div>
               <h2 className="font-semibold">
                 Upcoming Document Expiries
               </h2>
 
-              <p className="mt-1 text-xs text-[#54636F]">
+              <p className="mt-1 text-xs text-slate-500">
                 Documents requiring attention
               </p>
             </div>
 
-            <button className="flex items-center gap-1 text-sm font-medium text-[#A8792C] hover:text-[#8B631F]">
+            <button className="flex items-center gap-1 text-sm font-medium text-blue-700 hover:text-blue-700">
               View all
               <ArrowRight size={16} />
             </button>
@@ -254,7 +254,7 @@ const ComplianceOfficer = () => {
           </div>
 
 
-          <div className="divide-y divide-[#C9C2AE]">
+          <div className="divide-y divide-[#E2E8F0]">
 
             <ExpiryRow
               vendor="ABC Logistics Pvt. Ltd."
@@ -305,26 +305,26 @@ const ComplianceOfficer = () => {
             ALERTS
         ================================================= */}
 
-        <div className="border border-[#C9C2AE] bg-[#F5F3EB]">
+        <div className="border border-slate-200 bg-slate-50">
 
-          <div className="flex items-center justify-between border-b border-[#C9C2AE] px-6 py-5">
+          <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
 
             <div>
               <h2 className="font-semibold">
                 Recent Alerts
               </h2>
 
-              <p className="mt-1 text-xs text-[#54636F]">
+              <p className="mt-1 text-xs text-slate-500">
                 Latest compliance activity
               </p>
             </div>
 
-            <Bell size={19} className="text-[#A8792C]" />
+            <Bell size={19} className="text-blue-700" />
 
           </div>
 
 
-          <div className="divide-y divide-[#C9C2AE]">
+          <div className="divide-y divide-[#E2E8F0]">
 
             <AlertItem
               icon={ShieldAlert}
@@ -361,7 +361,7 @@ const ComplianceOfficer = () => {
           </div>
 
 
-          <button className="flex w-full items-center justify-center gap-2 border-t border-[#C9C2AE] py-4 text-sm font-medium text-[#A8792C] hover:bg-[#EDEAE0]">
+          <button className="flex w-full items-center justify-center gap-2 border-t border-slate-200 py-4 text-sm font-medium text-blue-700 hover:bg-blue-50">
             View all alerts
             <ChevronRight size={16} />
           </button>
@@ -375,16 +375,16 @@ const ComplianceOfficer = () => {
           VENDOR OVERVIEW
       ===================================================== */}
 
-      <div className="mt-6 border border-[#C9C2AE] bg-[#F5F3EB]">
+      <div className="mt-6 border border-slate-200 bg-slate-50">
 
-        <div className="flex flex-col gap-4 border-b border-[#C9C2AE] px-6 py-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 border-b border-slate-200 px-6 py-5 md:flex-row md:items-center md:justify-between">
 
           <div>
             <h2 className="font-semibold">
               Vendor Compliance Overview
             </h2>
 
-            <p className="mt-1 text-xs text-[#54636F]">
+            <p className="mt-1 text-xs text-slate-500">
               Vendors requiring your attention
             </p>
           </div>
@@ -393,13 +393,13 @@ const ComplianceOfficer = () => {
 
             <Search
               size={17}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#54636F]"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
             />
 
             <input
               type="text"
               placeholder="Search vendors..."
-              className="w-full border border-[#C9C2AE] bg-[#EDEAE0] py-2.5 pl-9 pr-4 text-sm outline-none focus:border-[#A8792C] md:w-64"
+              className="w-full border border-slate-200 bg-blue-50 py-2.5 pl-9 pr-4 text-sm outline-none focus:border-[#2563EB] md:w-64"
             />
 
           </div>
@@ -412,7 +412,7 @@ const ComplianceOfficer = () => {
           <table className="w-full min-w-[800px]">
 
             <thead>
-              <tr className="border-b border-[#C9C2AE] text-left text-xs uppercase tracking-wider text-[#54636F]">
+              <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wider text-slate-500">
 
                 <th className="px-6 py-4">
                   Vendor
@@ -568,27 +568,27 @@ const ComplianceStat = ({
   const styles = {
 
     danger: {
-      box: "bg-[#F0DDD7]",
-      icon: "text-[#A6402B]",
-      value: "text-[#A6402B]",
+      box: "bg-red-50",
+      icon: "text-red-700",
+      value: "text-red-700",
     },
 
     warning: {
-      box: "bg-[#EEE5D2]",
-      icon: "text-[#A8792C]",
-      value: "text-[#8B631F]",
+      box: "bg-[#EFF6FF]",
+      icon: "text-blue-700",
+      value: "text-blue-700",
     },
 
     success: {
-      box: "bg-[#DCE8E1]",
-      icon: "text-[#33604F]",
-      value: "text-[#33604F]",
+      box: "bg-emerald-50",
+      icon: "text-emerald-700",
+      value: "text-emerald-700",
     },
 
     neutral: {
-      box: "bg-[#EDEAE0]",
-      icon: "text-[#1C2B3A]",
-      value: "text-[#1C2B3A]",
+      box: "bg-blue-50",
+      icon: "text-slate-900",
+      value: "text-slate-900",
     },
 
   };
@@ -596,13 +596,13 @@ const ComplianceStat = ({
   const style = styles[type];
 
   return (
-    <div className="border border-[#C9C2AE] bg-[#F5F3EB] p-5">
+    <div className="border border-slate-200 bg-slate-50 p-5">
 
       <div className="flex items-start justify-between">
 
         <div>
 
-          <p className="text-sm text-[#54636F]">
+          <p className="text-sm text-slate-500">
             {title}
           </p>
 
@@ -610,7 +610,7 @@ const ComplianceStat = ({
             {value}
           </p>
 
-          <p className="mt-1 text-xs text-[#54636F]">
+          <p className="mt-1 text-xs text-slate-500">
             {subtitle}
           </p>
 
@@ -646,7 +646,7 @@ const ExpiryRow = ({
 
       <div className="flex items-center gap-3">
 
-        <div className="bg-[#EDEAE0] p-3 text-[#A8792C]">
+        <div className="bg-blue-50 p-3 text-blue-700">
           <FileText size={19} />
         </div>
 
@@ -656,7 +656,7 @@ const ExpiryRow = ({
             {document}
           </p>
 
-          <p className="mt-1 text-xs text-[#54636F]">
+          <p className="mt-1 text-xs text-slate-500">
             {vendor}
           </p>
 
@@ -669,7 +669,7 @@ const ExpiryRow = ({
 
         <div className="text-right">
 
-          <p className="text-xs text-[#54636F]">
+          <p className="text-xs text-slate-500">
             Expiry
           </p>
 
@@ -682,10 +682,10 @@ const ExpiryRow = ({
         <span
           className={`whitespace-nowrap px-3 py-1 text-xs font-semibold ${
             isCritical
-              ? "bg-[#F0DDD7] text-[#A6402B]"
+              ? "bg-red-50 text-red-700"
               : status === "warning"
-              ? "bg-[#EEE5D2] text-[#8B631F]"
-              : "bg-[#DCE8E1] text-[#33604F]"
+              ? "bg-[#EFF6FF] text-blue-700"
+              : "bg-emerald-50 text-emerald-700"
           }`}
         >
           {days}
@@ -713,23 +713,23 @@ const AlertItem = ({
   const styles = {
 
     danger: {
-      box: "bg-[#F0DDD7]",
-      icon: "text-[#A6402B]",
+      box: "bg-red-50",
+      icon: "text-red-700",
     },
 
     warning: {
-      box: "bg-[#EEE5D2]",
-      icon: "text-[#A8792C]",
+      box: "bg-[#EFF6FF]",
+      icon: "text-blue-700",
     },
 
     success: {
-      box: "bg-[#DCE8E1]",
-      icon: "text-[#33604F]",
+      box: "bg-emerald-50",
+      icon: "text-emerald-700",
     },
 
     neutral: {
-      box: "bg-[#EDEAE0]",
-      icon: "text-[#1C2B3A]",
+      box: "bg-blue-50",
+      icon: "text-slate-900",
     },
 
   };
@@ -749,11 +749,11 @@ const AlertItem = ({
           {title}
         </p>
 
-        <p className="mt-1 truncate text-xs text-[#54636F]">
+        <p className="mt-1 truncate text-xs text-slate-500">
           {description}
         </p>
 
-        <p className="mt-1 text-[11px] text-[#54636F]">
+        <p className="mt-1 text-[11px] text-slate-500">
           {time}
         </p>
 
@@ -780,7 +780,7 @@ const VendorRow = ({
 }) => {
 
   return (
-    <tr className="border-b border-[#C9C2AE] last:border-0 hover:bg-[#EDEAE0]/50">
+    <tr className="border-b border-slate-200 last:border-0 hover:bg-blue-50/50">
 
       {/* Vendor */}
 
@@ -788,7 +788,7 @@ const VendorRow = ({
 
         <div className="flex items-center gap-3">
 
-          <div className="flex h-9 w-9 items-center justify-center bg-[#1C2B3A] text-xs font-semibold text-[#F5F3EB]">
+          <div className="flex h-9 w-9 items-center justify-center bg-[#071426] text-xs font-semibold text-white">
             {initials}
           </div>
 
@@ -803,7 +803,7 @@ const VendorRow = ({
 
       {/* Documents */}
 
-      <td className="px-6 py-5 text-sm text-[#54636F]">
+      <td className="px-6 py-5 text-sm text-slate-500">
         {documents}
       </td>
 
@@ -814,13 +814,13 @@ const VendorRow = ({
 
         <div className="flex items-center gap-3">
 
-          <div className="h-1.5 w-20 bg-[#EDEAE0]">
+          <div className="h-1.5 w-20 bg-blue-50">
 
             <div
               className={`h-full ${
                 danger
-                  ? "bg-[#A6402B]"
-                  : "bg-[#33604F]"
+                  ? "bg-[#DC2626]"
+                  : "bg-[#059669]"
               }`}
               style={{
                 width: compliance,
@@ -845,8 +845,8 @@ const VendorRow = ({
         <span
           className={`text-sm font-semibold ${
             expired !== "0"
-              ? "text-[#A6402B]"
-              : "text-[#33604F]"
+              ? "text-red-700"
+              : "text-emerald-700"
           }`}
         >
           {expired}
@@ -862,8 +862,8 @@ const VendorRow = ({
         <span
           className={`text-sm font-semibold ${
             expiring !== "0"
-              ? "text-[#A8792C]"
-              : "text-[#33604F]"
+              ? "text-blue-700"
+              : "text-emerald-700"
           }`}
         >
           {expiring}
@@ -879,10 +879,10 @@ const VendorRow = ({
         <span
           className={`whitespace-nowrap px-3 py-1 text-xs font-semibold ${
             danger
-              ? "bg-[#F0DDD7] text-[#A6402B]"
+              ? "bg-red-50 text-red-700"
               : status === "Excellent"
-              ? "bg-[#DCE8E1] text-[#33604F]"
-              : "bg-[#EEE5D2] text-[#8B631F]"
+              ? "bg-emerald-50 text-emerald-700"
+              : "bg-[#EFF6FF] text-blue-700"
           }`}
         >
           {status}
@@ -895,7 +895,7 @@ const VendorRow = ({
 
       <td className="px-6 py-5">
 
-        <button className="flex items-center gap-1 text-sm font-medium text-[#A8792C] hover:text-[#8B631F]">
+        <button className="flex items-center gap-1 text-sm font-medium text-blue-700 hover:text-blue-700">
           View
           <ChevronRight size={15} />
         </button>
@@ -918,9 +918,9 @@ const QuickAction = ({
 }) => {
 
   return (
-    <button className="group flex items-center gap-4 border border-[#C9C2AE] bg-[#F5F3EB] p-5 text-left transition hover:border-[#A8792C] hover:bg-[#EDEAE0]">
+    <button className="group flex items-center gap-4 border border-slate-200 bg-slate-50 p-5 text-left transition hover:border-[#2563EB] hover:bg-blue-50">
 
-      <div className="bg-[#1C2B3A] p-3 text-[#F5F3EB] transition group-hover:bg-[#A8792C]">
+      <div className="bg-[#071426] p-3 text-white transition group-hover:bg-[#2563EB]">
         <Icon size={20} />
       </div>
 
@@ -930,7 +930,7 @@ const QuickAction = ({
           {title}
         </p>
 
-        <p className="mt-1 text-xs text-[#54636F]">
+        <p className="mt-1 text-xs text-slate-500">
           {description}
         </p>
 

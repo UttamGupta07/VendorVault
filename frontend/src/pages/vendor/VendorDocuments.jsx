@@ -195,7 +195,7 @@ const VendorDocuments = () => {
   // ----------------------------------------
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-slate-50 p-6">
         <div className="flex items-center justify-center h-64">
           <Loader2
             size={32}
@@ -210,16 +210,16 @@ const VendorDocuments = () => {
   // Main UI
   // ----------------------------------------
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
             My Documents
           </h1>
 
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-slate-500">
             Upload and manage the documents required for your organization.
           </p>
         </div>
@@ -228,14 +228,14 @@ const VendorDocuments = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
 
           {/* Total */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <div className="bg-white rounded-xl border border-slate-200 p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Total Required
                 </p>
 
-                <p className="text-2xl font-bold text-gray-900 mt-1">
+                <p className="text-2xl font-bold text-slate-900 mt-1">
                   {documents.length}
                 </p>
               </div>
@@ -247,14 +247,14 @@ const VendorDocuments = () => {
           </div>
 
           {/* Uploaded */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <div className="bg-white rounded-xl border border-slate-200 p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Uploaded
                 </p>
 
-                <p className="text-2xl font-bold text-gray-900 mt-1">
+                <p className="text-2xl font-bold text-slate-900 mt-1">
                   {
                     documents.filter(
                       (document) => document.uploaded
@@ -270,14 +270,14 @@ const VendorDocuments = () => {
           </div>
 
           {/* Missing */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <div className="bg-white rounded-xl border border-slate-200 p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Missing
                 </p>
 
-                <p className="text-2xl font-bold text-gray-900 mt-1">
+                <p className="text-2xl font-bold text-slate-900 mt-1">
                   {
                     documents.filter(
                       (document) => !document.uploaded
@@ -294,15 +294,15 @@ const VendorDocuments = () => {
         </div>
 
         {/* Documents Card */}
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
 
           {/* Card Header */}
-          <div className="px-6 py-5 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">
+          <div className="px-6 py-5 border-b border-slate-200">
+            <h2 className="text-lg font-semibold text-slate-900">
               Required Documents
             </h2>
 
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-slate-500 mt-1">
               Please upload all documents listed below.
             </p>
           </div>
@@ -312,14 +312,14 @@ const VendorDocuments = () => {
             <div className="py-16 text-center">
               <FileText
                 size={45}
-                className="mx-auto text-gray-300"
+                className="mx-auto text-slate-300"
               />
 
-              <h3 className="mt-4 text-lg font-semibold text-gray-700">
+              <h3 className="mt-4 text-lg font-semibold text-slate-700">
                 No documents required
               </h3>
 
-              <p className="text-gray-500 mt-1">
+              <p className="text-slate-500 mt-1">
                 There are currently no documents assigned to you.
               </p>
             </div>
@@ -332,24 +332,24 @@ const VendorDocuments = () => {
                 return (
                   <div
                     key={document._id}
-                    className="p-5 md:px-6 hover:bg-gray-50 transition"
+                    className="p-5 md:px-6 hover:bg-slate-50 transition"
                   >
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
                       {/* Document Information */}
                       <div className="flex items-start gap-4">
 
-                        <div className="p-3 bg-gray-100 rounded-lg text-gray-600">
+                        <div className="p-3 bg-slate-100 rounded-lg text-slate-600">
                           <FileText size={24} />
                         </div>
 
                         <div>
-                          <h3 className="font-semibold text-gray-900">
+                          <h3 className="font-semibold text-slate-900">
                             {document.name}
                           </h3>
 
                           {document.description && (
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-slate-500 mt-1">
                               {document.description}
                             </p>
                           )}
@@ -394,7 +394,7 @@ const VendorDocuments = () => {
                               href={document.fileUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+                              className="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
                             >
                               <Eye size={16} />
                               View
@@ -471,7 +471,7 @@ const VendorDocuments = () => {
           >
 
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200">
               <div className="flex items-center gap-3">
 
                 <div className="p-2.5 bg-red-100 text-red-600 rounded-lg">
@@ -479,11 +479,11 @@ const VendorDocuments = () => {
                 </div>
 
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-slate-900">
                     Rejection Reason
                   </h2>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-slate-500">
                     {rejectionDocument.name}
                   </p>
                 </div>
@@ -492,7 +492,7 @@ const VendorDocuments = () => {
               <button
                 type="button"
                 onClick={closeRejectionModal}
-                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition"
+                className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
               >
                 <X size={20} />
               </button>
@@ -525,19 +525,19 @@ const VendorDocuments = () => {
               </div>
 
               {/* Action message */}
-              <p className="text-sm text-gray-500 mt-4">
+              <p className="text-sm text-slate-500 mt-4">
                 Please review the reason above and upload a corrected
                 document.
               </p>
             </div>
 
             {/* Modal Footer */}
-            <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200">
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-200">
 
               <button
                 type="button"
                 onClick={closeRejectionModal}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+                className="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition"
               >
                 Close
               </button>

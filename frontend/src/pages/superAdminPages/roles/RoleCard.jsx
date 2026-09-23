@@ -11,9 +11,9 @@ import {
 const roleConfig = {
   SUPER_ADMIN: {
     icon: ShieldCheck,
-    iconBg: "bg-purple-100",
-    iconColor: "text-purple-600",
-    badge: "bg-purple-50 text-purple-700",
+    iconBg: "bg-indigo-100",
+    iconColor: "text-indigo-600",
+    badge: "bg-indigo-50 text-indigo-700",
   },
 
   COMPLIANCE_OFFICER: {

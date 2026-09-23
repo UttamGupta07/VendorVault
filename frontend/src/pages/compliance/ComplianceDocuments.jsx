@@ -269,7 +269,7 @@ const ComplianceDocuments = () => {
     const current = config[status] || {
       label: status || "Unknown",
       className:
-        "bg-gray-50 text-gray-600 border-gray-200",
+        "bg-slate-50 text-slate-600 border-slate-200",
       icon: FileText,
     };
 
@@ -294,7 +294,7 @@ const ComplianceDocuments = () => {
 
     if (state === "NO_EXPIRY") {
       return (
-        <span className="text-sm text-gray-400">
+        <span className="text-sm text-slate-400">
           No expiry
         </span>
       );
@@ -319,7 +319,7 @@ const ComplianceDocuments = () => {
     }
 
     return (
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-slate-600">
         {formatDate(expiryDate)}
       </span>
     );
@@ -331,11 +331,11 @@ const ComplianceDocuments = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-slate-50 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-48" />
-            <div className="h-4 bg-gray-200 rounded w-80" />
+            <div className="h-8 bg-slate-200 rounded w-48" />
+            <div className="h-4 bg-slate-200 rounded w-80" />
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {[1, 2, 3, 4].map((item) => (
@@ -358,24 +358,24 @@ const ComplianceDocuments = () => {
   // ============================================================
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-slate-900">
               Documents
             </h1>
 
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-slate-500 mt-1">
               Manage and review vendor compliance documents
             </p>
           </div>
 
           <button
             onClick={fetchDocuments}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
           >
             <RefreshCw size={16} />
             Refresh
@@ -402,14 +402,14 @@ const ComplianceDocuments = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
           {/* Total */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Total Documents
                 </p>
 
-                <p className="text-2xl font-bold text-gray-900 mt-2">
+                <p className="text-2xl font-bold text-slate-900 mt-2">
                   {statistics.total}
                 </p>
               </div>
@@ -424,14 +424,14 @@ const ComplianceDocuments = () => {
           </div>
 
           {/* Pending */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Pending Review
                 </p>
 
-                <p className="text-2xl font-bold text-gray-900 mt-2">
+                <p className="text-2xl font-bold text-slate-900 mt-2">
                   {statistics.pending}
                 </p>
               </div>
@@ -446,14 +446,14 @@ const ComplianceDocuments = () => {
           </div>
 
           {/* Expiring */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Expiring Soon
                 </p>
 
-                <p className="text-2xl font-bold text-gray-900 mt-2">
+                <p className="text-2xl font-bold text-slate-900 mt-2">
                   {statistics.expiringSoon}
                 </p>
               </div>
@@ -468,14 +468,14 @@ const ComplianceDocuments = () => {
           </div>
 
           {/* Expired */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   Expired
                 </p>
 
-                <p className="text-2xl font-bold text-gray-900 mt-2">
+                <p className="text-2xl font-bold text-slate-900 mt-2">
                   {statistics.expired}
                 </p>
               </div>
@@ -491,14 +491,14 @@ const ComplianceDocuments = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
+        <div className="bg-white border border-slate-200 rounded-xl p-4">
           <div className="flex flex-col lg:flex-row gap-3">
 
             {/* Search */}
             <div className="relative flex-1">
               <Search
                 size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
 
               <input
@@ -508,7 +508,7 @@ const ComplianceDocuments = () => {
                   setSearch(e.target.value)
                 }
                 placeholder="Search vendor, document name or type..."
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
@@ -519,7 +519,7 @@ const ComplianceDocuments = () => {
                 onChange={(e) =>
                   setStatusFilter(e.target.value)
                 }
-                className="appearance-none w-full lg:w-48 px-4 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="appearance-none w-full lg:w-48 px-4 pr-10 py-2.5 border border-slate-200 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="ALL">
                   All Status
@@ -540,7 +540,7 @@ const ComplianceDocuments = () => {
 
               <ChevronDown
                 size={16}
-                className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400"
               />
             </div>
 
@@ -551,7 +551,7 @@ const ComplianceDocuments = () => {
                 onChange={(e) =>
                   setExpiryFilter(e.target.value)
                 }
-                className="appearance-none w-full lg:w-48 px-4 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-blue-500"
+                className="appearance-none w-full lg:w-48 px-4 pr-10 py-2.5 border border-slate-200 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="ALL">
                   All Expiry
@@ -576,22 +576,22 @@ const ComplianceDocuments = () => {
 
               <ChevronDown
                 size={16}
-                className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400"
               />
             </div>
           </div>
         </div>
 
         {/* Table */}
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
 
-          <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+          <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
             <div>
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold text-slate-900">
                 All Documents
               </h2>
 
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-slate-500 mt-1">
                 {filteredDocuments.length} document
                 {filteredDocuments.length !== 1
                   ? "s"
@@ -603,18 +603,18 @@ const ComplianceDocuments = () => {
 
           {filteredDocuments.length === 0 ? (
             <div className="py-16 text-center">
-              <div className="w-14 h-14 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
+              <div className="w-14 h-14 mx-auto rounded-full bg-slate-100 flex items-center justify-center">
                 <FileText
                   size={25}
-                  className="text-gray-400"
+                  className="text-slate-400"
                 />
               </div>
 
-              <h3 className="mt-4 font-medium text-gray-900">
+              <h3 className="mt-4 font-medium text-slate-900">
                 No documents found
               </h3>
 
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-slate-500 mt-1">
                 Try changing your search or filters.
               </p>
             </div>
@@ -623,32 +623,32 @@ const ComplianceDocuments = () => {
               <table className="w-full">
 
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <tr className="bg-slate-50 border-b border-slate-200">
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                       Vendor
                     </th>
 
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                       Document
                     </th>
 
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                       Type
                     </th>
 
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                       Uploaded
                     </th>
 
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                       Expiry
                     </th>
 
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                       Status
                     </th>
 
-                    <th className="text-right px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                       Action
                     </th>
                   </tr>
@@ -658,18 +658,18 @@ const ComplianceDocuments = () => {
                   {filteredDocuments.map((document) => (
                     <tr
                       key={document._id}
-                      className="hover:bg-gray-50 transition"
+                      className="hover:bg-slate-50 transition"
                     >
 
                       {/* Vendor */}
                       <td className="px-5 py-4">
                         <div>
-                          <p className="font-medium text-gray-900 text-sm">
+                          <p className="font-medium text-slate-900 text-sm">
                             {getVendorName(document)}
                           </p>
 
                           {document.vendorId?.email && (
-                            <p className="text-xs text-gray-500 mt-0.5">
+                            <p className="text-xs text-slate-500 mt-0.5">
                               {document.vendorId.email}
                             </p>
                           )}
@@ -687,12 +687,12 @@ const ComplianceDocuments = () => {
                           </div>
 
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate max-w-[220px]">
+                            <p className="text-sm font-medium text-slate-900 truncate max-w-[220px]">
                               {document.originalFileName ||
                                 "Unnamed document"}
                             </p>
 
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-slate-500">
                               Version {document.version || 1}
                             </p>
                           </div>
@@ -702,18 +702,18 @@ const ComplianceDocuments = () => {
                       {/* Type */}
                       <td className="px-5 py-4">
                         <div>
-                          <p className="text-sm text-gray-700">
+                          <p className="text-sm text-slate-700">
                             {getDocumentType(document)}
                           </p>
 
-                          <p className="text-xs text-gray-400 mt-0.5">
+                          <p className="text-xs text-slate-400 mt-0.5">
                             {getServiceType(document)}
                           </p>
                         </div>
                       </td>
 
                       {/* Uploaded */}
-                      <td className="px-5 py-4 text-sm text-gray-600">
+                      <td className="px-5 py-4 text-sm text-slate-600">
                         {formatDate(document.createdAt)}
                       </td>
 

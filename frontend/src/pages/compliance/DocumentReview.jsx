@@ -236,11 +236,11 @@ const DocumentReview = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-slate-50 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="animate-pulse space-y-6">
 
-            <div className="h-8 bg-gray-200 rounded w-40" />
+            <div className="h-8 bg-slate-200 rounded w-40" />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="h-[650px] bg-white rounded-xl border" />
@@ -259,14 +259,14 @@ const DocumentReview = () => {
 
   if (error && !document) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-slate-50 p-6">
         <div className="max-w-3xl mx-auto">
 
           <button
             onClick={() =>
               navigate("/compliance/documents")
             }
-            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 mb-6"
           >
             <ArrowLeft size={17} />
             Back to Documents
@@ -279,11 +279,11 @@ const DocumentReview = () => {
               className="mx-auto text-red-500"
             />
 
-            <h2 className="mt-4 text-lg font-semibold text-gray-900">
+            <h2 className="mt-4 text-lg font-semibold text-slate-900">
               Unable to load document
             </h2>
 
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-slate-500">
               {error}
             </p>
 
@@ -319,7 +319,7 @@ const DocumentReview = () => {
   // ============================================================
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-6">
 
       <div className="max-w-7xl mx-auto">
 
@@ -328,14 +328,14 @@ const DocumentReview = () => {
           onClick={() =>
             navigate("/compliance/documents")
           }
-          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-5"
+          className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 mb-5"
         >
           <ArrowLeft size={17} />
           Back to Documents
         </button>
 
         {/* Header */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+        <div className="bg-white border border-slate-200 rounded-xl p-5 mb-6">
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
@@ -349,12 +349,12 @@ const DocumentReview = () => {
               </div>
 
               <div>
-                <h1 className="text-xl font-bold text-gray-900">
+                <h1 className="text-xl font-bold text-slate-900">
                   {document.originalFileName ||
                     "Document"}
                 </h1>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-slate-500 mt-1">
                   {vendorName}
                 </p>
               </div>
@@ -380,16 +380,16 @@ const DocumentReview = () => {
           {/* PDF */}
           {/* ================================================== */}
 
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
 
-            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
 
               <div>
-                <h2 className="font-semibold text-gray-900">
+                <h2 className="font-semibold text-slate-900">
                   Document Preview
                 </h2>
 
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-slate-500 mt-1">
                   {document.originalFileName}
                 </p>
               </div>
@@ -406,7 +406,7 @@ const DocumentReview = () => {
 
             </div>
 
-            <div className="h-[650px] bg-gray-100">
+            <div className="h-[650px] bg-slate-100">
 
               <iframe
                 src={document.fileUrl}
@@ -425,10 +425,10 @@ const DocumentReview = () => {
           <div className="space-y-6">
 
             {/* Document information */}
-            <div className="bg-white border border-gray-200 rounded-xl">
+            <div className="bg-white border border-slate-200 rounded-xl">
 
-              <div className="px-5 py-4 border-b border-gray-200">
-                <h2 className="font-semibold text-gray-900">
+              <div className="px-5 py-4 border-b border-slate-200">
+                <h2 className="font-semibold text-slate-900">
                   Document Information
                 </h2>
               </div>
@@ -491,10 +491,10 @@ const DocumentReview = () => {
             </div>
 
             {/* Extracted data */}
-            <div className="bg-white border border-gray-200 rounded-xl">
+            <div className="bg-white border border-slate-200 rounded-xl">
 
-              <div className="px-5 py-4 border-b border-gray-200">
-                <h2 className="font-semibold text-gray-900">
+              <div className="px-5 py-4 border-b border-slate-200">
+                <h2 className="font-semibold text-slate-900">
                   Extracted Information
                 </h2>
               </div>
@@ -510,7 +510,7 @@ const DocumentReview = () => {
                       className="mx-auto text-amber-500"
                     />
 
-                    <p className="mt-3 text-sm text-gray-500">
+                    <p className="mt-3 text-sm text-slate-500">
                       No extracted information
                       available.
                     </p>
@@ -525,13 +525,13 @@ const DocumentReview = () => {
                       ([key, value]) => (
                         <div
                           key={key}
-                          className="flex flex-col sm:flex-row sm:justify-between gap-1 border-b border-gray-100 pb-3 last:border-0"
+                          className="flex flex-col sm:flex-row sm:justify-between gap-1 border-b border-slate-100 pb-3 last:border-0"
                         >
-                          <span className="text-sm font-medium text-gray-600 capitalize">
+                          <span className="text-sm font-medium text-slate-600 capitalize">
                             {formatKey(key)}
                           </span>
 
-                          <span className="text-sm text-gray-900 sm:text-right max-w-md break-words">
+                          <span className="text-sm text-slate-900 sm:text-right max-w-md break-words">
                             {formatValue(
                               value
                             )}
@@ -582,13 +582,13 @@ const DocumentReview = () => {
             {/* ================================================= */}
 
             {isPending && (
-              <div className="bg-white border border-gray-200 rounded-xl p-5">
+              <div className="bg-white border border-slate-200 rounded-xl p-5">
 
-                <h2 className="font-semibold text-gray-900">
+                <h2 className="font-semibold text-slate-900">
                   Review Document
                 </h2>
 
-                <p className="text-sm text-gray-500 mt-1 mb-5">
+                <p className="text-sm text-slate-500 mt-1 mb-5">
                   Verify the document and extracted
                   information before making a decision.
                 </p>
@@ -597,7 +597,7 @@ const DocumentReview = () => {
                 {showRejectBox && (
                   <div className="mb-5">
 
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
                       Rejection Reason
                     </label>
 
@@ -612,7 +612,7 @@ const DocumentReview = () => {
                       }
                       rows={4}
                       placeholder="Explain why this document is being rejected..."
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none resize-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm outline-none resize-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
 
                   </div>
@@ -697,11 +697,11 @@ const DocumentReview = () => {
 const InfoItem = ({ label, value }) => {
   return (
     <div>
-      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+      <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">
         {label}
       </p>
 
-      <p className="text-sm font-medium text-gray-900 mt-1 break-words">
+      <p className="text-sm font-medium text-slate-900 mt-1 break-words">
         {value || "—"}
       </p>
     </div>

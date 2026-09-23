@@ -48,11 +48,11 @@ const ComplianceDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-600" />
 
-          <p className="mt-3 text-gray-600">
+          <p className="mt-3 text-slate-600">
             Loading compliance dashboard...
           </p>
         </div>
@@ -62,7 +62,7 @@ const ComplianceDashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-sm p-8 text-center max-w-md">
           <XCircle className="w-12 h-12 text-red-500 mx-auto" />
 
@@ -70,7 +70,7 @@ const ComplianceDashboard = () => {
             Unable to load dashboard
           </h2>
 
-          <p className="text-gray-500 mt-2">
+          <p className="text-slate-500 mt-2">
             {error}
           </p>
 
@@ -88,22 +88,22 @@ const ComplianceDashboard = () => {
   const stats = dashboard?.stats || {};
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-slate-50 p-6">
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-slate-900">
             Compliance Dashboard
           </h1>
 
-          <p className="text-gray-500 mt-1">
+          <p className="text-slate-500 mt-1">
             Monitor vendor compliance and document status
           </p>
         </div>
 
         <button
           onClick={fetchDashboard}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
         >
           <RefreshCw className="w-4 h-4" />
           Refresh
@@ -182,20 +182,20 @@ const ComplianceDashboard = () => {
 
       {/* COMPLIANCE OVERVIEW */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <div className="lg:col-span-1 bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-          <h2 className="font-semibold text-gray-900">
+        <div className="lg:col-span-1 bg-white rounded-xl border border-slate-100 shadow-sm p-6">
+          <h2 className="font-semibold text-slate-900">
             Overall Compliance
           </h2>
 
           <div className="flex items-center justify-center py-8">
             <div className="relative w-40 h-40">
-              <div className="w-40 h-40 rounded-full border-[14px] border-gray-100 flex items-center justify-center">
+              <div className="w-40 h-40 rounded-full border-[14px] border-slate-100 flex items-center justify-center">
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-bold text-slate-900">
                     {stats.overallCompliance}%
                   </p>
 
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-slate-500">
                     Overall
                   </p>
                 </div>
@@ -225,14 +225,14 @@ const ComplianceDashboard = () => {
         </div>
 
         {/* VENDORS NEEDING ATTENTION */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-6">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold text-slate-900">
                 Vendors Requiring Attention
               </h2>
 
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-slate-500 mt-1">
                 Vendors with incomplete or problematic compliance
               </p>
             </div>
@@ -242,7 +242,7 @@ const ComplianceDashboard = () => {
             <div className="py-10 text-center">
               <ShieldCheck className="w-10 h-10 text-green-500 mx-auto" />
 
-              <p className="mt-3 text-gray-600">
+              <p className="mt-3 text-slate-600">
                 All vendors are compliant
               </p>
             </div>
@@ -251,20 +251,20 @@ const ComplianceDashboard = () => {
               {dashboard.attentionVendors.map((vendor) => (
                 <div
                   key={vendor.vendorId}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                  className="flex items-center justify-between p-4 bg-slate-50 rounded-lg"
                 >
                   <div>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-slate-900">
                       {vendor.vendorName}
                     </p>
 
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-slate-500">
                       {vendor.email}
                     </p>
                   </div>
 
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-slate-900">
                       {vendor.complianceScore}%
                     </p>
 
@@ -278,43 +278,43 @@ const ComplianceDashboard = () => {
       </div>
 
       {/* RECENT DOCUMENTS */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm mt-6">
-        <div className="p-6 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-900">
+      <div className="bg-white rounded-xl border border-slate-100 shadow-sm mt-6">
+        <div className="p-6 border-b border-slate-100">
+          <h2 className="font-semibold text-slate-900">
             Recent Document Activity
           </h2>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Latest vendor document submissions
           </p>
         </div>
 
         {dashboard.recentDocuments?.length === 0 ? (
-          <div className="p-10 text-center text-gray-500">
+          <div className="p-10 text-center text-slate-500">
             No document activity yet.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100 text-left">
-                  <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <tr className="border-b border-slate-100 text-left">
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                     Vendor
                   </th>
 
-                  <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                     Document
                   </th>
 
-                  <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                     Status
                   </th>
 
-                  <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                     Extraction
                   </th>
 
-                  <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                     Date
                   </th>
                 </tr>
@@ -324,15 +324,15 @@ const ComplianceDashboard = () => {
                 {dashboard.recentDocuments.map((doc) => (
                   <tr
                     key={doc._id}
-                    className="border-b border-gray-50 hover:bg-gray-50"
+                    className="border-b border-slate-50 hover:bg-slate-50"
                   >
                     <td className="px-6 py-4">
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-slate-900">
                         {doc.vendorName}
                       </span>
                     </td>
 
-                    <td className="px-6 py-4 text-gray-600">
+                    <td className="px-6 py-4 text-slate-600">
                       {doc.documentName}
                     </td>
 
@@ -343,12 +343,12 @@ const ComplianceDashboard = () => {
                     </td>
 
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-slate-600">
                         {doc.extractionStatus || "N/A"}
                       </span>
                     </td>
 
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-slate-500">
                       {doc.createdAt
                         ? new Date(
                             doc.createdAt
@@ -379,14 +379,14 @@ const StatCard = ({
   iconColor,
 }) => {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+    <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-slate-500">
             {title}
           </p>
 
-          <p className="text-2xl font-bold text-gray-900 mt-2">
+          <p className="text-2xl font-bold text-slate-900 mt-2">
             {value ?? 0}
           </p>
         </div>
@@ -419,16 +419,16 @@ const ProgressRow = ({
   return (
     <div>
       <div className="flex justify-between text-sm mb-1">
-        <span className="text-gray-600">
+        <span className="text-slate-600">
           {label}
         </span>
 
-        <span className="font-medium text-gray-900">
+        <span className="font-medium text-slate-900">
           {value}
         </span>
       </div>
 
-      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
         <div
           className="h-full bg-blue-600 rounded-full"
           style={{
@@ -450,7 +450,7 @@ const StatusBadge = ({ status }) => {
     status?.toLowerCase();
 
   let classes =
-    "bg-gray-100 text-gray-600";
+    "bg-slate-100 text-slate-600";
 
   if (
     normalized === "compliant" ||

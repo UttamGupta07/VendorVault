@@ -76,7 +76,7 @@ const VendorDetail = () => {
       default:
         return {
           label: "Unknown",
-          className: "bg-gray-50 text-gray-600",
+          className: "bg-slate-50 text-slate-600",
           icon: null,
         };
     }
@@ -156,7 +156,7 @@ const VendorDetail = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-500">
+        <p className="text-slate-500">
           Loading vendor details...
         </p>
       </div>
@@ -168,7 +168,7 @@ const VendorDetail = () => {
       <div className="p-6">
         <button
           onClick={() => navigate("/compliance/vendors")}
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6"
+          className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 mb-6"
         >
           <ArrowLeft size={18} />
           Back to Vendors
@@ -194,26 +194,26 @@ const VendorDetail = () => {
       {/* Back */}
       <button
         onClick={() => navigate("/compliance/vendors")}
-        className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition"
+        className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 transition"
       >
         <ArrowLeft size={18} />
         Back to Vendors
       </button>
 
       {/* Vendor Header */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
+      <div className="bg-white border border-slate-200 rounded-xl p-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center">
               <Building2
                 size={26}
-                className="text-gray-500"
+                className="text-slate-500"
               />
             </div>
 
             <div>
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl font-semibold text-gray-900">
+                <h1 className="text-2xl font-semibold text-slate-900">
                   {vendor.companyName}
                 </h1>
 
@@ -225,11 +225,11 @@ const VendorDetail = () => {
                 </span>
               </div>
 
-              <p className="text-gray-500 mt-1">
+              <p className="text-slate-500 mt-1">
                 {vendor.serviceType?.name || "N/A"}
               </p>
 
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-sm text-slate-400 mt-1">
                 Vendor ID: VEN-
                 {vendor._id.slice(-6).toUpperCase()}
               </p>
@@ -238,11 +238,11 @@ const VendorDetail = () => {
 
           {/* Compliance Score */}
           <div className="lg:text-right">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-slate-500">
               Compliance Score
             </p>
 
-            <p className="text-4xl font-bold text-gray-900 mt-1">
+            <p className="text-4xl font-bold text-slate-900 mt-1">
               {vendor.complianceScore}%
             </p>
           </div>
@@ -283,8 +283,8 @@ const VendorDetail = () => {
       </div>
 
       {/* Vendor Information */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-5">
+      <div className="bg-white border border-slate-200 rounded-xl p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-5">
           Vendor Information
         </h2>
 
@@ -328,34 +328,34 @@ const VendorDetail = () => {
       </div>
 
       {/* Documents */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-200">
+          <h2 className="text-lg font-semibold text-slate-900">
             Documents
           </h2>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Documents submitted by this vendor
           </p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Document
                 </th>
 
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Status
                 </th>
 
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Expiry Date
                 </th>
 
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Action
                 </th>
               </tr>
@@ -366,7 +366,7 @@ const VendorDetail = () => {
                 <tr>
                   <td
                     colSpan="4"
-                    className="px-6 py-10 text-center text-gray-500"
+                    className="px-6 py-10 text-center text-slate-500"
                   >
                     No documents uploaded yet.
                   </td>
@@ -379,16 +379,16 @@ const VendorDetail = () => {
                   return (
                     <tr
                       key={document._id}
-                      className="hover:bg-gray-50"
+                      className="hover:bg-slate-50"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <FileText
                             size={18}
-                            className="text-gray-400"
+                            className="text-slate-400"
                           />
 
-                          <span className="text-sm font-medium text-gray-800">
+                          <span className="text-sm font-medium text-slate-800">
                             {document.documentTypeId?.name ||
                               document.originalFileName}
                           </span>
@@ -404,7 +404,7 @@ const VendorDetail = () => {
                         </span>
                       </td>
 
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-6 py-4 text-sm text-slate-600">
                         {formatDate(
                           document.expiryDate
                         )}
@@ -418,7 +418,7 @@ const VendorDetail = () => {
                               "_blank"
                             )
                           }
-                          className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                          className="text-sm font-medium text-slate-700 hover:text-slate-900"
                         >
                           View
                         </button>
@@ -433,8 +433,8 @@ const VendorDetail = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-5">
+      <div className="bg-white border border-slate-200 rounded-xl p-6">
+        <h2 className="text-lg font-semibold text-slate-900 mb-5">
           Recent Activity
         </h2>
 
@@ -493,11 +493,11 @@ const VendorDetail = () => {
                 </div>
 
                 <div>
-                  <p className="text-sm text-gray-800">
+                  <p className="text-sm text-slate-800">
                     {message}
                   </p>
 
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-slate-400 mt-1">
                     {formatDate(document.updatedAt)}
                   </p>
                 </div>
@@ -506,7 +506,7 @@ const VendorDetail = () => {
           })}
 
           {documents.length === 0 && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-slate-500">
               No activity available.
             </p>
           )}
@@ -518,14 +518,14 @@ const VendorDetail = () => {
 
 const SummaryCard = ({ title, value, icon }) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5">
+    <div className="bg-white border border-slate-200 rounded-xl p-5">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{title}</p>
+        <p className="text-sm text-slate-500">{title}</p>
 
-        <div className="text-gray-400">{icon}</div>
+        <div className="text-slate-400">{icon}</div>
       </div>
 
-      <p className="text-2xl font-semibold text-gray-900 mt-2">
+      <p className="text-2xl font-semibold text-slate-900 mt-2">
         {value}
       </p>
     </div>
@@ -535,16 +535,16 @@ const SummaryCard = ({ title, value, icon }) => {
 const InfoItem = ({ icon, label, value }) => {
   return (
     <div className="flex items-start gap-3">
-      <div className="mt-0.5 text-gray-400">
+      <div className="mt-0.5 text-slate-400">
         {icon}
       </div>
 
       <div>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-slate-500">
           {label}
         </p>
 
-        <p className="text-sm font-medium text-gray-800 mt-1">
+        <p className="text-sm font-medium text-slate-800 mt-1">
           {value}
         </p>
       </div>

@@ -299,20 +299,20 @@ const ExpiryTracker = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-slate-50 p-6">
         <div className="animate-pulse space-y-6">
-          <div className="h-10 bg-gray-200 rounded-lg w-64" />
+          <div className="h-10 bg-slate-200 rounded-lg w-64" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
             {[1, 2, 3, 4].map((item) => (
               <div
                 key={item}
-                className="h-32 bg-gray-200 rounded-2xl"
+                className="h-32 bg-slate-200 rounded-2xl"
               />
             ))}
           </div>
 
-          <div className="h-96 bg-gray-200 rounded-2xl" />
+          <div className="h-96 bg-slate-200 rounded-2xl" />
         </div>
       </div>
     );
@@ -323,18 +323,18 @@ const ExpiryTracker = () => {
   // =====================================================
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-6 lg:p-8">
       {/* =================================================
           Header
       ================================================= */}
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-7">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900">
             Expiry Tracker
           </h1>
 
-          <p className="text-gray-500 mt-1">
+          <p className="text-slate-500 mt-1">
             Monitor vendor documents and upcoming
             compliance renewals.
           </p>
@@ -343,7 +343,7 @@ const ExpiryTracker = () => {
         <button
           onClick={handleRefresh}
           disabled={refreshing}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition disabled:opacity-60"
         >
           <RefreshCw
             size={17}
@@ -381,16 +381,16 @@ const ExpiryTracker = () => {
           className={`w-full text-left bg-white border rounded-2xl p-5 shadow-sm transition-all hover:shadow-md ${
             summaryFilter === "EXPIRED"
               ? "border-red-400 ring-2 ring-red-100"
-              : "border-gray-200"
+              : "border-slate-200"
           }`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 Expired
               </p>
 
-              <h2 className="text-3xl font-bold text-gray-900 mt-2">
+              <h2 className="text-3xl font-bold text-slate-900 mt-2">
                 {summary.expired}
               </h2>
 
@@ -415,16 +415,16 @@ const ExpiryTracker = () => {
           className={`w-full text-left bg-white border rounded-2xl p-5 shadow-sm transition-all hover:shadow-md ${
             summaryFilter === "CRITICAL"
               ? "border-orange-400 ring-2 ring-orange-100"
-              : "border-gray-200"
+              : "border-slate-200"
           }`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 Next 7 Days
               </p>
 
-              <h2 className="text-3xl font-bold text-gray-900 mt-2">
+              <h2 className="text-3xl font-bold text-slate-900 mt-2">
                 {summary.expiring7Days}
               </h2>
 
@@ -449,16 +449,16 @@ const ExpiryTracker = () => {
           className={`w-full text-left bg-white border rounded-2xl p-5 shadow-sm transition-all hover:shadow-md ${
             summaryFilter === "EXPIRING_15_DAYS"
               ? "border-yellow-400 ring-2 ring-yellow-100"
-              : "border-gray-200"
+              : "border-slate-200"
           }`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 Next 15 Days
               </p>
 
-              <h2 className="text-3xl font-bold text-gray-900 mt-2">
+              <h2 className="text-3xl font-bold text-slate-900 mt-2">
                 {summary.expiring15Days}
               </h2>
 
@@ -483,16 +483,16 @@ const ExpiryTracker = () => {
           className={`w-full text-left bg-white border rounded-2xl p-5 shadow-sm transition-all hover:shadow-md ${
             summaryFilter === "EXPIRING_30_DAYS"
               ? "border-blue-400 ring-2 ring-blue-100"
-              : "border-gray-200"
+              : "border-slate-200"
           }`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 Next 30 Days
               </p>
 
-              <h2 className="text-3xl font-bold text-gray-900 mt-2">
+              <h2 className="text-3xl font-bold text-slate-900 mt-2">
                 {summary.expiring30Days}
               </h2>
 
@@ -512,14 +512,14 @@ const ExpiryTracker = () => {
           Expiry Overview
       ================================================= */}
 
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm mb-7">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-7">
         <div className="flex items-center gap-2 mb-6">
           <CalendarDays
             size={19}
-            className="text-gray-700"
+            className="text-slate-700"
           />
 
-          <h2 className="font-semibold text-gray-900">
+          <h2 className="font-semibold text-slate-900">
             Expiry Overview
           </h2>
         </div>
@@ -528,7 +528,7 @@ const ExpiryTracker = () => {
           <div className="flex-1">
             <div className="h-2 bg-red-500 rounded-l-full" />
 
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-slate-500 mt-2">
               Expired
             </p>
           </div>
@@ -536,7 +536,7 @@ const ExpiryTracker = () => {
           <div className="flex-1">
             <div className="h-2 bg-orange-400" />
 
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-slate-500 mt-2">
               1–7 Days
             </p>
           </div>
@@ -544,7 +544,7 @@ const ExpiryTracker = () => {
           <div className="flex-1">
             <div className="h-2 bg-yellow-400" />
 
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-slate-500 mt-2">
               8–15 Days
             </p>
           </div>
@@ -552,7 +552,7 @@ const ExpiryTracker = () => {
           <div className="flex-1">
             <div className="h-2 bg-blue-400" />
 
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-slate-500 mt-2">
               16–30 Days
             </p>
           </div>
@@ -560,7 +560,7 @@ const ExpiryTracker = () => {
           <div className="flex-1">
             <div className="h-2 bg-green-400 rounded-r-full" />
 
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-slate-500 mt-2">
               30+ Days
             </p>
           </div>
@@ -571,17 +571,17 @@ const ExpiryTracker = () => {
           Table
       ================================================= */}
 
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
         {/* Filters */}
 
-        <div className="p-5 border-b border-gray-200">
+        <div className="p-5 border-b border-slate-200">
           <div className="flex flex-col lg:flex-row gap-3">
             {/* Search */}
 
             <div className="relative flex-1">
               <Search
                 size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
 
               <input
@@ -591,7 +591,7 @@ const ExpiryTracker = () => {
                 onChange={(e) =>
                   setSearch(e.target.value)
                 }
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-gray-200"
+                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-gray-200"
               />
             </div>
 
@@ -603,7 +603,7 @@ const ExpiryTracker = () => {
                 setStatusFilter(e.target.value);
                 setSummaryFilter("ALL");
               }}
-              className="px-4 py-2.5 border border-gray-200 rounded-xl bg-white outline-none"
+              className="px-4 py-2.5 border border-slate-200 rounded-xl bg-white outline-none"
             >
               <option value="ALL">
                 All Expiry Status
@@ -637,7 +637,7 @@ const ExpiryTracker = () => {
               onChange={(e) =>
                 setReviewFilter(e.target.value)
               }
-              className="px-4 py-2.5 border border-gray-200 rounded-xl bg-white outline-none"
+              className="px-4 py-2.5 border border-slate-200 rounded-xl bg-white outline-none"
             >
               <option value="ALL">
                 All Review Status
@@ -662,7 +662,7 @@ const ExpiryTracker = () => {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition"
               >
                 <XCircle size={17} />
                 Clear
@@ -672,21 +672,21 @@ const ExpiryTracker = () => {
 
           {/* Result information */}
 
-          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-gray-500">
+          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-500">
             <span>
               Showing{" "}
-              <span className="font-semibold text-gray-900">
+              <span className="font-semibold text-slate-900">
                 {filteredDocuments.length}
               </span>{" "}
               of{" "}
-              <span className="font-semibold text-gray-900">
+              <span className="font-semibold text-slate-900">
                 {documents.length}
               </span>{" "}
               documents
             </span>
 
             {summaryFilter !== "ALL" && (
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700">
                 <Filter size={13} />
 
                 Filtered:{" "}
@@ -706,7 +706,7 @@ const ExpiryTracker = () => {
                   onClick={() =>
                     setSummaryFilter("ALL")
                   }
-                  className="hover:text-gray-900"
+                  className="hover:text-slate-900"
                 >
                   <XCircle size={14} />
                 </button>
@@ -721,33 +721,33 @@ const ExpiryTracker = () => {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Vendor
                 </th>
 
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Document
                 </th>
 
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Expiry Date
                 </th>
 
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Days
                 </th>
 
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Status
                 </th>
 
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Review
                 </th>
 
-                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase text-right">
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase text-right">
                   Action
                 </th>
               </tr>
@@ -762,14 +762,14 @@ const ExpiryTracker = () => {
                   >
                     <FileText
                       size={38}
-                      className="mx-auto text-gray-300"
+                      className="mx-auto text-slate-300"
                     />
 
-                    <p className="mt-3 font-medium text-gray-700">
+                    <p className="mt-3 font-medium text-slate-700">
                       No documents found
                     </p>
 
-                    <p className="text-sm text-gray-400 mt-1">
+                    <p className="text-sm text-slate-400 mt-1">
                       Try changing your search or
                       filters.
                     </p>
@@ -778,7 +778,7 @@ const ExpiryTracker = () => {
                       <button
                         type="button"
                         onClick={clearFilters}
-                        className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-900 text-white text-sm hover:bg-gray-800"
+                        className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white text-sm hover:bg-slate-800"
                       >
                         <XCircle size={15} />
                         Clear Filters
@@ -794,19 +794,19 @@ const ExpiryTracker = () => {
                   return (
                     <tr
                       key={document.id}
-                      className="hover:bg-gray-50 transition"
+                      className="hover:bg-slate-50 transition"
                     >
                       {/* Vendor */}
 
                       <td className="px-6 py-4">
-                        <div className="font-medium text-gray-900">
+                        <div className="font-medium text-slate-900">
                           {document.vendor
                             ?.companyName ||
                             document.vendor?.name ||
                             "Unknown Vendor"}
                         </div>
 
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-slate-500 mt-1">
                           {document.vendor?.email ||
                             "—"}
                         </div>
@@ -815,13 +815,13 @@ const ExpiryTracker = () => {
                       {/* Document */}
 
                       <td className="px-6 py-4">
-                        <div className="font-medium text-gray-800">
+                        <div className="font-medium text-slate-800">
                           {document.documentType
                             ?.name ||
                             "Unknown Document"}
                         </div>
 
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-slate-500 mt-1">
                           {document.serviceType
                             ?.name || "—"}
                         </div>
@@ -829,7 +829,7 @@ const ExpiryTracker = () => {
 
                       {/* Expiry */}
 
-                      <td className="px-6 py-4 text-sm text-gray-700">
+                      <td className="px-6 py-4 text-sm text-slate-700">
                         {formatDate(
                           document.expiryDate
                         )}
@@ -845,7 +845,7 @@ const ExpiryTracker = () => {
                               : document.daysRemaining <=
                                 7
                               ? "text-orange-600"
-                              : "text-gray-700"
+                              : "text-slate-700"
                           }`}
                         >
                           {getDaysText(
@@ -882,7 +882,7 @@ const ExpiryTracker = () => {
                               document
                             )
                           }
-                          className="inline-flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-gray-900"
+                          className="inline-flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-900"
                         >
                           View
                           <ChevronRight size={16} />
@@ -917,13 +917,13 @@ const ExpiryTracker = () => {
           <div className="fixed right-0 top-0 h-full w-full sm:w-[450px] bg-white z-50 shadow-2xl overflow-y-auto">
             {/* Drawer Header */}
 
-            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+            <div className="p-6 border-b border-slate-200 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-slate-900">
                   Document Details
                 </h2>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-slate-500 mt-1">
                   Expiry information
                 </p>
               </div>
@@ -932,7 +932,7 @@ const ExpiryTracker = () => {
                 onClick={() =>
                   setSelectedDocument(null)
                 }
-                className="p-2 rounded-lg hover:bg-gray-100"
+                className="p-2 rounded-lg hover:bg-slate-100"
               >
                 <XCircle size={20} />
               </button>
@@ -944,18 +944,18 @@ const ExpiryTracker = () => {
               {/* Vendor */}
 
               <div>
-                <p className="text-xs uppercase font-semibold text-gray-400">
+                <p className="text-xs uppercase font-semibold text-slate-400">
                   Vendor
                 </p>
 
-                <p className="font-semibold text-gray-900 mt-1">
+                <p className="font-semibold text-slate-900 mt-1">
                   {selectedDocument.vendor
                     ?.companyName ||
                     selectedDocument.vendor?.name ||
                     "Unknown"}
                 </p>
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   {selectedDocument.vendor?.email ||
                     "—"}
                 </p>
@@ -964,16 +964,16 @@ const ExpiryTracker = () => {
               {/* Document */}
 
               <div>
-                <p className="text-xs uppercase font-semibold text-gray-400">
+                <p className="text-xs uppercase font-semibold text-slate-400">
                   Document
                 </p>
 
-                <p className="font-semibold text-gray-900 mt-1">
+                <p className="font-semibold text-slate-900 mt-1">
                   {selectedDocument.documentType
                     ?.name || "—"}
                 </p>
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-slate-500">
                   {selectedDocument.serviceType
                     ?.name || "—"}
                 </p>
@@ -982,11 +982,11 @@ const ExpiryTracker = () => {
               {/* File name */}
 
               <div>
-                <p className="text-xs uppercase font-semibold text-gray-400">
+                <p className="text-xs uppercase font-semibold text-slate-400">
                   File
                 </p>
 
-                <p className="text-sm text-gray-700 mt-1 break-all">
+                <p className="text-sm text-slate-700 mt-1 break-all">
                   {selectedDocument.fileName ||
                     "—"}
                 </p>
@@ -994,18 +994,18 @@ const ExpiryTracker = () => {
 
               {/* Expiry */}
 
-              <div className="rounded-xl bg-gray-50 p-5">
-                <p className="text-sm text-gray-500">
+              <div className="rounded-xl bg-slate-50 p-5">
+                <p className="text-sm text-slate-500">
                   Expiry Date
                 </p>
 
-                <p className="text-2xl font-bold text-gray-900 mt-1">
+                <p className="text-2xl font-bold text-slate-900 mt-1">
                   {formatDate(
                     selectedDocument.expiryDate
                   )}
                 </p>
 
-                <p className="text-sm mt-1 text-gray-600">
+                <p className="text-sm mt-1 text-slate-600">
                   {getDaysText(
                     selectedDocument.daysRemaining
                   )}
@@ -1015,7 +1015,7 @@ const ExpiryTracker = () => {
               {/* Expiry Status */}
 
               <div className="flex items-center justify-between py-3 border-b">
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-slate-500">
                   Expiry Status
                 </span>
 
@@ -1043,7 +1043,7 @@ const ExpiryTracker = () => {
               {/* Review Status */}
 
               <div className="flex items-center justify-between py-3 border-b">
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-slate-500">
                   Review Status
                 </span>
 
@@ -1055,7 +1055,7 @@ const ExpiryTracker = () => {
               {/* AI Extraction */}
 
               <div className="flex items-center justify-between py-3 border-b">
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-slate-500">
                   AI Extraction
                 </span>
 
@@ -1098,11 +1098,11 @@ const ExpiryTracker = () => {
 
               {selectedDocument.reviewedAt && (
                 <div className="flex items-center justify-between py-3 border-b">
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-slate-500">
                     Reviewed At
                   </span>
 
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-slate-700">
                     {formatDate(
                       selectedDocument.reviewedAt
                     )}
@@ -1117,7 +1117,7 @@ const ExpiryTracker = () => {
                   href={selectedDocument.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition"
                 >
                   <FileText size={18} />
                   View Document

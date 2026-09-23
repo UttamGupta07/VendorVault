@@ -170,7 +170,7 @@ const ComplianceTeam = () => {
                         overview.totalRejected || 0
                     }`}
                     icon={ShieldCheck}
-                    iconClass="bg-violet-50 text-violet-600"
+                    iconClass="bg-indigo-50 text-indigo-600"
                 />
 
             </div>

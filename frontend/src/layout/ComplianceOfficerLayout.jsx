@@ -20,7 +20,7 @@ const ComplianceOfficerLayout = () => {
         <ComplianceNavbar setSidebarOpen={setSidebarOpen} />
 
         {/* Page Content */}
-        <main className="min-h-[calc(100vh-72px)] p-4 sm:p-6 lg:p-8">
+        <main className="min-h-[calc(100vh-72px)] bg-slate-50 p-4 sm:p-6 lg:p-8 vv-page-enter">
           <Outlet />
         </main>
       </div>

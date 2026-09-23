@@ -1,3 +1,293 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* =========================================================
+   VendorVault UI foundation
+   Shared visual language for authenticated application pages.
+   ========================================================= */
+
+:root {
+  --vv-navy: #071426;
+  --vv-blue: #2563eb;
+  --vv-indigo: #4f46e5;
+  --vv-surface: #ffffff;
+  --vv-page: #f8fafc;
+  --vv-border: #e2e8f0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--vv-page);
+  color: #0f172a;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.18);
+  color: #0f172a;
+}
+
+/* Clean application scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.vv-dark-scrollbar {
+  scrollbar-color: rgba(148, 163, 184, 0.28) transparent;
+}
+
+.vv-dark-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+}
+
+.vv-dark-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+
+/* =========================================================
+   VendorVault motion system
+   Subtle, professional animations for authenticated pages.
+   ========================================================= */
+
+.vv-page-enter {
+  position: relative;
+  isolation: isolate;
+  animation: vvPageEnter 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.vv-page-enter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 92% 2%, rgba(37, 99, 235, 0.055), transparent 24rem),
+    radial-gradient(circle at 5% 96%, rgba(79, 70, 229, 0.035), transparent 22rem);
+}
+
+.vv-page-enter > * {
+  animation: vvContentEnter 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes vvPageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes vvContentEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Staggered entrance for common dashboard sections/cards */
+.vv-page-enter .vv-stagger > * {
+  opacity: 0;
+  animation: vvStaggerIn 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.vv-page-enter .vv-stagger > *:nth-child(1) { animation-delay: 60ms; }
+.vv-page-enter .vv-stagger > *:nth-child(2) { animation-delay: 110ms; }
+.vv-page-enter .vv-stagger > *:nth-child(3) { animation-delay: 160ms; }
+.vv-page-enter .vv-stagger > *:nth-child(4) { animation-delay: 210ms; }
+.vv-page-enter .vv-stagger > *:nth-child(5) { animation-delay: 260ms; }
+.vv-page-enter .vv-stagger > *:nth-child(6) { animation-delay: 310ms; }
+
+@keyframes vvStaggerIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth interaction motion inside authenticated pages */
+.vv-page-enter button,
+.vv-page-enter a,
+.vv-page-enter input,
+.vv-page-enter select,
+.vv-page-enter textarea {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.vv-page-enter button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.vv-page-enter button:not(:disabled):active {
+  transform: translateY(0) scale(0.985);
+}
+
+.vv-page-enter input:focus,
+.vv-page-enter select:focus,
+.vv-page-enter textarea:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+}
+
+/* Reusable premium hover effect for cards that opt into vv-card */
+.vv-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.vv-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 80%
+  );
+  transform: translateX(-100%);
+  transition: opacity 220ms ease;
+}
+
+.vv-card:hover::after {
+  opacity: 1;
+  animation: vvCardShine 0.8s ease-out;
+}
+
+@keyframes vvCardShine {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* Subtle utility animations */
+.vv-fade-in {
+  animation: vvFadeIn 0.22s ease-out both;
+}
+
+@keyframes vvFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.vv-slide-up {
+  animation: vvSlideUp 0.3s ease-out both;
+}
+
+@keyframes vvSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Consistent form focus treatment */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+}
+
+/* Make native controls feel consistent */
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Better mobile table behavior */
+.vv-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Shared card enhancement when explicitly opted into vv-card */
+.vv-card {
+  border: 1px solid var(--vv-border);
+  background: var(--vv-surface);
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.vv-card:hover {
+  border-color: #d7e1ef;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.055);
+}
+
+/* Dark application surface */
+.vv-dark-surface {
+  background: var(--vv-navy);
+  color: white;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

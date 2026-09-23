@@ -19,32 +19,32 @@ import {
 
 const SuperAdminDashboard = () => {
   return (
-    <div className="min-h-screen bg-[#EDEAE0] text-[#1C2B3A]">
+    <div className="min-h-screen bg-blue-50 text-slate-900">
 
       {/* ================= SIDEBAR ================= */}
-      <aside className="fixed left-0 top-0 hidden h-screen w-64 border-r border-[#C9C2AE] bg-[#F5F3EB] lg:block">
+      <aside className="fixed left-0 top-0 hidden h-screen w-64 border-r border-slate-200 bg-slate-50 lg:block">
 
         {/* Logo */}
-        <div className="flex h-20 items-center border-b border-[#C9C2AE] px-6">
+        <div className="flex h-20 items-center border-b border-slate-200 px-6">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">
-              Vendor<span className="text-[#A8792C]">Vault</span>
+              Vendor<span className="text-blue-700">Vault</span>
             </h1>
 
-            <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#54636F]">
+            <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-slate-500">
               Compliance Platform
             </p>
           </div>
         </div>
 
         {/* Organization */}
-        <div className="mx-4 mt-5 border border-[#C9C2AE] bg-[#EDEAE0] p-3">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#54636F]">
+        <div className="mx-4 mt-5 border border-slate-200 bg-blue-50 p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
             Organization
           </p>
 
           <div className="mt-2 flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center bg-[#1C2B3A] text-xs font-bold text-[#F5F3EB]">
+            <div className="flex h-8 w-8 items-center justify-center bg-[#071426] text-xs font-bold text-white">
               AM
             </div>
 
@@ -53,7 +53,7 @@ const SuperAdminDashboard = () => {
                 ABC Manufacturing
               </p>
 
-              <p className="text-[11px] text-[#54636F]">
+              <p className="text-[11px] text-slate-500">
                 Super Admin
               </p>
             </div>
@@ -63,7 +63,7 @@ const SuperAdminDashboard = () => {
         {/* Navigation */}
         <nav className="mt-7 px-3">
 
-          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#54636F]">
+          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
             Workspace
           </p>
 
@@ -94,9 +94,9 @@ const SuperAdminDashboard = () => {
             label="Compliance"
           />
 
-          <div className="my-5 border-t border-[#C9C2AE]" />
+          <div className="my-5 border-t border-slate-200" />
 
-          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#54636F]">
+          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
             Administration
           </p>
 
@@ -113,11 +113,11 @@ const SuperAdminDashboard = () => {
         </nav>
 
         {/* Bottom user */}
-        <div className="absolute bottom-0 left-0 right-0 border-t border-[#C9C2AE] p-4">
+        <div className="absolute bottom-0 left-0 right-0 border-t border-slate-200 p-4">
 
           <div className="flex items-center gap-3">
 
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#A8792C] text-xs font-bold text-[#F5F3EB]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2563EB] text-xs font-bold text-white">
               RS
             </div>
 
@@ -126,14 +126,14 @@ const SuperAdminDashboard = () => {
                 Rahul Sharma
               </p>
 
-              <p className="truncate text-xs text-[#54636F]">
+              <p className="truncate text-xs text-slate-500">
                 admin@abcmfg.com
               </p>
             </div>
 
             <MoreHorizontal
               size={18}
-              className="text-[#54636F]"
+              className="text-slate-500"
             />
 
           </div>
@@ -146,10 +146,10 @@ const SuperAdminDashboard = () => {
       <main className="lg:ml-64">
 
         {/* Header */}
-        <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-[#C9C2AE] bg-[#EDEAE0]/95 px-6 backdrop-blur lg:px-8">
+        <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-slate-200 bg-blue-50/95 px-6 backdrop-blur lg:px-8">
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#54636F]">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
               Wednesday, August 19, 2026
             </p>
 
@@ -161,30 +161,30 @@ const SuperAdminDashboard = () => {
           <div className="flex items-center gap-4">
 
             {/* Search */}
-            <div className="hidden items-center gap-2 border border-[#C9C2AE] bg-[#F5F3EB] px-3 py-2 md:flex">
+            <div className="hidden items-center gap-2 border border-slate-200 bg-slate-50 px-3 py-2 md:flex">
               <Search
                 size={16}
-                className="text-[#54636F]"
+                className="text-slate-500"
               />
 
               <input
                 type="text"
                 placeholder="Search vendors..."
-                className="w-40 bg-transparent text-sm outline-none placeholder:text-[#54636F]"
+                className="w-40 bg-transparent text-sm outline-none placeholder:text-slate-500"
               />
             </div>
 
             {/* Notification */}
-            <button className="relative border border-[#C9C2AE] bg-[#F5F3EB] p-2.5">
+            <button className="relative border border-slate-200 bg-slate-50 p-2.5">
               <Bell size={18} />
 
-              <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#A6402B] px-1 text-[9px] font-bold text-[#F5F3EB]">
+              <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#DC2626] px-1 text-[9px] font-bold text-white">
                 4
               </span>
             </button>
 
             {/* Avatar */}
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1C2B3A] text-xs font-bold text-[#F5F3EB]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#071426] text-xs font-bold text-white">
               RS
             </div>
 
@@ -199,10 +199,10 @@ const SuperAdminDashboard = () => {
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
 
             <div>
-              <div className="mb-2 flex items-center gap-2 text-xs text-[#54636F]">
+              <div className="mb-2 flex items-center gap-2 text-xs text-slate-500">
                 <span>Workspace</span>
                 <ChevronRight size={13} />
-                <span className="font-medium text-[#1C2B3A]">
+                <span className="font-medium text-slate-900">
                   Dashboard
                 </span>
               </div>
@@ -211,12 +211,12 @@ const SuperAdminDashboard = () => {
                 Compliance Overview
               </h1>
 
-              <p className="mt-2 text-sm text-[#54636F]">
+              <p className="mt-2 text-sm text-slate-500">
                 Monitor your organization's vendor compliance health.
               </p>
             </div>
 
-            <button className="flex items-center justify-center gap-2 bg-[#1C2B3A] px-5 py-3 text-sm font-semibold text-[#F5F3EB] transition hover:bg-[#8B631F]">
+            <button className="flex items-center justify-center gap-2 bg-[#071426] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#8B631F]">
               <Plus size={17} />
               Add User
             </button>
@@ -264,21 +264,21 @@ const SuperAdminDashboard = () => {
           <section className="mt-6 grid gap-6 xl:grid-cols-[1.5fr_1fr]">
 
             {/* Compliance Health */}
-            <div className="border border-[#C9C2AE] bg-[#F5F3EB]">
+            <div className="border border-slate-200 bg-slate-50">
 
-              <div className="flex items-center justify-between border-b border-[#C9C2AE] px-6 py-5">
+              <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
 
                 <div>
                   <h3 className="font-bold">
                     Compliance Health
                   </h3>
 
-                  <p className="mt-1 text-xs text-[#54636F]">
+                  <p className="mt-1 text-xs text-slate-500">
                     Organization-wide document status
                   </p>
                 </div>
 
-                <button className="text-xs font-semibold text-[#8B631F]">
+                <button className="text-xs font-semibold text-blue-700">
                   View report →
                 </button>
 
@@ -291,23 +291,23 @@ const SuperAdminDashboard = () => {
                   {/* Score */}
                   <div className="flex flex-col items-center">
 
-                    <div className="relative flex h-36 w-36 items-center justify-center rounded-full border-[14px] border-[#C9C2AE]">
+                    <div className="relative flex h-36 w-36 items-center justify-center rounded-full border-[14px] border-slate-200">
 
-                      <div className="absolute inset-[-14px] rounded-full border-[14px] border-[#33604F] border-r-transparent border-b-transparent rotate-[-45deg]" />
+                      <div className="absolute inset-[-14px] rounded-full border-[14px] border-[#059669] border-r-transparent border-b-transparent rotate-[-45deg]" />
 
                       <div className="text-center">
                         <p className="text-3xl font-bold">
                           86%
                         </p>
 
-                        <p className="text-[10px] uppercase tracking-widest text-[#54636F]">
+                        <p className="text-[10px] uppercase tracking-widest text-slate-500">
                           Healthy
                         </p>
                       </div>
 
                     </div>
 
-                    <p className="mt-4 text-xs text-[#54636F]">
+                    <p className="mt-4 text-xs text-slate-500">
                       +4.8% from last month
                     </p>
 
@@ -357,27 +357,27 @@ const SuperAdminDashboard = () => {
             </div>
 
             {/* Alerts */}
-            <div className="border border-[#C9C2AE] bg-[#F5F3EB]">
+            <div className="border border-slate-200 bg-slate-50">
 
-              <div className="flex items-center justify-between border-b border-[#C9C2AE] px-6 py-5">
+              <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
 
                 <div>
                   <h3 className="font-bold">
                     Attention Required
                   </h3>
 
-                  <p className="mt-1 text-xs text-[#54636F]">
+                  <p className="mt-1 text-xs text-slate-500">
                     Items requiring action
                   </p>
                 </div>
 
-                <span className="bg-[#A6402B] px-2 py-1 text-[10px] font-bold text-[#F5F3EB]">
+                <span className="bg-[#DC2626] px-2 py-1 text-[10px] font-bold text-white">
                   12 OPEN
                 </span>
 
               </div>
 
-              <div className="divide-y divide-[#C9C2AE]">
+              <div className="divide-y divide-[#E2E8F0]">
 
                 <AlertItem
                   icon={<XCircle size={17} />}
@@ -405,7 +405,7 @@ const SuperAdminDashboard = () => {
               </div>
 
               <div className="p-4">
-                <button className="flex w-full items-center justify-center gap-2 border border-[#C9C2AE] py-2.5 text-xs font-semibold transition hover:border-[#A8792C] hover:text-[#8B631F]">
+                <button className="flex w-full items-center justify-center gap-2 border border-slate-200 py-2.5 text-xs font-semibold transition hover:border-[#2563EB] hover:text-blue-700">
                   View all alerts
                   <ArrowUpRight size={14} />
                 </button>
@@ -416,21 +416,21 @@ const SuperAdminDashboard = () => {
           </section>
 
           {/* ================= VENDORS ================= */}
-          <section className="mt-6 border border-[#C9C2AE] bg-[#F5F3EB]">
+          <section className="mt-6 border border-slate-200 bg-slate-50">
 
-            <div className="flex flex-col justify-between gap-3 border-b border-[#C9C2AE] px-6 py-5 sm:flex-row sm:items-center">
+            <div className="flex flex-col justify-between gap-3 border-b border-slate-200 px-6 py-5 sm:flex-row sm:items-center">
 
               <div>
                 <h3 className="font-bold">
                   Vendor Compliance
                 </h3>
 
-                <p className="mt-1 text-xs text-[#54636F]">
+                <p className="mt-1 text-xs text-slate-500">
                   Recently updated vendor records
                 </p>
               </div>
 
-              <button className="flex items-center gap-1 text-xs font-semibold text-[#8B631F]">
+              <button className="flex items-center gap-1 text-xs font-semibold text-blue-700">
                 View all vendors
                 <ChevronRight size={14} />
               </button>
@@ -443,7 +443,7 @@ const SuperAdminDashboard = () => {
               <table className="w-full text-left">
 
                 <thead>
-                  <tr className="border-b border-[#C9C2AE] text-[10px] uppercase tracking-[0.14em] text-[#54636F]">
+                  <tr className="border-b border-slate-200 text-[10px] uppercase tracking-[0.14em] text-slate-500">
 
                     <th className="px-6 py-4 font-semibold">
                       Vendor
@@ -521,7 +521,7 @@ const SuperAdminDashboard = () => {
             </div>
 
             {/* Mobile */}
-            <div className="divide-y divide-[#C9C2AE] md:hidden">
+            <div className="divide-y divide-[#E2E8F0] md:hidden">
 
               <MobileVendor
                 initials="ZT"
@@ -554,19 +554,19 @@ const SuperAdminDashboard = () => {
           <section className="mt-6 grid gap-6 lg:grid-cols-2">
 
             {/* Recent Activity */}
-            <div className="border border-[#C9C2AE] bg-[#F5F3EB]">
+            <div className="border border-slate-200 bg-slate-50">
 
-              <div className="border-b border-[#C9C2AE] px-6 py-5">
+              <div className="border-b border-slate-200 px-6 py-5">
                 <h3 className="font-bold">
                   Recent Activity
                 </h3>
 
-                <p className="mt-1 text-xs text-[#54636F]">
+                <p className="mt-1 text-xs text-slate-500">
                   Latest actions in your organization
                 </p>
               </div>
 
-              <div className="divide-y divide-[#C9C2AE]">
+              <div className="divide-y divide-[#E2E8F0]">
 
                 <Activity
                   icon={<FileText size={15} />}
@@ -601,14 +601,14 @@ const SuperAdminDashboard = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="border border-[#C9C2AE] bg-[#F5F3EB]">
+            <div className="border border-slate-200 bg-slate-50">
 
-              <div className="border-b border-[#C9C2AE] px-6 py-5">
+              <div className="border-b border-slate-200 px-6 py-5">
                 <h3 className="font-bold">
                   Quick Actions
                 </h3>
 
-                <p className="mt-1 text-xs text-[#54636F]">
+                <p className="mt-1 text-xs text-slate-500">
                   Frequently used administration tools
                 </p>
               </div>
@@ -668,8 +668,8 @@ const NavItem = ({
     <button
       className={`mb-1 flex w-full items-center gap-3 px-3 py-2.5 text-sm font-medium transition ${
         active
-          ? "bg-[#1C2B3A] text-[#F5F3EB]"
-          : "text-[#54636F] hover:bg-[#EDEAE0] hover:text-[#1C2B3A]"
+          ? "bg-[#071426] text-white"
+          : "text-slate-500 hover:bg-blue-50 hover:text-slate-900"
       }`}
     >
       {icon}
@@ -679,7 +679,7 @@ const NavItem = ({
       </span>
 
       {badge && (
-        <span className="bg-[#A6402B] px-1.5 py-0.5 text-[9px] font-bold text-[#F5F3EB]">
+        <span className="bg-[#DC2626] px-1.5 py-0.5 text-[9px] font-bold text-white">
           {badge}
         </span>
       )}
@@ -697,26 +697,26 @@ const StatCard = ({
   warning,
   danger,
 }) => {
-  let iconBg = "bg-[#EDEAE0]";
-  let iconColor = "text-[#1C2B3A]";
+  let iconBg = "bg-blue-50";
+  let iconColor = "text-slate-900";
 
   if (warning) {
-    iconBg = "bg-[#EDEAE0]";
-    iconColor = "text-[#A8792C]";
+    iconBg = "bg-blue-50";
+    iconColor = "text-blue-700";
   }
 
   if (danger) {
-    iconBg = "bg-[#EDEAE0]";
-    iconColor = "text-[#A6402B]";
+    iconBg = "bg-blue-50";
+    iconColor = "text-red-700";
   }
 
   return (
-    <div className="border border-[#C9C2AE] bg-[#F5F3EB] p-5">
+    <div className="border border-slate-200 bg-slate-50 p-5">
 
       <div className="flex items-start justify-between">
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#54636F]">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
             {title}
           </p>
 
@@ -734,12 +734,12 @@ const StatCard = ({
       <p
         className={`mt-4 text-xs ${
           danger
-            ? "text-[#A6402B]"
+            ? "text-red-700"
             : warning
-            ? "text-[#A8792C]"
+            ? "text-blue-700"
             : positive
-            ? "text-[#33604F]"
-            : "text-[#54636F]"
+            ? "text-emerald-700"
+            : "text-slate-500"
         }`}
       >
         {change}
@@ -758,18 +758,18 @@ const ProgressRow = ({
   type,
 }) => {
 
-  let bar = "bg-[#1C2B3A]";
+  let bar = "bg-[#071426]";
 
   if (type === "good") {
-    bar = "bg-[#33604F]";
+    bar = "bg-[#059669]";
   }
 
   if (type === "warning") {
-    bar = "bg-[#A8792C]";
+    bar = "bg-[#2563EB]";
   }
 
   if (type === "danger") {
-    bar = "bg-[#A6402B]";
+    bar = "bg-[#DC2626]";
   }
 
   return (
@@ -781,13 +781,13 @@ const ProgressRow = ({
           {label}
         </span>
 
-        <span className="text-[#54636F]">
+        <span className="text-slate-500">
           {value} · {percentage}
         </span>
 
       </div>
 
-      <div className="h-2 bg-[#C9C2AE]">
+      <div className="h-2 bg-[#E2E8F0]">
         <div
           className={`h-full ${bar}`}
           style={{ width }}
@@ -809,10 +809,10 @@ const AlertItem = ({
 }) => {
 
   const iconColor = danger
-    ? "text-[#A6402B]"
+    ? "text-red-700"
     : warning
-    ? "text-[#A8792C]"
-    : "text-[#1C2B3A]";
+    ? "text-blue-700"
+    : "text-slate-900";
 
   return (
     <div className="flex gap-4 px-6 py-5">
@@ -835,7 +835,7 @@ const AlertItem = ({
 
         </div>
 
-        <p className="mt-1 text-xs leading-5 text-[#54636F]">
+        <p className="mt-1 text-xs leading-5 text-slate-500">
           {description}
         </p>
 
@@ -859,19 +859,19 @@ const VendorRow = ({
 }) => {
 
   const statusClass = danger
-    ? "bg-[#EDEAE0] text-[#A6402B]"
+    ? "bg-blue-50 text-red-700"
     : warning
-    ? "bg-[#EDEAE0] text-[#A8792C]"
-    : "bg-[#EDEAE0] text-[#33604F]";
+    ? "bg-blue-50 text-blue-700"
+    : "bg-blue-50 text-emerald-700";
 
   return (
-    <tr className="border-b border-[#C9C2AE] last:border-0">
+    <tr className="border-b border-slate-200 last:border-0">
 
       <td className="px-6 py-4">
 
         <div className="flex items-center gap-3">
 
-          <div className="flex h-9 w-9 items-center justify-center bg-[#1C2B3A] text-[10px] font-bold text-[#F5F3EB]">
+          <div className="flex h-9 w-9 items-center justify-center bg-[#071426] text-[10px] font-bold text-white">
             {initials}
           </div>
 
@@ -880,7 +880,7 @@ const VendorRow = ({
               {name}
             </p>
 
-            <p className="mt-0.5 text-xs text-[#54636F]">
+            <p className="mt-0.5 text-xs text-slate-500">
               {email}
             </p>
           </div>
@@ -889,7 +889,7 @@ const VendorRow = ({
 
       </td>
 
-      <td className="px-6 py-4 text-sm text-[#54636F]">
+      <td className="px-6 py-4 text-sm text-slate-500">
         {documents}
       </td>
 
@@ -906,8 +906,8 @@ const VendorRow = ({
         <span
           className={
             expiring !== "0"
-              ? "font-semibold text-[#A8792C]"
-              : "text-[#54636F]"
+              ? "font-semibold text-blue-700"
+              : "text-slate-500"
           }
         >
           {expiring}
@@ -928,7 +928,7 @@ const VendorRow = ({
 
       <td className="px-6 py-4">
 
-        <button className="text-[#54636F] hover:text-[#1C2B3A]">
+        <button className="text-slate-500 hover:text-slate-900">
           <MoreHorizontal size={17} />
         </button>
 
@@ -949,15 +949,15 @@ const MobileVendor = ({
 }) => {
 
   const statusColor = danger
-    ? "text-[#A6402B]"
+    ? "text-red-700"
     : warning
-    ? "text-[#A8792C]"
-    : "text-[#33604F]";
+    ? "text-blue-700"
+    : "text-emerald-700";
 
   return (
     <div className="flex items-center gap-3 px-5 py-4">
 
-      <div className="flex h-9 w-9 items-center justify-center bg-[#1C2B3A] text-[10px] font-bold text-[#F5F3EB]">
+      <div className="flex h-9 w-9 items-center justify-center bg-[#071426] text-[10px] font-bold text-white">
         {initials}
       </div>
 
@@ -991,7 +991,7 @@ const Activity = ({
   return (
     <div className="flex gap-3 px-6 py-4">
 
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center bg-[#EDEAE0] text-[#54636F]">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center bg-blue-50 text-slate-500">
         {icon}
       </div>
 
@@ -1001,13 +1001,13 @@ const Activity = ({
           {title}
         </p>
 
-        <p className="mt-0.5 text-xs text-[#54636F]">
+        <p className="mt-0.5 text-xs text-slate-500">
           {user}
         </p>
 
       </div>
 
-      <p className="whitespace-nowrap text-[10px] text-[#54636F]">
+      <p className="whitespace-nowrap text-[10px] text-slate-500">
         {time}
       </p>
 
@@ -1022,9 +1022,9 @@ const QuickAction = ({
   description,
 }) => {
   return (
-    <button className="group flex items-center gap-4 border border-[#C9C2AE] bg-[#EDEAE0] p-4 text-left transition hover:border-[#A8792C]">
+    <button className="group flex items-center gap-4 border border-slate-200 bg-blue-50 p-4 text-left transition hover:border-[#2563EB]">
 
-      <div className="bg-[#F5F3EB] p-2.5 text-[#1C2B3A] group-hover:text-[#A8792C]">
+      <div className="bg-slate-50 p-2.5 text-slate-900 group-hover:text-blue-700">
         {icon}
       </div>
 
@@ -1034,7 +1034,7 @@ const QuickAction = ({
           {title}
         </p>
 
-        <p className="mt-1 text-xs text-[#54636F]">
+        <p className="mt-1 text-xs text-slate-500">
           {description}
         </p>
 

@@ -75,7 +75,7 @@ const ActivityLogs = () => {
 
     const getActionStyle = (actionName) => {
         if (!actionName) {
-            return "bg-gray-100 text-gray-700";
+            return "bg-slate-100 text-slate-700";
         }
 
         const value = actionName.toUpperCase();
@@ -103,7 +103,7 @@ const ActivityLogs = () => {
             return "bg-blue-100 text-blue-700";
         }
 
-        return "bg-purple-100 text-purple-700";
+        return "bg-indigo-100 text-indigo-700";
     };
 
     const handleSearch = (event) => {
@@ -117,24 +117,24 @@ const ActivityLogs = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-50 min-h-full">
+        <div className="p-6 bg-slate-50 min-h-full">
             {/* Page Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <div>
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-purple-100 rounded-xl">
+                        <div className="p-2.5 bg-indigo-100 rounded-xl">
                             <Activity
                                 size={24}
-                                className="text-purple-600"
+                                className="text-indigo-600"
                             />
                         </div>
 
                         <div>
-                            <h1 className="text-2xl font-semibold text-gray-900">
+                            <h1 className="text-2xl font-semibold text-slate-900">
                                 Audit Logs
                             </h1>
 
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-slate-500 mt-1">
                                 Monitor important activities performed in your organization.
                             </p>
                         </div>
@@ -144,7 +144,7 @@ const ActivityLogs = () => {
                 <button
                     onClick={fetchAuditLogs}
                     disabled={loading}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition disabled:opacity-60"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition disabled:opacity-60"
                 >
                     <RefreshCw
                         size={17}
@@ -158,12 +158,12 @@ const ActivityLogs = () => {
             </div>
 
             {/* Filters */}
-            <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-4 mb-6">
+            <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-4 mb-6">
                 <div className="flex flex-col lg:flex-row gap-3">
                     <div className="relative flex-1">
                         <Search
                             size={18}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                         />
 
                         <input
@@ -171,14 +171,14 @@ const ActivityLogs = () => {
                             value={search}
                             onChange={handleSearch}
                             placeholder="Search activity, user or email..."
-                            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 text-sm"
+                            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 text-sm"
                         />
                     </div>
 
                     <select
                         value={action}
                         onChange={handleActionChange}
-                        className="px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 text-sm bg-white"
+                        className="px-4 py-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 text-sm bg-white"
                     >
                         <option value="">
                             All Actions
@@ -216,15 +216,15 @@ const ActivityLogs = () => {
             )}
 
             {/* Audit Logs Card */}
-            <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-                <div className="px-5 py-4 border-b border-gray-100">
+            <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
+                <div className="px-5 py-4 border-b border-slate-100">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h2 className="text-lg font-semibold text-gray-900">
+                            <h2 className="text-lg font-semibold text-slate-900">
                                 System Activity
                             </h2>
 
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-slate-500 mt-1">
                                 {pagination.total} total activity logs
                             </p>
                         </div>
@@ -232,22 +232,22 @@ const ActivityLogs = () => {
                 </div>
 
                 {loading ? (
-                    <div className="p-12 text-center text-gray-500">
+                    <div className="p-12 text-center text-slate-500">
                         <RefreshCw
                             size={24}
-                            className="animate-spin mx-auto mb-3 text-purple-500"
+                            className="animate-spin mx-auto mb-3 text-indigo-500"
                         />
 
                         Loading audit logs...
                     </div>
                 ) : logs.length === 0 ? (
-                    <div className="p-12 text-center text-gray-500">
+                    <div className="p-12 text-center text-slate-500">
                         <Activity
                             size={35}
-                            className="mx-auto mb-3 text-gray-300"
+                            className="mx-auto mb-3 text-slate-300"
                         />
 
-                        <p className="font-medium text-gray-700">
+                        <p className="font-medium text-slate-700">
                             No audit logs found
                         </p>
 
@@ -260,24 +260,24 @@ const ActivityLogs = () => {
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="bg-gray-50 border-b border-gray-100">
-                                        <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                    <tr className="bg-slate-50 border-b border-slate-100">
+                                        <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase">
                                             Action
                                         </th>
 
-                                        <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase">
                                             Performed By
                                         </th>
 
-                                        <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase">
                                             Target
                                         </th>
 
-                                        <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase">
                                             Description
                                         </th>
 
-                                        <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase">
+                                        <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase">
                                             Date
                                         </th>
                                     </tr>
@@ -287,7 +287,7 @@ const ActivityLogs = () => {
                                     {logs.map((log) => (
                                         <tr
                                             key={log._id}
-                                            className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
+                                            className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition"
                                         >
                                             <td className="px-5 py-4">
                                                 <span
@@ -301,12 +301,12 @@ const ActivityLogs = () => {
 
                                             <td className="px-5 py-4">
                                                 <div>
-                                                    <p className="text-sm font-medium text-gray-800">
+                                                    <p className="text-sm font-medium text-slate-800">
                                                         {log.performedBy?.name ||
                                                             "Unknown User"}
                                                     </p>
 
-                                                    <p className="text-xs text-gray-500 mt-0.5">
+                                                    <p className="text-xs text-slate-500 mt-0.5">
                                                         {log.performedBy?.email ||
                                                             "N/A"}
                                                     </p>
@@ -314,27 +314,27 @@ const ActivityLogs = () => {
                                             </td>
 
                                             <td className="px-5 py-4">
-                                                <p className="text-sm font-medium text-gray-700">
+                                                <p className="text-sm font-medium text-slate-700">
                                                     {log.targetType ||
                                                         "N/A"}
                                                 </p>
 
                                                 {log.targetId && (
-                                                    <p className="text-xs text-gray-400 mt-1">
+                                                    <p className="text-xs text-slate-400 mt-1">
                                                         {log.targetId}
                                                     </p>
                                                 )}
                                             </td>
 
                                             <td className="px-5 py-4 max-w-md">
-                                                <p className="text-sm text-gray-700">
+                                                <p className="text-sm text-slate-700">
                                                     {log.description ||
                                                         "No description"}
                                                 </p>
                                             </td>
 
                                             <td className="px-5 py-4 whitespace-nowrap">
-                                                <p className="text-sm text-gray-600">
+                                                <p className="text-sm text-slate-600">
                                                     {formatDate(
                                                         log.createdAt
                                                     )}
@@ -347,8 +347,8 @@ const ActivityLogs = () => {
                         </div>
 
                         {/* Pagination */}
-                        <div className="px-5 py-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <p className="text-sm text-gray-500">
+                        <div className="px-5 py-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <p className="text-sm text-slate-500">
                                 Page {pagination.page} of{" "}
                                 {pagination.totalPages || 1}
                             </p>
@@ -367,7 +367,7 @@ const ActivityLogs = () => {
                                     disabled={
                                         page <= 1 || loading
                                     }
-                                    className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     <ChevronLeft size={18} />
                                 </button>
@@ -388,7 +388,7 @@ const ActivityLogs = () => {
                                             pagination.totalPages ||
                                         loading
                                     }
-                                    className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                                    className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     <ChevronRight size={18} />
                                 </button>

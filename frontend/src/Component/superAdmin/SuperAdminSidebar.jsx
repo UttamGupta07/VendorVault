@@ -3,11 +3,8 @@ import { NavLink } from "react-router-dom";
 
 import {
   LayoutDashboard,
-  // Building2,
   Users,
   ShieldCheck,
-  // Truck,
-  // UserCheck,
   UsersRound,
   FileText,
   AlertTriangle,
@@ -63,16 +60,29 @@ const SuperAdminSidebar = ({ open, setOpen }) => {
 
   return (
     <>
-      {/* ================= MOBILE OVERLAY ================= */}
+      {/* =====================================================
+          MOBILE OVERLAY
+      ===================================================== */}
 
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="
+            fixed
+            inset-0
+            z-40
+
+            bg-slate-950/60
+            backdrop-blur-[2px]
+
+            lg:hidden
+          "
           onClick={() => setOpen(false)}
         />
       )}
 
-      {/* ================= SIDEBAR ================= */}
+      {/* =====================================================
+          SIDEBAR
+      ===================================================== */}
 
       <aside
         className={`
@@ -80,16 +90,26 @@ const SuperAdminSidebar = ({ open, setOpen }) => {
           left-0
           top-0
           z-50
+
           flex
           h-screen
           w-[250px]
           flex-col
-          bg-[#0b1930]
+
+          overflow-hidden
+
+          border-r
+          border-slate-800/80
+
+          bg-[#071426]
+
           text-white
-          shadow-xl
+
+          shadow-[8px_0_30px_rgba(2,8,23,0.12)]
+
           transition-transform
           duration-300
-          ease-in-out
+          ease-out
 
           lg:translate-x-0
 
@@ -100,51 +120,209 @@ const SuperAdminSidebar = ({ open, setOpen }) => {
           }
         `}
       >
+        {/* =====================================================
+            LOGO
+        ===================================================== */}
 
-        {/* ================= LOGO ================= */}
+        <div
+          className="
+            relative
 
-        <div className="flex h-[84px] shrink-0 items-center justify-between border-b border-white/10 px-5">
+            flex
+            h-[78px]
+            shrink-0
+            items-center
+            justify-between
+
+            border-b
+            border-white/[0.07]
+
+            px-5
+          "
+        >
+          {/* Subtle top glow */}
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              left-0
+              top-0
+
+              h-px
+              w-full
+
+              bg-gradient-to-r
+              from-transparent
+              via-blue-500/50
+              to-transparent
+            "
+          />
 
           <div className="flex items-center gap-3">
+            {/* Logo Icon */}
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-600">
-              <ShieldCheck size={25} />
+            <div
+              className="
+                relative
+
+                flex
+                h-10
+                w-10
+                shrink-0
+                items-center
+                justify-center
+
+                overflow-hidden
+                rounded-xl
+
+                bg-gradient-to-br
+                from-blue-500
+                via-blue-600
+                to-indigo-700
+
+                text-white
+
+                shadow-lg
+                shadow-blue-950/40
+
+                ring-1
+                ring-white/10
+              "
+            >
+              <ShieldCheck
+                size={22}
+                strokeWidth={2.1}
+              />
+
+              {/* Small shine */}
+
+              <span
+                className="
+                  pointer-events-none
+                  absolute
+                  -right-3
+                  -top-3
+
+                  h-7
+                  w-7
+
+                  rounded-full
+
+                  bg-white/10
+
+                  blur-md
+                "
+              />
             </div>
 
-            <span className="text-xl font-bold tracking-tight">
-              VendorVault
-            </span>
+            {/* Brand */}
 
+            <div>
+              <span
+                className="
+                  block
+
+                  text-[18px]
+                  font-bold
+                  leading-tight
+                  tracking-tight
+
+                  text-white
+                "
+              >
+                VendorVault
+              </span>
+
+              <span
+                className="
+                  mt-0.5
+                  block
+
+                  text-[9px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.18em]
+
+                  text-slate-500
+                "
+              >
+                Compliance Platform
+              </span>
+            </div>
           </div>
 
-          {/* Mobile Close Button */}
+          {/* Mobile Close */}
 
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="rounded-lg p-2 text-slate-300 transition hover:bg-white/10 hover:text-white lg:hidden"
-          >
-            <X size={21} />
-          </button>
+            aria-label="Close navigation menu"
+            className="
+              flex
+              h-9
+              w-9
+              items-center
+              justify-center
 
+              rounded-lg
+
+              text-slate-400
+
+              transition-all
+              duration-200
+
+              hover:bg-white/[0.07]
+              hover:text-white
+
+              active:scale-95
+
+              lg:hidden
+            "
+          >
+            <X size={20} />
+          </button>
         </div>
 
-        {/* ================= NAVIGATION AREA ================= */}
+        {/* =====================================================
+            NAVIGATION AREA
+        ===================================================== */}
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-3 py-6">
+        <div
+          className="
+            min-h-0
+            flex-1
+            overflow-y-auto
 
+            px-3
+            py-6
+
+            scrollbar-thin
+            scrollbar-track-transparent
+            scrollbar-thumb-slate-700
+          "
+        >
           {/* Section Title */}
 
-          <p className="mb-4 px-3 text-xs font-medium uppercase tracking-wider text-slate-400">
-            Super Admin
-          </p>
+          <div className="mb-3 px-3">
+            <p
+              className="
+                text-[10px]
+                font-bold
+                uppercase
+                tracking-[0.16em]
+
+                text-slate-500
+              "
+            >
+              Administration
+            </p>
+          </div>
 
           {/* Navigation */}
 
-          <nav className="space-y-1.5">
-
+          <nav className="space-y-1">
             {navItems.map((item) => {
-
               const Icon = item.icon;
 
               return (
@@ -154,86 +332,281 @@ const SuperAdminSidebar = ({ open, setOpen }) => {
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
                     `
-                    flex
-                    w-full
-                    items-center
-                    gap-3
-                    rounded-xl
-                    px-3
-                    py-3
-                    text-sm
-                    font-medium
-                    transition-all
-                    duration-200
+                      group
+                      relative
 
-                    ${
-                      isActive
-                        ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-900/20"
-                        : "text-slate-300 hover:bg-white/5 hover:text-white"
-                    }
+                      flex
+                      w-full
+                      items-center
+                      gap-3
+
+                      rounded-xl
+
+                      px-3
+                      py-2.5
+
+                      text-sm
+                      font-medium
+
+                      transition-all
+                      duration-200
+
+                      ${
+                        isActive
+                          ? `
+                            bg-gradient-to-r
+                            from-blue-600
+                            to-indigo-600
+
+                            text-white
+
+                            shadow-lg
+                            shadow-blue-950/30
+
+                            ring-1
+                            ring-white/10
+                          `
+                          : `
+                            text-slate-400
+
+                            hover:bg-white/[0.055]
+                            hover:text-slate-100
+                          `
+                      }
                     `
                   }
                 >
-                  <Icon
-                    size={19}
-                    strokeWidth={1.9}
-                    className="shrink-0"
-                  />
+                  {({ isActive }) => (
+                    <>
+                      {/* Active indicator */}
 
-                  <span className="truncate">
-                    {item.name}
-                  </span>
+                      {isActive && (
+                        <span
+                          className="
+                            absolute
+                            left-0
 
+                            h-6
+                            w-[3px]
+
+                            rounded-r-full
+
+                            bg-blue-300
+                          "
+                        />
+                      )}
+
+                      {/* Icon Container */}
+
+                      <span
+                        className={`
+                          flex
+                          h-9
+                          w-9
+                          shrink-0
+                          items-center
+                          justify-center
+
+                          rounded-lg
+
+                          transition-all
+                          duration-200
+
+                          ${
+                            isActive
+                              ? `
+                                bg-white/10
+                                text-white
+                              `
+                              : `
+                                bg-white/[0.025]
+                                text-slate-500
+
+                                group-hover:bg-white/[0.06]
+                                group-hover:text-blue-400
+                              `
+                          }
+                        `}
+                      >
+                        <Icon
+                          size={18}
+                          strokeWidth={
+                            isActive ? 2.1 : 1.9
+                          }
+                        />
+                      </span>
+
+                      {/* Label */}
+
+                      <span className="truncate">
+                        {item.name}
+                      </span>
+
+                      {/* Active dot */}
+
+                      {isActive && (
+                        <span
+                          className="
+                            ml-auto
+
+                            h-1.5
+                            w-1.5
+
+                            shrink-0
+
+                            rounded-full
+
+                            bg-blue-200
+
+                            shadow-[0_0_8px_rgba(147,197,253,0.8)]
+                          "
+                        />
+                      )}
+                    </>
+                  )}
                 </NavLink>
               );
             })}
-
           </nav>
-
         </div>
 
-        {/* ================= ADMIN PROFILE ================= */}
+        {/* =====================================================
+            ADMIN PROFILE
+        ===================================================== */}
 
-        <div className="shrink-0 border-t border-white/10 p-3">
+        <div
+          className="
+            shrink-0
 
-          <div className="rounded-xl bg-white/5 p-3">
+            border-t
+            border-white/[0.07]
 
-            <div className="flex items-center gap-3">
+            p-3
+          "
+        >
+          <div
+            className="
+              relative
+              overflow-hidden
 
+              rounded-xl
+
+              border
+              border-white/[0.06]
+
+              bg-white/[0.035]
+
+              p-3.5
+            "
+          >
+            {/* Decorative glow */}
+
+            <div
+              className="
+                pointer-events-none
+                absolute
+                -right-8
+                -top-8
+
+                h-20
+                w-20
+
+                rounded-full
+
+                bg-blue-500/10
+
+                blur-2xl
+              "
+            />
+
+            <div className="relative flex items-center gap-3">
               {/* Avatar */}
 
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-600">
+              <div
+                className="
+                  relative
 
-                <ShieldCheck size={20} />
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  items-center
+                  justify-center
 
+                  rounded-xl
+
+                  bg-gradient-to-br
+                  from-blue-500
+                  to-indigo-700
+
+                  text-white
+
+                  shadow-md
+                  shadow-blue-950/30
+                "
+              >
+                <ShieldCheck
+                  size={19}
+                  strokeWidth={2}
+                />
+
+                {/* Online indicator */}
+
+                <span
+                  className="
+                    absolute
+                    -bottom-0.5
+                    -right-0.5
+
+                    h-3
+                    w-3
+
+                    rounded-full
+
+                    border-2
+                    border-[#071426]
+
+                    bg-emerald-400
+
+                    shadow-[0_0_7px_rgba(52,211,153,0.4)]
+                  "
+                />
               </div>
 
               {/* User Info */}
 
               <div className="min-w-0">
+                <p
+                  className="
+                    truncate
 
-                <p className="truncate text-sm font-semibold">
+                    text-sm
+                    font-semibold
+
+                    text-slate-100
+                  "
+                >
                   Super Admin
                 </p>
 
                 <div className="mt-1 flex items-center gap-1.5">
+                  <span
+                    className="
+                      text-[10px]
+                      font-medium
+                      uppercase
+                      tracking-wider
 
-                  <span className="h-2 w-2 rounded-full bg-green-400" />
-
-                  <span className="text-xs text-slate-400">
+                      text-slate-500
+                    "
+                  >
                     Full Access
                   </span>
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </aside>
     </>
   );

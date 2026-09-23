@@ -25,7 +25,7 @@ const SuperAdminLayout = () => {
         />
 
         {/* ================= PAGE CONTENT ================= */}
-        <main className="h-screen overflow-y-auto pt-[84px]">
+        <main className="h-screen overflow-y-auto bg-slate-50 pt-[84px] vv-page-enter">
           <Outlet />
         </main>
 

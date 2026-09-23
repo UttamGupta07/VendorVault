@@ -353,8 +353,8 @@ const Settings = () => {
 
     if (loading) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-gray-950">
-                <p className="text-sm text-slate-500 dark:text-gray-400">
+            <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                     Loading settings...
                 </p>
             </div>
@@ -362,7 +362,7 @@ const Settings = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 p-6 transition-colors duration-200 dark:bg-gray-950">
+        <div className="min-h-screen bg-slate-50 p-6 transition-colors duration-200 dark:bg-slate-950">
             <div className="mx-auto max-w-5xl">
 
                 {/* ================= PAGE HEADER ================= */}
@@ -372,7 +372,7 @@ const Settings = () => {
                         Settings
                     </h1>
 
-                    <p className="mt-1 text-sm text-slate-500 dark:text-gray-400">
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                         Manage your account and application preferences
                     </p>
                 </div>
@@ -381,7 +381,7 @@ const Settings = () => {
 
                     {/* ================= PROFILE DETAILS ================= */}
 
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-200 dark:border-gray-800 dark:bg-gray-900">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900">
 
                         <div className="mb-5 flex items-center gap-3">
 
@@ -394,7 +394,7 @@ const Settings = () => {
                                     Profile Details
                                 </h2>
 
-                                <p className="text-sm text-slate-500 dark:text-gray-400">
+                                <p className="text-sm text-slate-500 dark:text-slate-400">
                                     Manage your personal information
                                 </p>
                             </div>
@@ -406,7 +406,7 @@ const Settings = () => {
                             {/* Name */}
 
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-gray-300">
+                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
                                     Name
                                 </label>
 
@@ -425,9 +425,9 @@ const Settings = () => {
                     text-sm
                     text-slate-800
                     outline-none
-                    dark:border-gray-700
-                    dark:bg-gray-800
-                    dark:text-gray-100
+                    dark:border-slate-700
+                    dark:bg-slate-800
+                    dark:text-slate-100
                   "
                                 />
                             </div>
@@ -435,7 +435,7 @@ const Settings = () => {
                             {/* Email */}
 
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-gray-300">
+                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
                                     Email
                                 </label>
 
@@ -454,9 +454,9 @@ const Settings = () => {
                     text-sm
                     text-slate-800
                     outline-none
-                    dark:border-gray-700
-                    dark:bg-gray-800
-                    dark:text-gray-100
+                    dark:border-slate-700
+                    dark:bg-slate-800
+                    dark:text-slate-100
                   "
                                 />
                             </div>
@@ -464,7 +464,7 @@ const Settings = () => {
                             {/* Role */}
 
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-gray-300">
+                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
                                     Role
                                 </label>
 
@@ -485,9 +485,9 @@ const Settings = () => {
                     text-sm
                     text-slate-800
                     outline-none
-                    dark:border-gray-700
-                    dark:bg-gray-800
-                    dark:text-gray-100
+                    dark:border-slate-700
+                    dark:bg-slate-800
+                    dark:text-slate-100
                   "
                                 />
                             </div>
@@ -495,7 +495,7 @@ const Settings = () => {
                             {/* Status */}
 
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-gray-300">
+                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
                                     Status
                                 </label>
 
@@ -530,7 +530,7 @@ const Settings = () => {
 
                     {/* ================= ORGANIZATION DETAILS ================= */}
 
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-200 dark:border-gray-800 dark:bg-gray-900">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900">
 
                         <div className="mb-5 flex items-center gap-3">
 
@@ -543,7 +543,7 @@ const Settings = () => {
                                     Organization Details
                                 </h2>
 
-                                <p className="text-sm text-slate-500 dark:text-gray-400">
+                                <p className="text-sm text-slate-500 dark:text-slate-400">
                                     Manage your organization information
                                 </p>
                             </div>
@@ -555,7 +555,7 @@ const Settings = () => {
                             {/* Organization Name */}
 
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-gray-300">
+                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
                                     Organization Name
                                 </label>
 
@@ -574,9 +574,9 @@ const Settings = () => {
                     text-sm
                     text-slate-800
                     outline-none
-                    dark:border-gray-700
-                    dark:bg-gray-800
-                    dark:text-gray-100
+                    dark:border-slate-700
+                    dark:bg-slate-800
+                    dark:text-slate-100
                   "
                                 />
                             </div>
@@ -584,7 +584,7 @@ const Settings = () => {
                             {/* Organization ID */}
 
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-gray-300">
+                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
                                     Organization ID
                                 </label>
 
@@ -603,9 +603,9 @@ const Settings = () => {
                     text-sm
                     text-slate-800
                     outline-none
-                    dark:border-gray-700
-                    dark:bg-gray-800
-                    dark:text-gray-100
+                    dark:border-slate-700
+                    dark:bg-slate-800
+                    dark:text-slate-100
                   "
                                 />
                             </div>
@@ -625,14 +625,14 @@ const Settings = () => {
 
                     {/* ================= APPEARANCE ================= */}
 
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-200 dark:border-gray-800 dark:bg-gray-900">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900">
 
                         <div className="flex items-center justify-between gap-4">
 
                             <div className="flex items-center gap-3">
 
-                                <div className="rounded-xl bg-purple-50 p-3 dark:bg-purple-950/50">
-                                    <Palette className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                                <div className="rounded-xl bg-indigo-50 p-3 dark:bg-indigo-950/50">
+                                    <Palette className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                 </div>
 
                                 <div>
@@ -640,7 +640,7 @@ const Settings = () => {
                                         Appearance
                                     </h2>
 
-                                    <p className="text-sm text-slate-500 dark:text-gray-400">
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">
                                         Choose your preferred theme
                                     </p>
                                 </div>
@@ -664,9 +664,9 @@ const Settings = () => {
                   text-slate-700
                   transition
                   hover:bg-slate-100
-                  dark:border-gray-700
-                  dark:text-gray-200
-                  dark:hover:bg-gray-800
+                  dark:border-slate-700
+                  dark:text-slate-200
+                  dark:hover:bg-slate-800
                 "
                             >
                                 {darkMode ? (
@@ -688,7 +688,7 @@ const Settings = () => {
 
                     {/* ================= SECURITY ================= */}
 
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-200 dark:border-gray-800 dark:bg-gray-900">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900">
 
                         <div className="flex items-center justify-between gap-4">
 
@@ -703,7 +703,7 @@ const Settings = () => {
                                         Security
                                     </h2>
 
-                                    <p className="text-sm text-slate-500 dark:text-gray-400">
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">
                                         Manage your account password
                                     </p>
                                 </div>
@@ -727,9 +727,9 @@ const Settings = () => {
                   text-slate-700
                   transition
                   hover:bg-slate-50
-                  dark:border-gray-700
-                  dark:text-gray-200
-                  dark:hover:bg-gray-800
+                  dark:border-slate-700
+                  dark:text-slate-200
+                  dark:hover:bg-slate-800
                 "
                             >
                                 Change Password
@@ -1043,7 +1043,7 @@ const Settings = () => {
             {showPasswordModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
 
-                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl transition-colors duration-200 dark:border dark:border-gray-700 dark:bg-gray-900">
+                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl transition-colors duration-200 dark:border dark:border-slate-700 dark:bg-slate-900">
 
                         {/* Modal Header */}
 
@@ -1054,7 +1054,7 @@ const Settings = () => {
                                     Change Password
                                 </h2>
 
-                                <p className="mt-1 text-sm text-slate-500 dark:text-gray-400">
+                                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                                     Update your account password
                                 </p>
                             </div>
@@ -1068,8 +1068,8 @@ const Settings = () => {
                   text-slate-500
                   transition
                   hover:bg-slate-100
-                  dark:text-gray-400
-                  dark:hover:bg-gray-800
+                  dark:text-slate-400
+                  dark:hover:bg-slate-800
                 "
                             >
                                 <X className="h-5 w-5" />
@@ -1085,7 +1085,7 @@ const Settings = () => {
                             {/* Current Password */}
 
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-gray-300">
+                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
                                     Current Password
                                 </label>
 
@@ -1108,10 +1108,10 @@ const Settings = () => {
                     text-slate-800
                     outline-none
                     focus:border-indigo-500
-                    dark:border-gray-700
-                    dark:bg-gray-800
-                    dark:text-gray-100
-                    dark:placeholder:text-gray-500
+                    dark:border-slate-700
+                    dark:bg-slate-800
+                    dark:text-slate-100
+                    dark:placeholder:text-slate-500
                   "
                                 />
                             </div>
@@ -1119,7 +1119,7 @@ const Settings = () => {
                             {/* New Password */}
 
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-gray-300">
+                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
                                     New Password
                                 </label>
 
@@ -1142,10 +1142,10 @@ const Settings = () => {
                     text-slate-800
                     outline-none
                     focus:border-indigo-500
-                    dark:border-gray-700
-                    dark:bg-gray-800
-                    dark:text-gray-100
-                    dark:placeholder:text-gray-500
+                    dark:border-slate-700
+                    dark:bg-slate-800
+                    dark:text-slate-100
+                    dark:placeholder:text-slate-500
                   "
                                 />
                             </div>
@@ -1153,7 +1153,7 @@ const Settings = () => {
                             {/* Confirm Password */}
 
                             <div>
-                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-gray-300">
+                                <label className="mb-1 block text-sm font-medium text-slate-600 dark:text-slate-300">
                                     Confirm New Password
                                 </label>
 
@@ -1176,10 +1176,10 @@ const Settings = () => {
                     text-slate-800
                     outline-none
                     focus:border-indigo-500
-                    dark:border-gray-700
-                    dark:bg-gray-800
-                    dark:text-gray-100
-                    dark:placeholder:text-gray-500
+                    dark:border-slate-700
+                    dark:bg-slate-800
+                    dark:text-slate-100
+                    dark:placeholder:text-slate-500
                   "
                                 />
                             </div>
@@ -1220,9 +1220,9 @@ const Settings = () => {
                     transition
                     hover:bg-slate-50
                     disabled:opacity-50
-                    dark:border-gray-700
-                    dark:text-gray-200
-                    dark:hover:bg-gray-800
+                    dark:border-slate-700
+                    dark:text-slate-200
+                    dark:hover:bg-slate-800
                   "
                                 >
                                     Cancel

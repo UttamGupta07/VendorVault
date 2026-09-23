@@ -429,16 +429,16 @@ const ServiceTypes = () => {
   // =====================================================
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-slate-50 p-6">
       {/* HEADER */}
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-slate-900">
             Service Types
           </h1>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-slate-500">
             Define services and the documents required
             for each service.
           </p>
@@ -471,18 +471,18 @@ const ServiceTypes = () => {
       {/* STATS */}
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">
             Total Service Types
           </p>
 
-          <p className="mt-1 text-2xl font-bold text-gray-900">
+          <p className="mt-1 text-2xl font-bold text-slate-900">
             {serviceTypes.length}
           </p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">
             Active
           </p>
 
@@ -495,12 +495,12 @@ const ServiceTypes = () => {
           </p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">
             Inactive
           </p>
 
-          <p className="mt-1 text-2xl font-bold text-gray-500">
+          <p className="mt-1 text-2xl font-bold text-slate-500">
             {
               serviceTypes.filter(
                 (service) => !service.isActive
@@ -512,11 +512,11 @@ const ServiceTypes = () => {
 
       {/* SEARCH */}
 
-      <div className="mb-5 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="mb-5 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="relative max-w-md">
           <Search
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           />
 
           <input
@@ -526,35 +526,35 @@ const ServiceTypes = () => {
             onChange={(e) =>
               setSearch(e.target.value)
             }
-            className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
       </div>
 
       {/* SERVICE TYPE TABLE */}
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[850px]">
-            <thead className="border-b border-gray-200 bg-gray-50">
+            <thead className="border-b border-slate-200 bg-slate-50">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Service Type
                 </th>
 
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Required Documents
                 </th>
 
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Status
                 </th>
 
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Created
                 </th>
 
-                <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Actions
                 </th>
               </tr>
@@ -569,14 +569,14 @@ const ServiceTypes = () => {
                   >
                     <Settings
                       size={40}
-                      className="mx-auto mb-3 text-gray-300"
+                      className="mx-auto mb-3 text-slate-300"
                     />
 
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-sm font-medium text-slate-600">
                       No service types found
                     </p>
 
-                    <p className="mt-1 text-xs text-gray-400">
+                    <p className="mt-1 text-xs text-slate-400">
                       Create a service type to get started.
                     </p>
                   </td>
@@ -584,7 +584,7 @@ const ServiceTypes = () => {
               ) : (
                 filteredServices.map((service) => (
                   <React.Fragment key={service._id}>
-                    <tr className="transition hover:bg-gray-50">
+                    <tr className="transition hover:bg-slate-50">
                       {/* SERVICE */}
 
                       <td className="px-6 py-4">
@@ -597,11 +597,11 @@ const ServiceTypes = () => {
                           </div>
 
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-slate-900">
                               {service.name}
                             </p>
 
-                            <p className="max-w-xs truncate text-xs text-gray-400">
+                            <p className="max-w-xs truncate text-xs text-slate-400">
                               {service.description ||
                                 "No description"}
                             </p>
@@ -648,7 +648,7 @@ const ServiceTypes = () => {
                           className={`rounded-full px-3 py-1 text-xs font-medium ${
                             service.isActive
                               ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-600"
+                              : "bg-slate-100 text-slate-600"
                           }`}
                         >
                           {service.isActive
@@ -659,7 +659,7 @@ const ServiceTypes = () => {
 
                       {/* CREATED */}
 
-                      <td className="px-6 py-4 text-sm text-gray-500">
+                      <td className="px-6 py-4 text-sm text-slate-500">
                         {service.createdAt
                           ? new Date(
                               service.createdAt
@@ -675,7 +675,7 @@ const ServiceTypes = () => {
                             onClick={() =>
                               openEditModal(service)
                             }
-                            className="rounded-lg p-2 text-gray-500 hover:bg-blue-50 hover:text-blue-600"
+                            className="rounded-lg p-2 text-slate-500 hover:bg-blue-50 hover:text-blue-600"
                             title="Edit"
                           >
                             <Edit size={17} />
@@ -685,7 +685,7 @@ const ServiceTypes = () => {
                             onClick={() =>
                               handleDelete(service)
                             }
-                            className="rounded-lg p-2 text-gray-500 hover:bg-red-50 hover:text-red-600"
+                            className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
                             title="Delete"
                           >
                             <Trash2 size={17} />
@@ -701,10 +701,10 @@ const ServiceTypes = () => {
                       <tr>
                         <td
                           colSpan="5"
-                          className="bg-gray-50 px-6 py-5"
+                          className="bg-slate-50 px-6 py-5"
                         >
-                          <div className="rounded-lg border border-gray-200 bg-white p-4">
-                            <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                          <div className="rounded-lg border border-slate-200 bg-white p-4">
+                            <h3 className="mb-3 text-sm font-semibold text-slate-900">
                               Required Documents
                             </h3>
 
@@ -718,7 +718,7 @@ const ServiceTypes = () => {
                                         doc._id ||
                                         doc.documentTypeId?._id
                                       }
-                                      className="rounded-lg border border-gray-200 p-3"
+                                      className="rounded-lg border border-slate-200 p-3"
                                     >
                                       <div className="flex items-start justify-between gap-2">
                                         <div className="flex gap-2">
@@ -728,7 +728,7 @@ const ServiceTypes = () => {
                                           />
 
                                           <div>
-                                            <p className="text-sm font-medium text-gray-900">
+                                            <p className="text-sm font-medium text-slate-900">
                                               {doc
                                                 .documentTypeId
                                                 ?.name ||
@@ -759,7 +759,7 @@ const ServiceTypes = () => {
                                         doc.reminderDays
                                           ?.length >
                                           0 && (
-                                          <p className="mt-2 text-xs text-gray-500">
+                                          <p className="mt-2 text-xs text-slate-500">
                                             Reminders:{" "}
                                             {doc.reminderDays.join(
                                               ", "
@@ -773,7 +773,7 @@ const ServiceTypes = () => {
                                 )}
                               </div>
                             ) : (
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-slate-500">
                                 No documents configured.
                               </p>
                             )}
@@ -798,15 +798,15 @@ const ServiceTypes = () => {
           <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white shadow-xl">
             {/* MODAL HEADER */}
 
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-slate-900">
                   {editingService
                     ? "Edit Service Type"
                     : "Create Service Type"}
                 </h2>
 
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-slate-500">
                   Configure the documents required for
                   this service.
                 </p>
@@ -815,7 +815,7 @@ const ServiceTypes = () => {
               <button
                 onClick={closeModal}
                 disabled={submitting}
-                className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
               >
                 <X size={20} />
               </button>
@@ -830,7 +830,7 @@ const ServiceTypes = () => {
               {/* NAME */}
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
+                <label className="mb-2 block text-sm font-medium text-slate-700">
                   Service Type Name
                 </label>
 
@@ -841,14 +841,14 @@ const ServiceTypes = () => {
                   onChange={handleChange}
                   placeholder="e.g. Security Services"
                   required
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
               {/* DESCRIPTION */}
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
+                <label className="mb-2 block text-sm font-medium text-slate-700">
                   Description
                 </label>
 
@@ -858,7 +858,7 @@ const ServiceTypes = () => {
                   onChange={handleChange}
                   placeholder="Describe this service..."
                   rows={3}
-                  className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
@@ -866,11 +866,11 @@ const ServiceTypes = () => {
 
               <div>
                 <div className="mb-2 flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-slate-700">
                     Required Documents
                   </label>
 
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-slate-400">
                     {
                       formData.requiredDocuments
                         .length
@@ -896,7 +896,7 @@ const ServiceTypes = () => {
                     onChange={(e) =>
                       addDocument(e.target.value)
                     }
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   >
                     <option value="">
                       + Add a document
@@ -940,7 +940,7 @@ const ServiceTypes = () => {
                       return (
                         <div
                           key={document.documentTypeId}
-                          className="rounded-xl border border-gray-200 bg-gray-50 p-4"
+                          className="rounded-xl border border-slate-200 bg-slate-50 p-4"
                         >
                           {/* DOCUMENT HEADER */}
 
@@ -954,12 +954,12 @@ const ServiceTypes = () => {
                               </div>
 
                               <div>
-                                <p className="text-sm font-semibold text-gray-900">
+                                <p className="text-sm font-semibold text-slate-900">
                                   {documentInfo?.name ||
                                     "Document"}
                                 </p>
 
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-slate-500">
                                   Configure requirements
                                 </p>
                               </div>
@@ -972,7 +972,7 @@ const ServiceTypes = () => {
                                   document.documentTypeId
                                 )
                               }
-                              className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                              className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600"
                               title="Remove document"
                             >
                               <Trash2 size={17} />
@@ -984,7 +984,7 @@ const ServiceTypes = () => {
                           <div className="grid gap-4 sm:grid-cols-2">
                             {/* REQUIRED */}
 
-                            <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 bg-white p-3">
+                            <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-white p-3">
                               <input
                                 type="checkbox"
                                 checked={
@@ -997,15 +997,15 @@ const ServiceTypes = () => {
                                     e.target.checked
                                   )
                                 }
-                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                               />
 
                               <div>
-                                <p className="text-sm font-medium text-gray-800">
+                                <p className="text-sm font-medium text-slate-800">
                                   Required
                                 </p>
 
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-slate-500">
                                   Vendor must upload this
                                   document
                                 </p>
@@ -1014,7 +1014,7 @@ const ServiceTypes = () => {
 
                             {/* EXPIRY */}
 
-                            <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 bg-white p-3">
+                            <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-white p-3">
                               <input
                                 type="checkbox"
                                 checked={
@@ -1027,15 +1027,15 @@ const ServiceTypes = () => {
                                     e.target.checked
                                   )
                                 }
-                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                               />
 
                               <div>
-                                <p className="text-sm font-medium text-gray-800">
+                                <p className="text-sm font-medium text-slate-800">
                                   Track Expiry
                                 </p>
 
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-slate-500">
                                   Track the document's
                                   expiry date
                                 </p>
@@ -1047,7 +1047,7 @@ const ServiceTypes = () => {
 
                           {document.expiryRequired && (
                             <div className="mt-4">
-                              <label className="mb-2 block text-sm font-medium text-gray-700">
+                              <label className="mb-2 block text-sm font-medium text-slate-700">
                                 Reminder Days
                               </label>
 
@@ -1063,10 +1063,10 @@ const ServiceTypes = () => {
                                   )
                                 }
                                 placeholder="30, 15, 7"
-                                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                               />
 
-                              <p className="mt-1 text-xs text-gray-400">
+                              <p className="mt-1 text-xs text-slate-400">
                                 Example: 30, 15, 7 means
                                 reminders will be sent 30,
                                 15 and 7 days before expiry.
@@ -1082,12 +1082,12 @@ const ServiceTypes = () => {
 
               {/* BUTTONS */}
 
-              <div className="flex justify-end gap-3 border-t border-gray-100 pt-5">
+              <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
                 <button
                   type="button"
                   onClick={closeModal}
                   disabled={submitting}
-                  className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                 >
                   Cancel
                 </button>

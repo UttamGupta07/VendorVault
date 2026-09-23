@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+ import React, { useEffect, useRef, useState } from "react";
+
 import {
   Bell,
   Check,
@@ -26,6 +27,7 @@ const NotificationBell = () => {
   // =========================================================
   // FETCH NOTIFICATIONS
   // =========================================================
+
   const fetchNotifications = async () => {
     try {
       setLoading(true);
@@ -48,6 +50,7 @@ const NotificationBell = () => {
   // =========================================================
   // FETCH UNREAD COUNT
   // =========================================================
+
   const fetchUnreadCount = async () => {
     try {
       const response = await axiosInstance.get(
@@ -68,6 +71,7 @@ const NotificationBell = () => {
   // =========================================================
   // INITIAL LOAD
   // =========================================================
+
   useEffect(() => {
     fetchUnreadCount();
   }, []);
@@ -75,6 +79,7 @@ const NotificationBell = () => {
   // =========================================================
   // FETCH NOTIFICATIONS WHEN DROPDOWN OPENS
   // =========================================================
+
   useEffect(() => {
     if (isOpen) {
       fetchNotifications();
@@ -84,6 +89,7 @@ const NotificationBell = () => {
   // =========================================================
   // CLOSE DROPDOWN WHEN CLICKING OUTSIDE
   // =========================================================
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -104,6 +110,7 @@ const NotificationBell = () => {
   // =========================================================
   // MARK ONE AS READ
   // =========================================================
+
   const markAsRead = async (notificationId) => {
     try {
       await axiosInstance.patch(
@@ -133,6 +140,7 @@ const NotificationBell = () => {
   // =========================================================
   // MARK ALL AS READ
   // =========================================================
+
   const markAllAsRead = async () => {
     try {
       await axiosInstance.patch("/api/user-notifications/read-all");
@@ -156,6 +164,7 @@ const NotificationBell = () => {
   // =========================================================
   // DELETE NOTIFICATION
   // =========================================================
+
   const deleteNotification = async (notificationId) => {
     try {
       const notification = notifications.find(
@@ -167,9 +176,7 @@ const NotificationBell = () => {
       );
 
       setNotifications((prev) =>
-        prev.filter(
-          (item) => item._id !== notificationId
-        )
+        prev.filter((item) => item._id !== notificationId)
       );
 
       if (notification && !notification.isRead) {
@@ -186,6 +193,7 @@ const NotificationBell = () => {
   // =========================================================
   // GET NOTIFICATION ICON
   // =========================================================
+
   const getNotificationIcon = (type) => {
     switch (type) {
       case "VENDOR_CREATED":
@@ -193,36 +201,36 @@ const NotificationBell = () => {
       case "VENDOR_SUSPENDED":
       case "VENDOR_ACTIVATED":
         return (
-          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center">
-            <UserPlus className="w-4 h-4 text-blue-600" />
+          <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center shadow-sm">
+            <UserPlus className="w-[18px] h-[18px] text-blue-600" />
           </div>
         );
 
       case "DOCUMENT_UPLOADED":
         return (
-          <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center">
-            <FileText className="w-4 h-4 text-indigo-600" />
+          <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center shadow-sm">
+            <FileText className="w-[18px] h-[18px] text-indigo-600" />
           </div>
         );
 
       case "DOCUMENT_APPROVED":
         return (
-          <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
-            <ShieldCheck className="w-4 h-4 text-green-600" />
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shadow-sm">
+            <ShieldCheck className="w-[18px] h-[18px] text-emerald-600" />
           </div>
         );
 
       case "DOCUMENT_REJECTED":
         return (
-          <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
-            <X className="w-4 h-4 text-red-600" />
+          <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center shadow-sm">
+            <X className="w-[18px] h-[18px] text-red-600" />
           </div>
         );
 
       case "DOCUMENT_EXPIRED":
         return (
-          <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
-            <AlertTriangle className="w-4 h-4 text-red-600" />
+          <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center shadow-sm">
+            <AlertTriangle className="w-[18px] h-[18px] text-red-600" />
           </div>
         );
 
@@ -231,22 +239,22 @@ const NotificationBell = () => {
       case "DOCUMENT_EXPIRING_7_DAYS":
       case "DOCUMENT_EXPIRING_1_DAY":
         return (
-          <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center">
-            <Clock className="w-4 h-4 text-orange-600" />
+          <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center shadow-sm">
+            <Clock className="w-[18px] h-[18px] text-amber-600" />
           </div>
         );
 
       case "EMAIL_DELIVERY_FAILED":
         return (
-          <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
-            <MailWarning className="w-4 h-4 text-red-600" />
+          <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center shadow-sm">
+            <MailWarning className="w-[18px] h-[18px] text-red-600" />
           </div>
         );
 
       default:
         return (
-          <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
-            <Bell className="w-4 h-4 text-gray-600" />
+          <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center shadow-sm">
+            <Bell className="w-[18px] h-[18px] text-slate-500" />
           </div>
         );
     }
@@ -255,15 +263,14 @@ const NotificationBell = () => {
   // =========================================================
   // RELATIVE TIME
   // =========================================================
+
   const getRelativeTime = (date) => {
     if (!date) return "";
 
     const now = new Date();
     const created = new Date(date);
 
-    const difference = Math.floor(
-      (now - created) / 1000
-    );
+    const difference = Math.floor((now - created) / 1000);
 
     if (difference < 60) {
       return "Just now";
@@ -297,6 +304,7 @@ const NotificationBell = () => {
   // =========================================================
   // HANDLE NOTIFICATION CLICK
   // =========================================================
+
   const handleNotificationClick = async (notification) => {
     if (!notification.isRead) {
       await markAsRead(notification._id);
@@ -315,16 +323,25 @@ const NotificationBell = () => {
       {/* =====================================================
           BELL BUTTON
       ===================================================== */}
+
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="relative p-2.5 rounded-full hover:bg-gray-100 transition-colors"
+        className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 ${
+          isOpen
+            ? "bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100"
+            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+        }`}
         aria-label="Notifications"
       >
-        <Bell className="w-5 h-5 text-gray-700" />
+        <Bell
+          className={`w-[19px] h-[19px] transition-transform duration-200 ${
+            isOpen ? "scale-105" : ""
+          }`}
+        />
 
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
+          <span className="absolute -top-1 -right-1 min-w-[19px] h-[19px] px-1 rounded-full bg-gradient-to-r from-red-500 to-rose-600 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-sm">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
@@ -333,58 +350,104 @@ const NotificationBell = () => {
       {/* =====================================================
           DROPDOWN
       ===================================================== */}
+
       {isOpen && (
-        <div className="absolute right-0 top-12 w-[380px] max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden">
-          
-          {/* HEADER */}
-          <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-gray-900">
-                Notifications
-              </h3>
+        <div
+          className="
+            absolute right-0 top-[52px]
+            w-[410px]
+            max-w-[calc(100vw-1.5rem)]
+            bg-white
+            border border-slate-200
+            rounded-2xl
+            shadow-[0_20px_60px_rgba(15,23,42,0.16)]
+            z-50
+            overflow-hidden
+            animate-[fadeIn_0.18s_ease-out]
+          "
+        >
+          {/* =================================================
+              HEADER
+          ================================================= */}
 
-              <p className="text-xs text-gray-500 mt-0.5">
-                {unreadCount > 0
-                  ? `${unreadCount} unread notification${
-                      unreadCount > 1 ? "s" : ""
-                    }`
-                  : "You're all caught up"}
-              </p>
+          <div className="px-5 py-4 bg-gradient-to-r from-slate-50 via-white to-blue-50/40 border-b border-slate-200">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-200">
+                  <Bell className="w-[18px] h-[18px] text-white" />
+                </div>
+
+                <div>
+                  <h3 className="text-[15px] font-bold text-slate-900">
+                    Notifications
+                  </h3>
+
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    {unreadCount > 0
+                      ? `${unreadCount} unread notification${
+                          unreadCount > 1 ? "s" : ""
+                        }`
+                      : "You're all caught up"}
+                  </p>
+                </div>
+              </div>
+
+              {unreadCount > 0 && (
+                <button
+                  type="button"
+                  onClick={markAllAsRead}
+                  className="
+                    px-2.5 py-1.5
+                    rounded-lg
+                    text-[11px]
+                    font-semibold
+                    text-blue-600
+                    bg-blue-50
+                    hover:bg-blue-100
+                    border border-blue-100
+                    transition-all
+                    flex items-center gap-1.5
+                  "
+                >
+                  <CheckCheck className="w-3.5 h-3.5" />
+                  Mark all read
+                </button>
+              )}
             </div>
-
-            {unreadCount > 0 && (
-              <button
-                type="button"
-                onClick={markAllAsRead}
-                className="text-xs font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1"
-              >
-                <CheckCheck className="w-3.5 h-3.5" />
-                Mark all read
-              </button>
-            )}
           </div>
 
-          {/* NOTIFICATIONS */}
-          <div className="max-h-[430px] overflow-y-auto">
-            {loading ? (
-              <div className="px-4 py-10 text-center">
-                <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto" />
+          {/* =================================================
+              NOTIFICATIONS
+          ================================================= */}
 
-                <p className="text-sm text-gray-500 mt-3">
+          <div className="max-h-[460px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+            {loading ? (
+              <div className="px-4 py-14 text-center">
+                <div className="relative w-9 h-9 mx-auto">
+                  <div className="absolute inset-0 rounded-full border-2 border-blue-100" />
+
+                  <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-blue-600 animate-spin" />
+                </div>
+
+                <p className="text-sm font-medium text-slate-600 mt-4">
                   Loading notifications...
+                </p>
+
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Please wait a moment
                 </p>
               </div>
             ) : notifications.length === 0 ? (
-              <div className="px-4 py-12 text-center">
-                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto">
-                  <Bell className="w-6 h-6 text-gray-400" />
+              <div className="px-5 py-16 text-center">
+                <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto">
+                  <Bell className="w-6 h-6 text-slate-300" />
                 </div>
 
-                <p className="mt-3 text-sm font-medium text-gray-700">
+                <p className="mt-4 text-sm font-semibold text-slate-700">
                   No notifications
                 </p>
 
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1.5 text-xs text-slate-400">
                   New alerts will appear here.
                 </p>
               </div>
@@ -392,62 +455,88 @@ const NotificationBell = () => {
               notifications.map((notification) => (
                 <div
                   key={notification._id}
-                  className={`relative px-4 py-3 border-b border-gray-100 transition-colors ${
-                    notification.isRead
-                      ? "bg-white"
-                      : "bg-blue-50/60"
-                  }`}
+                  className={`
+                    relative
+                    px-4 py-4
+                    border-b border-slate-100
+                    transition-all duration-200
+                    ${
+                      notification.isRead
+                        ? "bg-white hover:bg-slate-50/80"
+                        : "bg-blue-50/50 hover:bg-blue-50/80"
+                    }
+                  `}
                 >
                   <div className="flex gap-3">
                     {/* ICON */}
-                    <div className="flex-shrink-0">
+
+                    <div className="flex-shrink-0 pt-0.5">
                       {getNotificationIcon(notification.type)}
                     </div>
 
                     {/* CONTENT */}
+
                     <button
                       type="button"
                       onClick={() =>
                         handleNotificationClick(notification)
                       }
-                      className="flex-1 min-w-0 text-left"
+                      className="flex-1 min-w-0 text-left pr-5"
                     >
-                      <div className="flex items-start justify-between gap-2 pr-6">
-                        <h4
-                          className={`text-sm ${
-                            notification.isRead
-                              ? "font-medium text-gray-800"
-                              : "font-semibold text-gray-900"
-                          }`}
-                        >
-                          {notification.title}
-                        </h4>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start gap-2 min-w-0">
+                          <h4
+                            className={`
+                              text-[13px]
+                              leading-5
+                              truncate
+                              ${
+                                notification.isRead
+                                  ? "font-medium text-slate-700"
+                                  : "font-bold text-slate-900"
+                              }
+                            `}
+                          >
+                            {notification.title}
+                          </h4>
 
-                        {!notification.isRead && (
-                          <span className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-1.5" />
-                        )}
+                          {!notification.isRead && (
+                            <span className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0 mt-1.5 shadow-sm shadow-blue-300" />
+                          )}
+                        </div>
                       </div>
 
-                      <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                      <p className="text-[12px] text-slate-500 mt-1.5 leading-relaxed">
                         {notification.message}
                       </p>
 
-                      <p className="text-[11px] text-gray-400 mt-2">
-                        {getRelativeTime(
-                          notification.createdAt
-                        )}
+                      <p className="text-[10px] font-medium text-slate-400 mt-2">
+                        {getRelativeTime(notification.createdAt)}
                       </p>
                     </button>
 
                     {/* DELETE */}
+
                     <button
                       type="button"
                       onClick={() =>
-                        deleteNotification(
-                          notification._id
-                        )
+                        deleteNotification(notification._id)
                       }
-                      className="absolute top-3 right-3 p-1 rounded hover:bg-gray-200 text-gray-400 hover:text-red-500 transition-colors"
+                      className="
+                        absolute
+                        top-3
+                        right-3
+                        w-7
+                        h-7
+                        rounded-lg
+                        flex
+                        items-center
+                        justify-center
+                        text-slate-300
+                        hover:text-red-500
+                        hover:bg-red-50
+                        transition-all
+                      "
                       title="Delete notification"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -455,13 +544,30 @@ const NotificationBell = () => {
                   </div>
 
                   {/* MARK READ */}
+
                   {!notification.isRead && (
                     <button
                       type="button"
                       onClick={() =>
                         markAsRead(notification._id)
                       }
-                      className="absolute bottom-3 right-4 text-[11px] text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                      className="
+                        absolute
+                        bottom-3
+                        right-4
+                        px-1.5
+                        py-0.5
+                        rounded-md
+                        text-[10px]
+                        font-semibold
+                        text-blue-600
+                        hover:text-blue-700
+                        hover:bg-blue-100
+                        flex
+                        items-center
+                        gap-1
+                        transition-all
+                      "
                     >
                       <Check className="w-3 h-3" />
                       Read
@@ -472,11 +578,17 @@ const NotificationBell = () => {
             )}
           </div>
 
-          {/* FOOTER */}
+          {/* =================================================
+              FOOTER
+          ================================================= */}
+
           {notifications.length > 0 && (
-            <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
-              <p className="text-[11px] text-center text-gray-500">
-                Showing your latest {notifications.length} notifications
+            <div className="px-4 py-3 bg-slate-50/80 border-t border-slate-200">
+              <p className="text-[10px] font-medium text-center text-slate-400">
+                Showing your latest {notifications.length}{" "}
+                {notifications.length === 1
+                  ? "notification"
+                  : "notifications"}
               </p>
             </div>
           )}

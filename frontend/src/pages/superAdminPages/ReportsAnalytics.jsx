@@ -93,10 +93,10 @@ const ReportsAnalytics = () => {
             <section className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                     <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-100">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-100">
                             <BarChart3
                                 size={22}
-                                className="text-purple-600"
+                                className="text-indigo-600"
                             />
                         </div>
 
@@ -197,8 +197,8 @@ const ReportsAnalytics = () => {
                         title="Compliance Officers"
                         value={reports.totalComplianceOfficers}
                         icon={UsersRound}
-                        bg="bg-purple-100"
-                        color="text-purple-600"
+                        bg="bg-indigo-100"
+                        color="text-indigo-600"
                     />
                 </div>
             </section>

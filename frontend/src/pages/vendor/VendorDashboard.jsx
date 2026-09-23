@@ -63,8 +63,8 @@ const VendorDashboard = () => {
 
         {/* Header */}
         <div>
-          <div className="h-7 w-56 bg-gray-200 rounded" />
-          <div className="h-4 w-80 bg-gray-200 rounded mt-2" />
+          <div className="h-7 w-56 bg-slate-200 rounded" />
+          <div className="h-4 w-80 bg-slate-200 rounded mt-2" />
         </div>
 
         {/* Stats */}
@@ -73,17 +73,17 @@ const VendorDashboard = () => {
           {[1, 2, 3, 4].map((item) => (
             <div
               key={item}
-              className="h-32 bg-white border border-gray-200 rounded-xl"
+              className="h-32 bg-white border border-slate-200 rounded-xl"
             />
           ))}
 
         </div>
 
         {/* Main */}
-        <div className="h-80 bg-white border border-gray-200 rounded-xl" />
+        <div className="h-80 bg-white border border-slate-200 rounded-xl" />
 
         {/* Table */}
-        <div className="h-64 bg-white border border-gray-200 rounded-xl" />
+        <div className="h-64 bg-white border border-slate-200 rounded-xl" />
 
       </div>
     );
@@ -106,17 +106,17 @@ const VendorDashboard = () => {
             />
           </div>
 
-          <h2 className="mt-4 text-lg font-semibold text-gray-900">
+          <h2 className="mt-4 text-lg font-semibold text-slate-900">
             Unable to load dashboard
           </h2>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-slate-500">
             {error}
           </p>
 
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm hover:bg-gray-800"
+            className="mt-4 px-4 py-2 bg-slate-900 text-white rounded-lg text-sm hover:bg-slate-800"
           >
             Try Again
           </button>
@@ -258,12 +258,12 @@ const VendorDashboard = () => {
       ================================================= */}
 
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-slate-900">
           Welcome back
           {vendor.name ? `, ${vendor.name}` : ""} 👋
         </h1>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-slate-500">
           Here's an overview of your vendor compliance status.
         </p>
       </div>
@@ -281,32 +281,32 @@ const VendorDashboard = () => {
           return (
             <div
               key={stat.title}
-              className="bg-white border border-gray-200 rounded-xl p-5"
+              className="bg-white border border-slate-200 rounded-xl p-5"
             >
 
               <div className="flex items-start justify-between">
 
                 <div>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-slate-500">
                     {stat.title}
                   </p>
 
-                  <h2 className="mt-2 text-2xl font-bold text-gray-900">
+                  <h2 className="mt-2 text-2xl font-bold text-slate-900">
                     {stat.value}
                   </h2>
 
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className="mt-1 text-xs text-slate-400">
                     {stat.description}
                   </p>
 
                 </div>
 
-                <div className="p-3 bg-gray-100 rounded-lg">
+                <div className="p-3 bg-slate-100 rounded-lg">
 
                   <Icon
                     size={21}
-                    className="text-gray-700"
+                    className="text-slate-700"
                   />
 
                 </div>
@@ -331,17 +331,17 @@ const VendorDashboard = () => {
             COMPLIANCE OVERVIEW
         ================================================= */}
 
-        <div className="xl:col-span-2 bg-white border border-gray-200 rounded-xl p-6">
+        <div className="xl:col-span-2 bg-white border border-slate-200 rounded-xl p-6">
 
           <div className="flex items-center justify-between mb-6">
 
             <div>
 
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-slate-900">
                 Compliance Overview
               </h2>
 
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-slate-500 mt-1">
                 Current status of your documents.
               </p>
 
@@ -349,7 +349,7 @@ const VendorDashboard = () => {
 
             <ShieldCheck
               size={24}
-              className="text-gray-500"
+              className="text-slate-500"
             />
 
           </div>
@@ -374,7 +374,7 @@ const VendorDashboard = () => {
                   stroke="currentColor"
                   strokeWidth="10"
                   fill="none"
-                  className="text-gray-100"
+                  className="text-slate-100"
                 />
 
                 {/* Progress */}
@@ -395,7 +395,7 @@ const VendorDashboard = () => {
 
               <div className="absolute inset-0 flex items-center justify-center">
 
-                <span className="text-2xl font-bold text-gray-900">
+                <span className="text-2xl font-bold text-slate-900">
                   {complianceScore}%
                 </span>
 
@@ -406,11 +406,11 @@ const VendorDashboard = () => {
 
             <div>
 
-              <p className="font-semibold text-gray-900">
+              <p className="font-semibold text-slate-900">
                 {getComplianceMessage()}
               </p>
 
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-slate-500 mt-1">
 
                 {actionRequired > 0
                   ? `You have ${actionRequired} document${
@@ -439,7 +439,7 @@ const VendorDashboard = () => {
               return (
                 <div
                   key={item.title}
-                  className="border border-gray-200 rounded-lg p-4"
+                  className="border border-slate-200 rounded-lg p-4"
                 >
 
                   <div
@@ -453,11 +453,11 @@ const VendorDashboard = () => {
 
                   </div>
 
-                  <p className="mt-3 text-xl font-bold text-gray-900">
+                  <p className="mt-3 text-xl font-bold text-slate-900">
                     {item.count}
                   </p>
 
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     {item.title}
                   </p>
 
@@ -475,13 +475,13 @@ const VendorDashboard = () => {
             QUICK ACTIONS
         ================================================= */}
 
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
+        <div className="bg-white border border-slate-200 rounded-xl p-6">
 
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-slate-900">
             Quick Actions
           </h2>
 
-          <p className="text-sm text-gray-500 mt-1 mb-6">
+          <p className="text-sm text-slate-500 mt-1 mb-6">
             Manage your compliance documents.
           </p>
 
@@ -496,8 +496,8 @@ const VendorDashboard = () => {
               }
               className="w-full flex items-center justify-between
               px-4 py-3.5 rounded-lg
-              bg-gray-900 text-white
-              hover:bg-gray-800 transition"
+              bg-slate-900 text-white
+              hover:bg-slate-800 transition"
             >
 
               <div className="flex items-center gap-3">
@@ -523,9 +523,9 @@ const VendorDashboard = () => {
               }
               className="w-full flex items-center justify-between
               px-4 py-3.5 rounded-lg
-              border border-gray-200
-              text-gray-700
-              hover:bg-gray-50 transition"
+              border border-slate-200
+              text-slate-700
+              hover:bg-slate-50 transition"
             >
 
               <div className="flex items-center gap-3">
@@ -587,21 +587,21 @@ const VendorDashboard = () => {
           DOCUMENTS REQUIRING ACTION
       ================================================= */}
 
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
 
         {/* Header */}
 
-        <div className="px-6 py-5 border-b border-gray-200">
+        <div className="px-6 py-5 border-b border-slate-200">
 
           <div className="flex items-center justify-between">
 
             <div>
 
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-slate-900">
                 Documents Requiring Action
               </h2>
 
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-slate-500 mt-1">
                 Documents that need your attention.
               </p>
 
@@ -612,8 +612,8 @@ const VendorDashboard = () => {
                 navigate("/vendor/documents")
               }
               className="hidden sm:flex items-center gap-1
-              text-sm font-medium text-gray-700
-              hover:text-gray-900"
+              text-sm font-medium text-slate-700
+              hover:text-slate-900"
             >
 
               View All
@@ -640,11 +640,11 @@ const VendorDashboard = () => {
                 className="mx-auto text-green-500"
               />
 
-              <p className="mt-3 text-sm font-medium text-gray-900">
+              <p className="mt-3 text-sm font-medium text-slate-900">
                 No action required
               </p>
 
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-slate-500">
                 All your documents are currently up to date.
               </p>
 
@@ -666,22 +666,22 @@ const VendorDashboard = () => {
 
                 <div className="flex items-center gap-4">
 
-                  <div className="p-3 bg-gray-100 rounded-lg">
+                  <div className="p-3 bg-slate-100 rounded-lg">
 
                     <FileText
                       size={20}
-                      className="text-gray-600"
+                      className="text-slate-600"
                     />
 
                   </div>
 
                   <div>
 
-                    <h3 className="text-sm font-medium text-gray-900">
+                    <h3 className="text-sm font-medium text-slate-900">
                       {document.name}
                     </h3>
 
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-slate-500 mt-1">
                       {document.type}
                     </p>
 
@@ -729,9 +729,9 @@ const VendorDashboard = () => {
                     className="flex items-center gap-2
                     px-3 py-2
                     text-sm font-medium
-                    border border-gray-200
+                    border border-slate-200
                     rounded-lg
-                    hover:bg-gray-50"
+                    hover:bg-slate-50"
                   >
 
                     {document.action || "View"}

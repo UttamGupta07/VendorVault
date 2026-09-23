@@ -35,10 +35,10 @@ const roleLabels = {
 };
 
 const roleStyles = {
-  SUPER_ADMIN: "bg-[#0F172A] text-[#F5F3EB]",
-  COMPLIANCE_OFFICER: "bg-[#E8E0CE] text-[#8B631F]",
-  AUDITOR: "bg-[#DCE8E1] text-[#33604F]",
-  VENDOR: "bg-[#F0DDD7] text-[#A6402B]",
+  SUPER_ADMIN: "bg-slate-900 text-white",
+  COMPLIANCE_OFFICER: "bg-[#EFF6FF] text-blue-700",
+  AUDITOR: "bg-emerald-50 text-emerald-700",
+  VENDOR: "bg-red-50 text-red-700",
 };
 
 // ======================================================
@@ -415,8 +415,8 @@ const Users = () => {
       {message.text && (
         <div
           className={`mb-6 flex items-center gap-3 border px-4 py-3 text-sm ${message.type === "success"
-            ? "border-[#33604F] bg-[#DCE8E1] text-[#33604F]"
-            : "border-[#A6402B] bg-[#F0DDD7] text-[#A6402B]"
+            ? "border-[#059669] bg-emerald-50 text-emerald-700"
+            : "border-[#DC2626] bg-red-50 text-red-700"
             }`}
         >
           {message.type === "success" ? (
@@ -606,7 +606,7 @@ const Users = () => {
               onClick={() =>
                 setPage((prev) => prev - 1)
               }
-              className="border border-[#E2E8F0] p-2 transition hover:bg-[#EDEAE0] disabled:cursor-not-allowed disabled:opacity-40"
+              className="border border-[#E2E8F0] p-2 transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronLeft size={18} />
             </button>
@@ -618,7 +618,7 @@ const Users = () => {
               onClick={() =>
                 setPage((prev) => prev + 1)
               }
-              className="border border-[#E2E8F0] p-2 transition hover:bg-[#EDEAE0] disabled:cursor-not-allowed disabled:opacity-40"
+              className="border border-[#E2E8F0] p-2 transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <ChevronRight size={18} />
             </button>
@@ -716,7 +716,7 @@ const UserRow = ({
       <td className="px-6 py-5">
         <span
           className={`inline-flex px-3 py-1 text-xs font-semibold ${roleStyles[user.role] ||
-            "bg-[#EDEAE0] text-[#0F172A]"
+            "bg-blue-50 text-[#0F172A]"
             }`}
         >
           {roleLabels[user.role] ||
@@ -730,8 +730,8 @@ const UserRow = ({
         <div className="flex items-center gap-2">
           <span
             className={`h-2 w-2 rounded-full ${user.isActive
-              ? "bg-[#33604F]"
-              : "bg-[#A6402B]"
+              ? "bg-[#059669]"
+              : "bg-[#DC2626]"
               }`}
           />
 
@@ -748,8 +748,8 @@ const UserRow = ({
       <td className="px-6 py-5">
         <span
           className={`text-xs font-medium ${user.isEmailVerified
-            ? "text-[#33604F]"
-            : "text-[#A6402B]"
+            ? "text-emerald-700"
+            : "text-red-700"
             }`}
         >
           {user.isEmailVerified
@@ -779,7 +779,7 @@ const UserRow = ({
               isMenuOpen ? null : user._id
             );
           }}
-          className="p-2 transition hover:bg-[#EDEAE0]"
+          className="p-2 transition hover:bg-blue-50"
         >
           <MoreVertical size={18} />
         </button>
@@ -795,7 +795,7 @@ const UserRow = ({
 
             <button
               onClick={() => onEdit(user)}
-              className="flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-[#EDEAE0]"
+              className="flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-blue-50"
             >
               <Pencil size={16} />
               Edit User
@@ -807,7 +807,7 @@ const UserRow = ({
               onClick={() =>
                 onToggle(user)
               }
-              className="flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-[#EDEAE0]"
+              className="flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-blue-50"
             >
               {user.isActive ? (
                 <>
@@ -828,7 +828,7 @@ const UserRow = ({
               onClick={() =>
                 onDelete(user)
               }
-              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-[#A6402B] hover:bg-[#F0DDD7]"
+              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-700 hover:bg-red-50"
             >
               <Trash2 size={16} />
               Delete User
@@ -1006,7 +1006,7 @@ const UserModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/60 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4"
       onClick={onClose}
     >
       <div
@@ -1035,7 +1035,7 @@ const UserModal = ({
           <button
             onClick={onClose}
             disabled={saving}
-            className="p-2 hover:bg-[#EDEAE0] disabled:opacity-50"
+            className="p-2 hover:bg-blue-50 disabled:opacity-50"
           >
             <X size={20} />
           </button>
@@ -1050,7 +1050,7 @@ const UserModal = ({
           {/* ERROR */}
 
           {error && (
-            <div className="flex items-start gap-2 border border-[#A6402B] bg-[#F0DDD7] px-4 py-3 text-sm text-[#A6402B]">
+            <div className="flex items-start gap-2 border border-[#DC2626] bg-red-50 px-4 py-3 text-sm text-red-700">
               <AlertCircle
                 size={18}
                 className="mt-0.5 shrink-0"
@@ -1139,7 +1139,7 @@ const UserModal = ({
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="border border-[#E2E8F0] px-5 py-3 text-sm font-medium hover:bg-[#EDEAE0] disabled:opacity-50"
+              className="border border-[#E2E8F0] px-5 py-3 text-sm font-medium hover:bg-blue-50 disabled:opacity-50"
             >
               Cancel
             </button>
@@ -1147,7 +1147,7 @@ const UserModal = ({
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 bg-[#0F172A] px-5 py-3 text-sm font-semibold text-[#F5F3EB] hover:bg-[#4F46E5] disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex items-center gap-2 bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-[#4F46E5] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {saving && (
                 <Loader2

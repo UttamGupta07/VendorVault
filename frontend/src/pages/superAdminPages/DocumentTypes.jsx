@@ -246,16 +246,16 @@ const DocumentTypes = () => {
   // ==========================================
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-slate-50 p-6">
       {/* HEADER */}
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-slate-900">
             Document Types
           </h1>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-slate-500">
             Manage the documents that can be required for vendors.
           </p>
         </div>
@@ -287,14 +287,14 @@ const DocumentTypes = () => {
       {/* STAT CARD */}
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-500">
                 Total Documents
               </p>
 
-              <p className="mt-1 text-2xl font-bold text-gray-900">
+              <p className="mt-1 text-2xl font-bold text-slate-900">
                 {documentTypes.length}
               </p>
             </div>
@@ -305,8 +305,8 @@ const DocumentTypes = () => {
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">
             Active Documents
           </p>
 
@@ -319,12 +319,12 @@ const DocumentTypes = () => {
           </p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">
             Inactive Documents
           </p>
 
-          <p className="mt-1 text-2xl font-bold text-gray-500">
+          <p className="mt-1 text-2xl font-bold text-slate-500">
             {
               documentTypes.filter(
                 (document) => !document.isActive
@@ -336,11 +336,11 @@ const DocumentTypes = () => {
 
       {/* SEARCH */}
 
-      <div className="mb-5 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="mb-5 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="relative max-w-md">
           <Search
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           />
 
           <input
@@ -348,35 +348,35 @@ const DocumentTypes = () => {
             placeholder="Search document types..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
       </div>
 
       {/* TABLE */}
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[700px]">
-            <thead className="border-b border-gray-200 bg-gray-50">
+            <thead className="border-b border-slate-200 bg-slate-50">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Document
                 </th>
 
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Description
                 </th>
 
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Status
                 </th>
 
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Created
                 </th>
 
-                <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                   Actions
                 </th>
               </tr>
@@ -391,14 +391,14 @@ const DocumentTypes = () => {
                   >
                     <FileText
                       size={40}
-                      className="mx-auto mb-3 text-gray-300"
+                      className="mx-auto mb-3 text-slate-300"
                     />
 
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-sm font-medium text-slate-600">
                       No document types found
                     </p>
 
-                    <p className="mt-1 text-xs text-gray-400">
+                    <p className="mt-1 text-xs text-slate-400">
                       Create a document type to get started.
                     </p>
                   </td>
@@ -407,7 +407,7 @@ const DocumentTypes = () => {
                 filteredDocuments.map((document) => (
                   <tr
                     key={document._id}
-                    className="transition hover:bg-gray-50"
+                    className="transition hover:bg-slate-50"
                   >
                     {/* DOCUMENT */}
 
@@ -421,11 +421,11 @@ const DocumentTypes = () => {
                         </div>
 
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-slate-900">
                             {document.name}
                           </p>
 
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-slate-400">
                             ID: {document._id}
                           </p>
                         </div>
@@ -435,7 +435,7 @@ const DocumentTypes = () => {
                     {/* DESCRIPTION */}
 
                     <td className="max-w-xs px-6 py-4">
-                      <p className="truncate text-sm text-gray-600">
+                      <p className="truncate text-sm text-slate-600">
                         {document.description || "No description"}
                       </p>
                     </td>
@@ -450,7 +450,7 @@ const DocumentTypes = () => {
                         className={`rounded-full px-3 py-1 text-xs font-medium ${
                           document.isActive
                             ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-600"
+                            : "bg-slate-100 text-slate-600"
                         }`}
                       >
                         {document.isActive
@@ -461,7 +461,7 @@ const DocumentTypes = () => {
 
                     {/* CREATED */}
 
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-slate-500">
                       {document.createdAt
                         ? new Date(
                             document.createdAt
@@ -477,7 +477,7 @@ const DocumentTypes = () => {
                           onClick={() =>
                             openEditModal(document)
                           }
-                          className="rounded-lg p-2 text-gray-500 transition hover:bg-blue-50 hover:text-blue-600"
+                          className="rounded-lg p-2 text-slate-500 transition hover:bg-blue-50 hover:text-blue-600"
                           title="Edit"
                         >
                           <Edit size={17} />
@@ -487,7 +487,7 @@ const DocumentTypes = () => {
                           onClick={() =>
                             handleDelete(document)
                           }
-                          className="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600"
+                          className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600"
                           title="Delete"
                         >
                           <Trash2 size={17} />
@@ -509,15 +509,15 @@ const DocumentTypes = () => {
           <div className="w-full max-w-lg rounded-xl bg-white shadow-xl">
             {/* MODAL HEADER */}
 
-            <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+            <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-slate-900">
                   {editingDocument
                     ? "Edit Document Type"
                     : "Create Document Type"}
                 </h2>
 
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-slate-500">
                   {editingDocument
                     ? "Update the document type details."
                     : "Add a new document type for your vendors."}
@@ -527,7 +527,7 @@ const DocumentTypes = () => {
               <button
                 onClick={closeModal}
                 disabled={submitting}
-                className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
               >
                 <X size={20} />
               </button>
@@ -542,7 +542,7 @@ const DocumentTypes = () => {
               {/* NAME */}
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
+                <label className="mb-2 block text-sm font-medium text-slate-700">
                   Document Name
                 </label>
 
@@ -553,14 +553,14 @@ const DocumentTypes = () => {
                   onChange={handleChange}
                   placeholder="e.g. GST Certificate"
                   required
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
               {/* DESCRIPTION */}
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
+                <label className="mb-2 block text-sm font-medium text-slate-700">
                   Description
                 </label>
 
@@ -570,18 +570,18 @@ const DocumentTypes = () => {
                   onChange={handleChange}
                   placeholder="Describe this document type..."
                   rows={4}
-                  className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
               {/* BUTTONS */}
 
-              <div className="flex justify-end gap-3 border-t border-gray-100 pt-5">
+              <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
                 <button
                   type="button"
                   onClick={closeModal}
                   disabled={submitting}
-                  className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                 >
                   Cancel
                 </button>

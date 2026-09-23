@@ -90,7 +90,7 @@ const VendorManagement = () => {
       default:
         return {
           label: "Unknown",
-          className: "bg-gray-50 text-gray-600",
+          className: "bg-slate-50 text-slate-600",
           icon: null,
         };
     }
@@ -105,7 +105,7 @@ const VendorManagement = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-gray-500">Loading vendors...</div>
+        <div className="text-slate-500">Loading vendors...</div>
       </div>
     );
   }
@@ -115,18 +115,18 @@ const VendorManagement = () => {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h1 className="text-2xl font-semibold text-slate-900">
             Vendor Management
           </h1>
 
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Manage and monitor vendor compliance
           </p>
         </div>
 
         <button
           onClick={() => setShowAddVendor(true)}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition"
         >
           <Plus size={18} />
           Add Vendor
@@ -145,7 +145,7 @@ const VendorManagement = () => {
         <div className="relative flex-1">
           <Search
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           />
 
           <input
@@ -153,14 +153,14 @@ const VendorManagement = () => {
             placeholder="Search vendors..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-gray-200"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2.5 border border-gray-200 rounded-lg bg-white outline-none"
+          className="px-4 py-2.5 border border-slate-200 rounded-lg bg-white outline-none"
         >
           <option value="ALL">All Status</option>
           <option value="COMPLIANT">Compliant</option>
@@ -170,33 +170,33 @@ const VendorManagement = () => {
       </div>
 
       {/* Vendor Count */}
-      <div className="mb-4 text-sm text-gray-500">
+      <div className="mb-4 text-sm text-slate-500">
         Showing {filteredVendors.length} of {vendors.length} vendors
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Vendor
                 </th>
 
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Service Type
                 </th>
 
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Documents
                 </th>
 
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Compliance Score
                 </th>
 
-                <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">
                   Status
                 </th>
               </tr>
@@ -207,12 +207,12 @@ const VendorManagement = () => {
                 <tr>
                   <td
                     colSpan="5"
-                    className="px-6 py-12 text-center text-gray-500"
+                    className="px-6 py-12 text-center text-slate-500"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <Building2
                         size={32}
-                        className="text-gray-300"
+                        className="text-slate-300"
                       />
 
                       <p className="font-medium">
@@ -239,24 +239,24 @@ const VendorManagement = () => {
                           `/compliance/vendors/${vendor._id}`
                         )
                       }
-                      className="cursor-pointer hover:bg-gray-50 transition"
+                      className="cursor-pointer hover:bg-slate-50 transition"
                     >
                       {/* Vendor */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
                             <Building2
                               size={19}
-                              className="text-gray-500"
+                              className="text-slate-500"
                             />
                           </div>
 
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-slate-900">
                               {vendor.companyName}
                             </p>
 
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-slate-500">
                               {vendor.email}
                             </p>
                           </div>
@@ -265,7 +265,7 @@ const VendorManagement = () => {
 
                       {/* Service Type */}
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm text-slate-700">
                           {vendor.serviceType?.name || "N/A"}
                         </span>
                       </td>
@@ -275,10 +275,10 @@ const VendorManagement = () => {
                         <div className="flex items-center gap-2">
                           <FileText
                             size={17}
-                            className="text-gray-400"
+                            className="text-slate-400"
                           />
 
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-slate-700">
                             {vendor.documents?.submitted || 0}/
                             {vendor.documents?.required || 0}
                           </span>

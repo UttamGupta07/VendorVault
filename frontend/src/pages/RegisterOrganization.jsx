@@ -96,26 +96,26 @@ const RegisterOrganization = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#EDEAE0] text-[#1C2B3A]">
+    <div className="min-h-screen bg-blue-50 text-slate-900">
       <main className="mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-16">
 
         <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
 
           <section className="flex flex-col justify-center">
 
-            <div className="mb-6 inline-flex w-fit items-center gap-2 border border-[#C9C2AE] bg-[#F5F3EB] px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#8B631F]">
-              <span className="h-2 w-2 rounded-full bg-[#33604F]" />
+            <div className="mb-6 inline-flex w-fit items-center gap-2 border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-blue-700">
+              <span className="h-2 w-2 rounded-full bg-[#059669]" />
               Organization Registration
             </div>
 
             <h2 className="max-w-xl text-4xl font-bold leading-tight tracking-tight lg:text-5xl">
               Bring your vendor compliance
-              <span className="text-[#A8792C]">
+              <span className="text-blue-700">
                 {" "}under control.
               </span>
             </h2>
 
-            <p className="mt-6 max-w-lg text-base leading-7 text-[#54636F]">
+            <p className="mt-6 max-w-lg text-base leading-7 text-slate-500">
               Register your organization and create your primary
               administrator account. Once registered, you can invite
               compliance officers and auditors to your workspace.
@@ -145,11 +145,11 @@ const RegisterOrganization = () => {
 
           </section>
 
-          <section className="border border-[#C9C2AE] bg-[#F5F3EB] shadow-[8px_8px_0px_#C9C2AE]">
+          <section className="border border-slate-200 bg-slate-50 shadow-[8px_8px_0px_#E2E8F0]">
 
-            <div className="border-b border-[#C9C2AE] px-6 py-5 sm:px-8">
+            <div className="border-b border-slate-200 px-6 py-5 sm:px-8">
 
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#A8792C]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">
                 Get started
               </p>
 
@@ -157,7 +157,7 @@ const RegisterOrganization = () => {
                 Register your organization
               </h3>
 
-              <p className="mt-1 text-sm text-[#54636F]">
+              <p className="mt-1 text-sm text-slate-500">
                 Your primary admin account will be created automatically.
               </p>
 
@@ -268,14 +268,14 @@ const RegisterOrganization = () => {
 
               <FormSection title="Primary administrator">
 
-                <div className="mb-5 border-l-2 border-[#A8792C] bg-[#EDEAE0] px-4 py-3">
+                <div className="mb-5 border-l-2 border-[#2563EB] bg-blue-50 px-4 py-3">
 
                   <p className="text-sm font-medium">
                     You are registering as the organization's
                     primary administrator.
                   </p>
 
-                  <p className="mt-1 text-xs leading-5 text-[#54636F]">
+                  <p className="mt-1 text-xs leading-5 text-slate-500">
                     You will manage users, compliance officers,
                     auditors and organization settings.
                   </p>
@@ -324,8 +324,8 @@ const RegisterOrganization = () => {
                 <div
                   className={`mb-5 border px-4 py-3 text-sm ${
                     message.type === "success"
-                      ? "border-[#33604F] bg-[#EDEAE0] text-[#33604F]"
-                      : "border-[#A6402B] bg-[#EDEAE0] text-[#A6402B]"
+                      ? "border-[#059669] bg-blue-50 text-emerald-700"
+                      : "border-[#DC2626] bg-blue-50 text-red-700"
                   }`}
                 >
                   {message.text}
@@ -337,10 +337,10 @@ const RegisterOrganization = () => {
                 <input
                   type="checkbox"
                   required
-                  className="mt-1 h-4 w-4 accent-[#A8792C]"
+                  className="mt-1 h-4 w-4 accent-[#2563EB]"
                 />
 
-                <p className="text-xs leading-5 text-[#54636F]">
+                <p className="text-xs leading-5 text-slate-500">
                   I agree to the VendorVault terms of service
                   and privacy policy.
                 </p>
@@ -350,14 +350,14 @@ const RegisterOrganization = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#1C2B3A] px-5 py-3.5 text-sm font-semibold text-[#F5F3EB] transition hover:bg-[#8B631F] disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full bg-[#071426] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#8B631F] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading
                   ? "Creating organization..."
                   : "Register organization"}
               </button>
 
-              <p className="mt-4 text-center text-xs text-[#54636F]">
+              <p className="mt-4 text-center text-xs text-slate-500">
                 Your organization and primary admin account
                 will be created together.
               </p>
@@ -386,10 +386,10 @@ const Input = ({
 }) => {
   return (
     <div>
-      <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-[#54636F]">
+      <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
         {label}
         {required && (
-          <span className="ml-1 text-[#A6402B]">*</span>
+          <span className="ml-1 text-red-700">*</span>
         )}
       </label>
 
@@ -400,7 +400,7 @@ const Input = ({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="w-full border border-[#C9C2AE] bg-[#EDEAE0] px-4 py-3 text-sm text-[#1C2B3A] outline-none placeholder:text-[#54636F]/60 focus:border-[#A8792C] focus:ring-1 focus:ring-[#A8792C]"
+        className="w-full border border-slate-200 bg-blue-50 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-500/60 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
       />
     </div>
   );
@@ -417,10 +417,10 @@ const Select = ({
 }) => {
   return (
     <div>
-      <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-[#54636F]">
+      <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
         {label}
         {required && (
-          <span className="ml-1 text-[#A6402B]">*</span>
+          <span className="ml-1 text-red-700">*</span>
         )}
       </label>
 
@@ -429,7 +429,7 @@ const Select = ({
         value={value}
         onChange={onChange}
         required={required}
-        className="w-full border border-[#C9C2AE] bg-[#EDEAE0] px-4 py-3 text-sm text-[#1C2B3A] outline-none focus:border-[#A8792C] focus:ring-1 focus:ring-[#A8792C]"
+        className="w-full border border-slate-200 bg-blue-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
       >
         <option value="">
           Select company size
@@ -458,7 +458,7 @@ const FormSection = ({
 
       <h4 className="mb-5 flex items-center gap-3 text-sm font-bold uppercase tracking-[0.12em]">
 
-        <span className="h-px w-5 bg-[#A8792C]" />
+        <span className="h-px w-5 bg-[#2563EB]" />
 
         {title}
 
@@ -480,7 +480,7 @@ const Feature = ({
   return (
     <div className="flex gap-4">
 
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-[#C9C2AE] bg-[#F5F3EB] text-xs font-bold text-[#A8792C]">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-slate-200 bg-slate-50 text-xs font-bold text-blue-700">
         {number}
       </div>
 
@@ -489,7 +489,7 @@ const Feature = ({
           {title}
         </h4>
 
-        <p className="mt-1 max-w-md text-sm leading-6 text-[#54636F]">
+        <p className="mt-1 max-w-md text-sm leading-6 text-slate-500">
           {description}
         </p>
       </div>

@@ -7,7 +7,7 @@ const VendorLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
 
       <VendorSidebar
         sidebarOpen={sidebarOpen}
@@ -20,7 +20,7 @@ const VendorLayout = () => {
           setSidebarOpen={setSidebarOpen}
         />
 
-        <main className="p-6">
+        <main className="p-4 sm:p-6 lg:p-8 vv-page-enter">
           <Outlet />
         </main>
 

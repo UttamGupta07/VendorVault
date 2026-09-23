@@ -228,14 +228,14 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
             HEADER
         ================================================= */}
 
-        <div className="sticky top-0 z-20 flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
+        <div className="sticky top-0 z-20 flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200">
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-slate-900">
               Add Vendor
             </h2>
 
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-slate-500 mt-1">
               Create a new vendor account
             </p>
           </div>
@@ -243,7 +243,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-gray-500 rounded-lg hover:bg-gray-100 transition"
+            className="p-2 text-slate-500 rounded-lg hover:bg-slate-100 transition"
           >
             <X size={20} />
           </button>
@@ -272,7 +272,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
           <div className="mb-7">
 
-            <h3 className="flex items-center gap-2 text-base font-semibold text-gray-900 mb-4">
+            <h3 className="flex items-center gap-2 text-base font-semibold text-slate-900 mb-4">
               <Building2 size={18} />
               Vendor Information
             </h3>
@@ -282,7 +282,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
               {/* Vendor Name */}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Contact Person Name{" "}
                   <span className="text-red-500">*</span>
                 </label>
@@ -291,7 +291,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
                   <User
                     size={17}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                   />
 
                   <input
@@ -300,7 +300,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="John Doe"
-                    className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
 
                 </div>
@@ -309,7 +309,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
               {/* Company Name */}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Company Name{" "}
                   <span className="text-red-500">*</span>
                 </label>
@@ -318,7 +318,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
                   <Building2
                     size={17}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                   />
 
                   <input
@@ -327,7 +327,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                     value={formData.companyName}
                     onChange={handleChange}
                     placeholder="ABC Technologies Pvt Ltd"
-                    className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
 
                 </div>
@@ -336,7 +336,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
               {/* Email */}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Email{" "}
                   <span className="text-red-500">*</span>
                 </label>
@@ -345,7 +345,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
                   <Mail
                     size={17}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                   />
 
                   <input
@@ -354,7 +354,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="vendor@company.com"
-                    className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
 
                 </div>
@@ -363,7 +363,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
               {/* Phone */}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Phone
                 </label>
 
@@ -371,7 +371,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
                   <Phone
                     size={17}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                   />
 
                   <input
@@ -380,7 +380,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="+91 9876543210"
-                    className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
 
                 </div>
@@ -389,7 +389,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
               {/* Password */}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Initial Password{" "}
                   <span className="text-red-500">*</span>
                 </label>
@@ -398,7 +398,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
                   <Lock
                     size={17}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                   />
 
                   <input
@@ -407,7 +407,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Minimum 6 characters"
-                    className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
 
                 </div>
@@ -416,7 +416,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
               {/* Service Type */}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Service Type{" "}
                   <span className="text-red-500">*</span>
                 </label>
@@ -426,7 +426,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                   value={formData.serviceTypeId}
                   onChange={handleServiceTypeChange}
                   disabled={serviceLoading}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-100"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100"
                 >
                   <option value="">
                     {serviceLoading
@@ -474,11 +474,11 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-slate-900">
                         Required Documents
                       </h3>
 
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-slate-500 mt-1">
                         Documents required from this vendor
                         based on the selected service type.
                       </p>
@@ -538,26 +538,26 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                               documentType._id ||
                               index
                             }
-                            className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-4 py-3"
+                            className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-4 py-3"
                           >
 
                             <div className="flex items-center gap-3">
 
-                              <div className="p-2 bg-gray-100 rounded-lg">
+                              <div className="p-2 bg-slate-100 rounded-lg">
                                 <FileText
                                   size={18}
-                                  className="text-gray-600"
+                                  className="text-slate-600"
                                 />
                               </div>
 
                               <div>
 
-                                <p className="text-sm font-medium text-gray-900">
+                                <p className="text-sm font-medium text-slate-900">
                                   {documentType.name}
                                 </p>
 
                                 {documentType.description && (
-                                  <p className="text-xs text-gray-500 mt-0.5">
+                                  <p className="text-xs text-slate-500 mt-0.5">
                                     {
                                       documentType.description
                                     }
@@ -592,18 +592,18 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
                 ) : (
 
-                  <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+                  <div className="bg-white rounded-lg border border-slate-200 p-4 text-center">
 
                     <FileText
                       size={28}
-                      className="mx-auto text-gray-400 mb-2"
+                      className="mx-auto text-slate-400 mb-2"
                     />
 
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-sm font-medium text-slate-700">
                       No documents configured
                     </p>
 
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-slate-500 mt-1">
                       This service type currently has no
                       required documents.
                     </p>
@@ -623,7 +623,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
           <div className="mb-7">
 
-            <h3 className="flex items-center gap-2 text-base font-semibold text-gray-900 mb-4">
+            <h3 className="flex items-center gap-2 text-base font-semibold text-slate-900 mb-4">
               <MapPin size={18} />
               Address
             </h3>
@@ -634,7 +634,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
               <div className="md:col-span-2">
 
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Street Address
                 </label>
 
@@ -644,7 +644,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                   value={formData.address.street}
                   onChange={handleAddressChange}
                   placeholder="123 Business Street"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
 
               </div>
@@ -653,7 +653,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
               <div>
 
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   City
                 </label>
 
@@ -663,7 +663,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                   value={formData.address.city}
                   onChange={handleAddressChange}
                   placeholder="Lucknow"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
 
               </div>
@@ -672,7 +672,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
               <div>
 
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   State
                 </label>
 
@@ -682,7 +682,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                   value={formData.address.state}
                   onChange={handleAddressChange}
                   placeholder="Uttar Pradesh"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
 
               </div>
@@ -691,7 +691,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
               <div>
 
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Country
                 </label>
 
@@ -701,7 +701,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                   value={formData.address.country}
                   onChange={handleAddressChange}
                   placeholder="India"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
 
               </div>
@@ -710,7 +710,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
 
               <div>
 
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Pincode
                 </label>
 
@@ -720,7 +720,7 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
                   value={formData.address.pincode}
                   onChange={handleAddressChange}
                   placeholder="226001"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
 
               </div>
@@ -733,13 +733,13 @@ const AddVendorModel = ({ onClose, onVendorAdded }) => {
               FOOTER
           ================================================= */}
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
 
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition disabled:opacity-50"
+              className="px-5 py-2.5 rounded-lg border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition disabled:opacity-50"
             >
               Cancel
             </button>

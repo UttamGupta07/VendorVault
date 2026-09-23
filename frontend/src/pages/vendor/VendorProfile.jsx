@@ -84,7 +84,7 @@ const VendorProfile = () => {
             size={32}
             className="animate-spin text-indigo-600"
           />
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-slate-500">
             Loading profile...
           </p>
         </div>
@@ -176,18 +176,18 @@ const VendorProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
 
         {/* ==========================================
             HEADER
         ========================================== */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-slate-900">
             My Profile
           </h1>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-slate-500">
             View your vendor information and compliance status.
           </p>
         </div>
@@ -195,10 +195,10 @@ const VendorProfile = () => {
         {/* ==========================================
             PROFILE CARD
         ========================================== */}
-        <div className="mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
           {/* Cover */}
-          <div className="h-32 bg-gradient-to-r from-indigo-600 to-violet-600" />
+          <div className="h-32 bg-gradient-to-r from-indigo-600 to-indigo-600" />
 
           <div className="px-5 pb-6 md:px-8">
 
@@ -211,11 +211,11 @@ const VendorProfile = () => {
                 </div>
 
                 <div className="pb-1">
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-xl font-bold text-slate-900">
                     {profile.name}
                   </h2>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-slate-500">
                     {profile.companyName || "Vendor"}
                   </p>
                 </div>
@@ -231,7 +231,7 @@ const VendorProfile = () => {
             </div>
 
             {/* Basic Info */}
-            <div className="mt-6 grid gap-4 border-t border-gray-100 pt-5 sm:grid-cols-3">
+            <div className="mt-6 grid gap-4 border-t border-slate-100 pt-5 sm:grid-cols-3">
 
               <div className="flex items-center gap-3">
                 <div className="rounded-lg bg-indigo-50 p-2">
@@ -242,11 +242,11 @@ const VendorProfile = () => {
                 </div>
 
                 <div>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-slate-400">
                     Email
                   </p>
 
-                  <p className="text-sm font-medium text-gray-700">
+                  <p className="text-sm font-medium text-slate-700">
                     {profile.email || "N/A"}
                   </p>
                 </div>
@@ -261,11 +261,11 @@ const VendorProfile = () => {
                 </div>
 
                 <div>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-slate-400">
                     Phone
                   </p>
 
-                  <p className="text-sm font-medium text-gray-700">
+                  <p className="text-sm font-medium text-slate-700">
                     {profile.phone || "N/A"}
                   </p>
                 </div>
@@ -280,11 +280,11 @@ const VendorProfile = () => {
                 </div>
 
                 <div>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-slate-400">
                     Joined
                   </p>
 
-                  <p className="text-sm font-medium text-gray-700">
+                  <p className="text-sm font-medium text-slate-700">
                     {formatDate(profile.createdAt)}
                   </p>
                 </div>
@@ -396,7 +396,7 @@ const VendorProfile = () => {
           >
             <div className="mb-5">
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-600">
+                <span className="text-sm font-medium text-slate-600">
                   Compliance Score
                 </span>
 
@@ -405,7 +405,7 @@ const VendorProfile = () => {
                 </span>
               </div>
 
-              <div className="h-3 overflow-hidden rounded-full bg-gray-100">
+              <div className="h-3 overflow-hidden rounded-full bg-slate-100">
                 <div
                   className="h-full rounded-full bg-indigo-600 transition-all"
                   style={{
@@ -448,8 +448,8 @@ const VendorProfile = () => {
             icon={MapPin}
             title="Business Address"
           >
-            <div className="rounded-xl bg-gray-50 p-4">
-              <p className="text-sm leading-6 text-gray-700">
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="text-sm leading-6 text-slate-700">
                 {profile.address?.street && (
                   <>
                     {profile.address.street}
@@ -476,7 +476,7 @@ const VendorProfile = () => {
         {/* ==========================================
             DOCUMENT SUMMARY
         ========================================== */}
-        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
 
           <div className="mb-5 flex items-center gap-3">
             <div className="rounded-xl bg-indigo-50 p-2.5">
@@ -487,11 +487,11 @@ const VendorProfile = () => {
             </div>
 
             <div>
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold text-slate-900">
                 Document Summary
               </h2>
 
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-slate-500">
                 Current status of your compliance documents
               </p>
             </div>
@@ -543,15 +543,15 @@ const StatCard = ({
   iconColor,
 }) => {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between">
 
         <div>
-          <p className="text-xs font-medium text-gray-500">
+          <p className="text-xs font-medium text-slate-500">
             {title}
           </p>
 
-          <p className="mt-1 text-2xl font-bold text-gray-900">
+          <p className="mt-1 text-2xl font-bold text-slate-900">
             {value}
           </p>
         </div>
@@ -574,7 +574,7 @@ const SectionCard = ({
   children,
 }) => {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:p-6">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
 
       <div className="mb-5 flex items-center gap-3">
         <div className="rounded-xl bg-indigo-50 p-2.5">
@@ -584,7 +584,7 @@ const SectionCard = ({
           />
         </div>
 
-        <h2 className="font-semibold text-gray-900">
+        <h2 className="font-semibold text-slate-900">
           {title}
         </h2>
       </div>
@@ -602,13 +602,13 @@ const SectionCard = ({
 // ==========================================
 const InfoItem = ({ label, value }) => {
   return (
-    <div className="flex flex-col gap-1 border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+    <div className="flex flex-col gap-1 border-b border-slate-100 pb-3 last:border-0 last:pb-0">
 
-      <span className="text-xs font-medium text-gray-400">
+      <span className="text-xs font-medium text-slate-400">
         {label}
       </span>
 
-      <span className="text-sm font-medium text-gray-700">
+      <span className="text-sm font-medium text-slate-700">
         {value || "N/A"}
       </span>
 
@@ -621,13 +621,13 @@ const InfoItem = ({ label, value }) => {
 // ==========================================
 const DocumentCount = ({ label, value }) => {
   return (
-    <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-center">
+    <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center">
 
-      <p className="text-xl font-bold text-gray-900">
+      <p className="text-xl font-bold text-slate-900">
         {value || 0}
       </p>
 
-      <p className="mt-1 text-xs text-gray-500">
+      <p className="mt-1 text-xs text-slate-500">
         {label}
       </p>
 
