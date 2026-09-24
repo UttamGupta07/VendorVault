@@ -1,0 +1,158 @@
+services:
+
+  # ===================================================
+  # 1. WEB API
+  # ===================================================
+
+  - type: web
+    name: vendorvault-backend
+    runtime: node
+
+    region: singapore
+
+    plan: free
+
+    buildCommand: npm ci
+
+    startCommand: npm start
+
+    healthCheckPath: /health
+
+    autoDeployTrigger: commit
+
+    envVars:
+
+      - key: NODE_ENV
+        value: production
+
+      - key: MONGO_URL
+        sync: false
+
+      - key: REDIS_URL
+        sync: false
+
+      - key: JWT_SECRET
+        sync: false
+
+      - key: FRONTEND_URL
+        sync: false
+
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+
+      - key: CLOUDINARY_API_KEY
+        sync: false
+
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      - key: GEMINI_API_KEY
+        sync: false
+
+      - key: EMAIL_USER
+        sync: false
+
+      - key: EMAIL_APP_PASSWORD
+        sync: false
+
+      - key: EMAIL_FROM
+        sync: false
+
+
+  # ===================================================
+  # 2. BULLMQ WORKER
+  # ===================================================
+
+  - type: worker
+    name: vendorvault-expiry-worker
+    runtime: node
+
+    region: singapore
+
+    plan: free
+
+    buildCommand: npm ci
+
+    startCommand: npm run worker
+
+    envVars:
+
+      - key: NODE_ENV
+        value: production
+
+      - key: MONGO_URL
+        sync: false
+
+      - key: REDIS_URL
+        sync: false
+
+      - key: JWT_SECRET
+        sync: false
+
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+
+      - key: CLOUDINARY_API_KEY
+        sync: false
+
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      - key: GEMINI_API_KEY
+        sync: false
+
+      - key: EMAIL_USER
+        sync: false
+
+      - key: EMAIL_APP_PASSWORD
+        sync: false
+
+      - key: EMAIL_FROM
+        sync: false
+
+
+  # ===================================================
+  # 3. DAILY EXPIRY CRON
+  # ===================================================
+  #
+  # 12:00 PM IST
+  # = 06:30 UTC
+  #
+  # Render cron uses UTC.
+  #
+  # ===================================================
+
+  - type: cron
+    name: vendorvault-expiry-scheduler
+
+    runtime: node
+
+    region: singapore
+
+    plan: free
+
+    buildCommand: npm ci
+
+    startCommand: npm run scheduler
+
+    schedule: "30 6 * * *"
+
+    envVars:
+
+      - key: NODE_ENV
+        value: production
+
+      - key: MONGO_URL
+        sync: false
+
+      - key: REDIS_URL
+        sync: false
+
+      - key: EMAIL_USER
+        sync: false
+
+      - key: EMAIL_APP_PASSWORD
+        sync: false
+
+      - key: EMAIL_FROM
+        sync: false

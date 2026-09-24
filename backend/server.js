@@ -1,57 +1,46 @@
-require("dotenv").config();
+ require("dotenv").config();
 
 const connectdb = require("./src/db/db");
 const app = require("./src/app");
 
-const PORT = process.env.PORT || 3000;
-
+const PORT = process.env.PORT || 5000;
 
 // =====================================================
 // Start Server
 // =====================================================
-// Pehle MongoDB connect hoga.
-// MongoDB successfully connect hone ke baad hi
-// Express server start hoga.
-// =====================================================
 
 const startServer = async () => {
-
     try {
 
         // -------------------------------------------------
-        // MongoDB connection
+        // Connect MongoDB
         // -------------------------------------------------
 
         await connectdb();
 
-        console.log(
-            "MongoDB connection ready"
-        );
-
+        console.log("MongoDB connection ready");
 
         // -------------------------------------------------
-        // Start Express server
+        // Start Express Server
         // -------------------------------------------------
 
-        app.listen(PORT, () => {
-
-            console.log(PORT);
+        app.listen(PORT, "0.0.0.0", () => {
 
             console.log(
-                "VendorVault Server Started..."
+                `VendorVault Server Started on port ${PORT}`
             );
+
         });
 
     } catch (error) {
 
         console.error(
             "Server startup failed:",
-            error.message
+            error
         );
 
         process.exit(1);
     }
 };
-
 
 startServer();

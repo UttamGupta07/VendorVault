@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"node server.js\" \"node src/schedulers/expiryReminderScheduler.js\" \"node src/workers/expiryReminderWorker.js\"",
+    "dev": "concurrently \"node server.js\" \"node src/workers/expiryReminderWorker.js\"",
     "start": "node server.js",
     "scheduler": "node src/schedulers/expiryReminderScheduler.js",
     "worker": "node src/workers/expiryReminderWorker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
