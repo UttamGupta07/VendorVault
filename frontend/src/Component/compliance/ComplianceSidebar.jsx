@@ -11,9 +11,9 @@ import {
   Mail,
   BarChart3,
   ClipboardList,
-  Settings,
   LogOut,
   X,
+  NotebookIcon
 } from "lucide-react";
 
 const ComplianceSidebar = ({ sidebarOpen, setSidebarOpen }) => {
@@ -27,9 +27,8 @@ const ComplianceSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   ];
 
   const managementMenu = [
-    { name: "Reports", path: "/compliance/reports", icon: BarChart3 },
     { name: "Audit Logs", path: "/compliance/audit-logs", icon: ClipboardList },
-    { name: "Settings", path: "/compliance/settings", icon: Settings },
+    { name: "Profile", path: "/compliance/profile", icon: NotebookIcon },
   ];
 
   const { logout } = useAuth();

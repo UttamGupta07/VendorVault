@@ -43,6 +43,7 @@ import VendorProfile from "./pages/vendor/VendorProfile";
 import AdminProfile from "./pages/superAdminPages/AdminProfile";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import Profile from "./pages/compliance/Profile";
 
 const App = () => {
   return (
@@ -195,6 +196,10 @@ const App = () => {
             <Route
               path="/compliance/audit-logs"
               element={<AuditLogs />}
+            />
+            <Route
+              path="/compliance/profile"
+              element={<Profile/>}
             />
 
 

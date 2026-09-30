@@ -1,6 +1,9 @@
  const Vendor = require("../models/Vendor");
 const VendorDocument = require("../models/VendorDocument");
 const ServiceType = require("../models/ServiceType");
+const User = require("../models/User");
+ const bcrypt = require("bcryptjs");
+const Organization = require("../models/Organization");
 
 const getDateOnly = (date) => {
   if (!date) return null;
@@ -520,7 +523,362 @@ const getComplianceOverview = async (req, res) => {
     });
   }
 };
+const getProfile = async (req, res) => {
+  try {
+    res.set("Cache-Control", "no-store");
+
+    // Get logged-in user
+    const user = await User.findById(req.user.userId)
+      .select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "User account is inactive",
+      });
+    }
+
+    // Get organization
+    const organization = await Organization.findById(
+      user.organizationId
+    );
+
+    if (!organization) {
+      return res.status(404).json({
+        success: false,
+        message: "Organization not found",
+      });
+    }
+
+    if (!organization.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Organization is inactive",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || "",
+        role: user.role,
+        organizationId: user.organizationId,
+        isActive: user.isActive,
+        isEmailVerified: user.isEmailVerified,
+        lastLoginAt: user.lastLoginAt,
+        createdAt: user.createdAt,
+      },
+
+      organization: {
+        id: organization._id,
+        name: organization.name,
+        officialEmail: organization.officialEmail,
+        phone: organization.phone || "",
+        industry: organization.industry || "",
+        companySize: organization.companySize || "",
+        country: organization.country || "",
+        state: organization.state || "",
+        city: organization.city || "",
+        website: organization.website || "",
+        isActive: organization.isActive,
+        createdAt: organization.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error("Get Profile Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch profile",
+      error: error.message,
+    });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    const { name, email, phone } = req.body;
+
+    // ============================================================
+    // VALIDATION
+    // ============================================================
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required",
+      });
+    }
+
+    if (!email || !email.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const normalizedName = name.trim();
+    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedPhone =
+      phone !== undefined && phone !== null
+        ? phone.trim()
+        : "";
+
+    // ============================================================
+    // GET LOGGED-IN USER
+    // ============================================================
+
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // ============================================================
+    // CHECK USER STATUS
+    // ============================================================
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account is inactive",
+      });
+    }
+
+    // ============================================================
+    // CHECK EMAIL DUPLICATE
+    // ============================================================
+
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+      _id: { $ne: user._id },
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "Email is already registered with another user",
+      });
+    }
+
+    // ============================================================
+    // UPDATE USER
+    // ============================================================
+
+    user.name = normalizedName;
+    user.email = normalizedEmail;
+    user.phone = normalizedPhone;
+
+    await user.save();
+
+    // ============================================================
+    // RESPONSE
+    // ============================================================
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || "",
+        role: user.role,
+        organizationId: user.organizationId,
+        isActive: user.isActive,
+        isEmailVerified: user.isEmailVerified,
+        lastLoginAt: user.lastLoginAt,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error("Update Profile Error:", error);
+
+    // MongoDB duplicate-key protection
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Email is already registered",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update profile",
+      error: error.message,
+    });
+  }
+};
+
+// =====================================================
+// CHANGE PASSWORD - LOGGED IN USER
+// =====================================================
+const changePassword = async (req, res) => {
+  try {
+    const {
+      oldPassword,
+      newPassword,
+      confirmPassword,
+    } = req.body;
+    console.log(req.body);
+    
+
+    console.log("🔐 CHANGE PASSWORD CONTROLLER HIT");
+
+    // ==========================================
+    // 1. VALIDATE INPUT
+    // ==========================================
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Old password, new password and confirm password are required",
+      });
+    }
+
+    // ==========================================
+    // 2. CHECK PASSWORD MATCH
+    // ==========================================
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password and confirm password do not match",
+      });
+    }
+
+    // ==========================================
+    // 3. PASSWORD LENGTH
+    // ==========================================
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must be at least 8 characters long",
+      });
+    }
+
+    // ==========================================
+    // 4. CHECK OLD AND NEW PASSWORD
+    // ==========================================
+
+    if (oldPassword === newPassword) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "New password must be different from old password",
+      });
+    }
+
+    // ==========================================
+    // 5. FIND LOGGED-IN USER
+    // ==========================================
+
+    const user = await User.findById(req.user.userId)
+      .select("+password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // ==========================================
+    // 6. CHECK ACCOUNT STATUS
+    // ==========================================
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account is inactive",
+      });
+    }
+
+    console.log(
+      `👤 Password change requested for: ${user.email}`
+    );
+
+    // ==========================================
+    // 7. VERIFY OLD PASSWORD
+    // ==========================================
+
+    const isPasswordCorrect = await bcrypt.compare(
+      oldPassword,
+      user.password
+    );
+
+    if (!isPasswordCorrect) {
+      return res.status(401).json({
+        success: false,
+        message: "Current password is incorrect",
+      });
+    }
+
+    // ==========================================
+    // 8. HASH NEW PASSWORD
+    // ==========================================
+
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      12
+    );
+
+    user.password = hashedPassword;
+
+    // ==========================================
+    // 9. SAVE PASSWORD
+    // ==========================================
+
+    await user.save();
+
+    console.log(
+      "🔑 Password changed successfully"
+    );
+
+    // ==========================================
+    // 10. SUCCESS RESPONSE
+    // ==========================================
+
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+
+  } catch (error) {
+    console.error(
+      "❌ Change password error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Something went wrong. Please try again later.",
+    });
+  }
+};
 
 module.exports = {
   getComplianceOverview,
+  getProfile,
+  updateProfile,
+  changePassword,
 };
